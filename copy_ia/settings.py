@@ -22,9 +22,9 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'copy_ia.fyi',
-    'www.copy_ia.fyi',
-    'copy_ias.onrender.com',
+    'copyia.site',
+    'www.copyia.site',
+    'copy-ia.onrender.com',
 ]
 
 # Captura automaticamente a URL do Render em produção
@@ -34,9 +34,9 @@ if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
 
 # Configuração de origens confiáveis para proteção CSRF no Render
 CSRF_TRUSTED_ORIGINS = [
-    'https://copy_ia.fyi',
-    'https://www.copy_ia.fyi',
-    'https://copy_ias.onrender.com',
+    'copyia.site',
+    'www.copyia.site',
+    'copy-ia.onrender.com',
 ]
 if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
