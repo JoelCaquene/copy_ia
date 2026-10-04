@@ -34,9 +34,9 @@ if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
 
 # Configuração de origens confiáveis para proteção CSRF no Render
 CSRF_TRUSTED_ORIGINS = [
-    'copyia.site',
-    'www.copyia.site',
-    'copy-ia.onrender.com',
+    'https://copyia.site',
+    'https://www.copyia.site',
+    'https://https://copy-ia.onrender.com',
 ]
 if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')

@@ -300,10 +300,10 @@ def approve_deposit(request, deposit_id):
 # --- SAQUE ---
 @login_required
 def saque(request):
-    MIN_WITHDRAWAL_AMOUNT = 2500
+    MIN_WITHDRAWAL_AMOUNT = 1000
 
     START_TIME = time(9, 0, 0)
-    END_TIME = time(17, 0, 0)
+    END_TIME = time(23, 0, 0)
 
     withdrawal_instruction = (
         PlatformSettings.objects.first().withdrawal_instruction
@@ -865,7 +865,7 @@ def nivel(request):
                     ).exists()
                 ):
 
-                    com2 = val * Decimal('0.03')
+                    com2 = val * Decimal('0.02')
 
                     p2.available_balance += com2
                     p2.subsidy_balance += com2
