@@ -297,7 +297,7 @@ def approve_deposit(request, deposit_id):
     return redirect('renda')
 
 
-# --- SAQUE ---
+# --- SAQUE ok---
 @login_required
 def saque(request):
     MIN_WITHDRAWAL_AMOUNT = 1000
