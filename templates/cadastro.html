@@ -1,0 +1,1522 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Criar Conta - copy_ia</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #0a111f;
+            --card-bg: rgba(20, 31, 55, 0.97);
+            --primary: #00d2ff;
+            --secondary: #00f5d4;
+            --text-white: #f8fafc;
+            --text-gray: #a0aec0;
+            --input-bg: rgba(10, 17, 31, 0.88);
+            --border-color: rgba(0, 210, 255, 0.20);
+            --danger: #ff5c7a;
+            --success: #00f5d4;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 50% 0%, rgba(0, 210, 255, 0.08), transparent 35%),
+                var(--bg-dark);
+            color: var(--text-white);
+            font-family: 'Poppins', sans-serif;
+            -webkit-font-smoothing: antialiased;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ================================
+           BARRA SUPERIOR
+        ================================= */
+
+        .top-nav {
+            width: 100%;
+            max-width: 600px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 18px 20px 10px;
+        }
+
+        .logo-img {
+            font-size: 23px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+
+            background: linear-gradient(
+                45deg,
+                #ffffff,
+                var(--primary)
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            text-shadow: 0 0 12px rgba(0, 210, 255, 0.3);
+        }
+
+        .nav-link-login {
+            text-decoration: none;
+            color: var(--primary);
+
+            font-weight: 600;
+            font-size: 0.78rem;
+
+            padding: 7px 15px;
+
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+
+            background: rgba(0, 210, 255, 0.05);
+
+            transition: all 0.25s ease;
+        }
+
+        .nav-link-login:active {
+            transform: scale(0.96);
+            background: var(--primary);
+            color: #000;
+        }
+
+        /* ================================
+           CONTAINER
+        ================================= */
+
+        .register-container {
+            width: 90%;
+            max-width: 440px;
+
+            margin: 8px auto 35px;
+
+            padding: 25px 22px;
+
+            background: var(--card-bg);
+
+            border-radius: 20px;
+
+            border: 1px solid var(--border-color);
+
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.55),
+                0 0 30px rgba(0, 210, 255, 0.03);
+
+            text-align: center;
+
+            position: relative;
+        }
+
+        /* ================================
+           ETAPAS
+        ================================= */
+
+        .step {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ================================
+           ÍCONE IA
+        ================================= */
+
+        .ai-icon-wrapper {
+            width: 68px;
+            height: 68px;
+
+            margin: 2px auto 13px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0, 210, 255, 0.16),
+                    rgba(0, 245, 212, 0.10)
+                );
+
+            border: 1px solid rgba(0, 210, 255, 0.30);
+
+            box-shadow:
+                0 0 20px rgba(0, 210, 255, 0.12);
+        }
+
+        .ai-icon-wrapper i {
+            font-size: 30px;
+            color: var(--primary);
+        }
+
+        /* ================================
+           TELA DE BOAS-VINDAS
+        ================================= */
+
+        .welcome-title {
+            margin: 0 0 9px;
+
+            font-size: 1.38rem;
+            line-height: 1.25;
+
+            font-weight: 700;
+        }
+
+        .welcome-title span {
+            color: var(--primary);
+        }
+
+        .welcome-text {
+            margin: 0 auto 17px;
+
+            max-width: 340px;
+
+            color: var(--text-gray);
+
+            font-size: 0.78rem;
+            line-height: 1.55;
+        }
+
+        .welcome-text strong {
+            color: var(--text-white);
+        }
+
+        /* ================================
+           BOTÕES
+        ================================= */
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .main-button,
+        .secondary-button {
+            width: 100%;
+
+            border-radius: 11px;
+
+            padding: 11px 14px;
+
+            font-family: 'Poppins', sans-serif;
+
+            font-size: 0.82rem;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+
+            transition: all 0.2s ease;
+        }
+
+        .main-button {
+            border: none;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary),
+                    #0088cc
+                );
+
+            color: #ffffff;
+
+            box-shadow:
+                0 5px 15px rgba(0, 210, 255, 0.22);
+        }
+
+        .secondary-button {
+            background: transparent;
+            color: var(--text-gray);
+
+            border: 1px solid rgba(160, 174, 192, 0.20);
+        }
+
+        .main-button:active,
+        .secondary-button:active {
+            transform: scale(0.98);
+        }
+
+        /* ================================
+           DESPEDIDA
+        ================================= */
+
+        .goodbye-icon {
+            width: 65px;
+            height: 65px;
+
+            margin: 5px auto 15px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            border-radius: 50%;
+
+            background: rgba(160, 174, 192, 0.08);
+
+            border: 1px solid rgba(160, 174, 192, 0.18);
+        }
+
+        .goodbye-icon i {
+            font-size: 28px;
+            color: var(--text-gray);
+        }
+
+        .goodbye-title {
+            font-size: 1.25rem;
+            margin: 0 0 10px;
+        }
+
+        .goodbye-text {
+            color: var(--text-gray);
+            font-size: 0.78rem;
+            line-height: 1.6;
+
+            margin: 0 auto 18px;
+
+            max-width: 330px;
+        }
+
+        /* ================================
+           TÍTULOS DAS ETAPAS
+        ================================= */
+
+        h2 {
+            font-weight: 700;
+            font-size: 1.35rem;
+
+            margin: 0 0 8px;
+
+            color: var(--text-white);
+        }
+
+        .step-description {
+            margin: 0 auto 20px;
+
+            color: var(--text-gray);
+
+            font-size: 0.78rem;
+            line-height: 1.55;
+
+            max-width: 350px;
+        }
+
+        .step-description strong {
+            color: var(--primary);
+        }
+
+        /* ================================
+           INDICADOR DE ETAPA
+        ================================= */
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 17px;
+        }
+
+        .indicator {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: rgba(160, 174, 192, 0.25);
+
+            transition: all 0.25s ease;
+        }
+
+        .indicator.active {
+            width: 22px;
+            border-radius: 20px;
+            background: var(--primary);
+            box-shadow: 0 0 8px rgba(0, 210, 255, 0.45);
+        }
+
+        /* ================================
+           FORMULÁRIO
+        ================================= */
+
+        .auth-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 0.72rem;
+
+            font-weight: 600;
+
+            margin-bottom: 6px;
+
+            display: block;
+
+            color: var(--text-gray);
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i.main-icon {
+            position: absolute;
+
+            left: 15px;
+
+            color: var(--primary);
+
+            font-size: 0.95rem;
+
+            z-index: 2;
+        }
+
+        .auth-form input[type="text"],
+        .auth-form input[type="password"] {
+            width: 100%;
+
+            padding: 12px 15px 12px 45px;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 12px;
+
+            background: var(--input-bg);
+
+            font-size: 0.90rem;
+
+            font-weight: 500;
+
+            outline: none;
+
+            color: var(--text-white);
+
+            font-family: 'Poppins', sans-serif;
+
+            transition: all 0.2s ease;
+        }
+
+        .auth-form input::placeholder {
+            color: rgba(160, 174, 192, 0.50);
+            font-size: 0.82rem;
+        }
+
+        .auth-form input:focus {
+            border-color: var(--secondary);
+
+            background: rgba(10, 17, 31, 0.96);
+
+            box-shadow:
+                0 0 12px rgba(0, 245, 212, 0.20);
+        }
+
+        /* Código de convite preenchido automaticamente */
+        .invite-input {
+            border-color: rgba(0, 245, 212, 0.25) !important;
+        }
+
+        .invite-input:read-only {
+            cursor: not-allowed;
+            opacity: 0.90;
+        }
+
+        .invite-status {
+            display: none;
+
+            margin-top: 6px;
+
+            font-size: 0.68rem;
+
+            color: var(--success);
+
+            text-align: left;
+        }
+
+        .invite-status.show {
+            display: block;
+        }
+
+        /* ================================
+           MENSAGEM DE ERRO
+        ================================= */
+
+        .error-message {
+            display: none;
+
+            margin-top: 7px;
+
+            color: var(--danger);
+
+            font-size: 0.70rem;
+
+            line-height: 1.4;
+
+            text-align: left;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* ================================
+           AVISO DE SEGURANÇA
+        ================================= */
+
+        .security-box {
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 10px;
+
+            padding: 11px 12px;
+
+            margin: 0 0 17px;
+
+            text-align: left;
+
+            border-radius: 11px;
+
+            background: rgba(0, 210, 255, 0.05);
+
+            border: 1px solid rgba(0, 210, 255, 0.12);
+        }
+
+        .security-box i {
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        .security-box p {
+            margin: 0;
+
+            color: var(--text-gray);
+
+            font-size: 0.68rem;
+
+            line-height: 1.5;
+        }
+
+        .security-box strong {
+            color: var(--text-white);
+        }
+
+        /* ================================
+           POLÍTICAS
+        ================================= */
+
+        .policy-container {
+            display: flex;
+
+            gap: 9px;
+
+            margin: 19px 0 17px;
+
+            text-align: left;
+
+            align-items: flex-start;
+
+            cursor: pointer;
+        }
+
+        .policy-container input {
+            width: 16px;
+            height: 16px;
+
+            accent-color: var(--primary);
+
+            margin-top: 2px;
+
+            flex-shrink: 0;
+        }
+
+        .policy-text {
+            font-size: 0.70rem;
+
+            color: var(--text-gray);
+
+            line-height: 1.45;
+        }
+
+        .policy-text strong {
+            color: var(--text-white);
+        }
+
+        /* ================================
+           BOTÃO PRINCIPAL
+        ================================= */
+
+        .submit-button {
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary) 0%,
+                    #0088cc 100%
+                );
+
+            color: #ffffff;
+
+            font-size: 0.90rem;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 9px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.4px;
+
+            box-shadow:
+                0 6px 20px rgba(0, 210, 255, 0.25);
+
+            transition: all 0.2s ease;
+
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .submit-button:active {
+            transform: scale(0.98);
+        }
+
+        /* ================================
+           BOTÃO VOLTAR
+        ================================= */
+
+        .back-button {
+            width: 100%;
+
+            margin-top: 8px;
+
+            padding: 9px;
+
+            border: none;
+
+            background: transparent;
+
+            color: var(--text-gray);
+
+            font-family: 'Poppins', sans-serif;
+
+            font-size: 0.72rem;
+
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            color: var(--primary);
+        }
+
+        /* ================================
+           SUCESSO
+        ================================= */
+
+        .success-icon {
+            width: 76px;
+            height: 76px;
+
+            margin: 8px auto 16px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: rgba(0, 245, 212, 0.08);
+
+            border: 1px solid rgba(0, 245, 212, 0.30);
+
+            box-shadow:
+                0 0 25px rgba(0, 245, 212, 0.10);
+        }
+
+        .success-icon i {
+            color: var(--success);
+            font-size: 34px;
+        }
+
+        .success-title {
+            margin: 0 0 8px;
+
+            font-size: 1.30rem;
+        }
+
+        .success-text {
+            margin: 0;
+
+            color: var(--text-gray);
+
+            font-size: 0.78rem;
+
+            line-height: 1.6;
+        }
+
+        /* ================================
+           RESPONSIVO
+        ================================= */
+
+        @media (max-width: 380px) {
+
+            .top-nav {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .register-container {
+                width: 92%;
+                padding: 22px 16px;
+            }
+
+            .welcome-title {
+                font-size: 1.28rem;
+            }
+
+            .welcome-text {
+                font-size: 0.74rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================================
+         CABEÇALHO
+    ========================================== -->
+
+    <nav class="top-nav">
+
+        <div class="logo-img">
+            copy_ia
+        </div>
+
+        <a href="{% url 'login' %}" class="nav-link-login">
+            Já tenho conta
+        </a>
+
+    </nav>
+
+
+    <!-- =========================================
+         CONTAINER PRINCIPAL
+    ========================================== -->
+
+    <div class="register-container">
+
+
+        <!-- =====================================
+             ETAPA 1 - BOAS-VINDAS
+        ====================================== -->
+
+        <section id="step1" class="step active">
+
+            <div class="ai-icon-wrapper">
+                <i class="fa-solid fa-brain"></i>
+            </div>
+
+            <h1 class="welcome-title">
+                Seja bem-vindo à <span>Copy.IA</span>
+            </h1>
+
+            <p class="welcome-text">
+                Sua plataforma de rendimento onde a
+                <strong>inteligência artificial trabalha por si.</strong>
+                <br>
+                Posso ajudá-lo a criar sua conta?
+            </p>
+
+            <div class="button-group">
+
+                <button
+                    type="button"
+                    class="main-button"
+                    onclick="goToStep(2)"
+                >
+                    <span>Sim, vamos começar</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+                <button
+                    type="button"
+                    class="secondary-button"
+                    onclick="showGoodbye()"
+                >
+                    <span>Não, obrigado</span>
+                    <i class="fa-regular fa-face-smile"></i>
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             DESPEDIDA
+        ====================================== -->
+
+        <section id="goodbye" class="step">
+
+            <div class="goodbye-icon">
+                <i class="fa-regular fa-hand"></i>
+            </div>
+
+            <h2 class="goodbye-title">
+                Tudo bem!
+            </h2>
+
+            <p class="goodbye-text">
+                Agradecemos pela sua visita à
+                <strong>Copy.IA</strong>.
+                Quando estiver preparado para começar,
+                estaremos aqui para recebê-lo.
+            </p>
+
+            <button
+                type="button"
+                class="secondary-button"
+                onclick="goToStep(1)"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+                Voltar
+            </button>
+
+        </section>
+
+
+        <!-- =====================================
+             FORMULÁRIO
+        ====================================== -->
+
+        <form
+            method="post"
+            class="auth-form"
+            id="registrationForm"
+        >
+
+            {% csrf_token %}
+
+
+            <!-- =================================
+                 ETAPA 2 - NÚMERO
+            ================================== -->
+
+            <section id="step2" class="step">
+
+                <div class="step-indicator">
+                    <span class="indicator active"></span>
+                    <span class="indicator"></span>
+                </div>
+
+                <h2>
+                    Número de Registro
+                </h2>
+
+                <p class="step-description">
+                    Primeiro, informe o seu
+                    <strong>número de registro</strong>.
+                    <br>
+                    Não se esqueça deste número.
+                </p>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Número de Registro
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-phone main-icon"></i>
+
+                        <input
+                            type="text"
+                            id="phone_number"
+                            name="phone_number"
+                            placeholder="Digite apenas números"
+                            inputmode="numeric"
+                            pattern="[0-9]{9,13}"
+                            minlength="9"
+                            maxlength="13"
+                            autocomplete="tel"
+                            required
+                        >
+
+                    </div>
+
+                    <div
+                        id="numberError"
+                        class="error-message"
+                    >
+                        O número deve conter entre 9 e 13 dígitos.
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="submit-button"
+                    onclick="validateNumber()"
+                >
+                    <span>A seguir</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="back-button"
+                    onclick="goToStep(1)"
+                >
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Voltar
+                </button>
+
+            </section>
+
+
+            <!-- =================================
+                 ETAPA 3 - SENHA
+            ================================== -->
+
+            <section id="step3" class="step">
+
+                <div class="step-indicator">
+                    <span class="indicator"></span>
+                    <span class="indicator active"></span>
+                </div>
+
+                <h2>
+                    Proteja sua conta
+                </h2>
+
+                <p class="step-description">
+                    Crie uma senha
+                    <strong>segura e difícil de descobrir</strong>.
+                    <br>
+                    Não se esqueça dela.
+                </p>
+
+
+                <!-- AVISO DE SEGURANÇA -->
+
+                <div class="security-box">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <p>
+                        <strong>Importante:</strong>
+                        guarde sua senha em um local seguro.
+                        Não compartilhe sua senha com ninguém.
+                    </p>
+
+                </div>
+
+
+                <!-- SENHA -->
+
+                <div class="form-group">
+
+                    <label>
+                        Senha de Acesso
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-lock main-icon"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Crie uma senha segura"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONFIRMAR SENHA -->
+
+                <div class="form-group">
+
+                    <label>
+                        Confirmar Senha
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-shield-halved main-icon"></i>
+
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            placeholder="Repita sua senha"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                    </div>
+
+                    <div
+                        id="passwordError"
+                        class="error-message"
+                    >
+                        As senhas não coincidem.
+                    </div>
+
+                </div>
+
+
+                <!-- =================================
+                     CÓDIGO DE CONVITE
+                     PREENCHIMENTO AUTOMÁTICO
+                ================================== -->
+
+                <div class="form-group">
+
+                    <label>
+                        Código de Convite
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-ticket main-icon"></i>
+
+                        <input
+                            type="text"
+                            id="invite_code"
+                            name="invited_by_code"
+                            placeholder="Código de convite"
+                            value="{{ request.GET.invite|default:'' }}"
+                            readonly
+                            class="invite-input"
+                        >
+
+                    </div>
+
+                    <div
+                        id="inviteStatus"
+                        class="invite-status"
+                    >
+                        <i class="fa-solid fa-circle-check"></i>
+                        Código de convite identificado automaticamente.
+                    </div>
+
+                </div>
+
+
+                <!-- =================================
+                     POLÍTICAS
+                ================================== -->
+
+                <label class="policy-container">
+
+                    <input
+                        type="checkbox"
+                        id="terms"
+                        required
+                    >
+
+                    <span class="policy-text">
+                        Tenho +18 anos e aceito os
+                        <strong>Termos</strong>
+                        e a
+                        <strong>Política de Gestão copy_ia</strong>.
+                    </span>
+
+                </label>
+
+
+                <!-- =================================
+                     CONCLUIR
+                ================================== -->
+
+                <button
+                    type="submit"
+                    class="submit-button"
+                >
+                    <span>Concluir cadastro</span>
+                    <i class="fa-solid fa-user-plus"></i>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="back-button"
+                    onclick="goToStep(2)"
+                >
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Voltar
+                </button>
+
+            </section>
+
+        </form>
+
+
+        <!-- =====================================
+             SUCESSO VISUAL
+        ====================================== -->
+
+        <section id="success" class="step">
+
+            <div class="success-icon">
+                <i class="fa-solid fa-check"></i>
+            </div>
+
+            <h2 class="success-title">
+                Cadastro concluído!
+            </h2>
+
+            <p class="success-text">
+                Sua conta foi processada com sucesso.
+                <br>
+                Bem-vindo à <strong>Copy.IA</strong>.
+            </p>
+
+        </section>
+
+    </div>
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
+
+    <script>
+
+        /* ========================================
+           MOSTRAR UMA ETAPA
+        ======================================== */
+
+        function hideAllSteps() {
+
+            const steps = document.querySelectorAll('.step');
+
+            steps.forEach(function(step) {
+                step.classList.remove('active');
+            });
+        }
+
+
+        function goToStep(stepNumber) {
+
+            hideAllSteps();
+
+            const step = document.getElementById('step' + stepNumber);
+
+            if (step) {
+                step.classList.add('active');
+            }
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+
+        /* ========================================
+           DESPEDIDA
+        ======================================== */
+
+        function showGoodbye() {
+
+            hideAllSteps();
+
+            const goodbye = document.getElementById('goodbye');
+
+            if (goodbye) {
+                goodbye.classList.add('active');
+            }
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+
+        /* ========================================
+           NÚMERO - SOMENTE DÍGITOS
+        ======================================== */
+
+        const phoneInput = document.getElementById('phone_number');
+
+        const numberError = document.getElementById('numberError');
+
+
+        phoneInput.addEventListener('input', function() {
+
+            /*
+             * Remove qualquer letra,
+             * espaço ou símbolo.
+             */
+
+            this.value = this.value.replace(/\D/g, '');
+
+
+            /*
+             * Limite máximo de 13 números.
+             */
+
+            if (this.value.length > 13) {
+
+                this.value = this.value.substring(0, 13);
+
+            }
+
+
+            numberError.classList.remove('show');
+
+        });
+
+
+        /*
+         * Impede letras e caracteres especiais
+         * diretamente pelo teclado.
+         */
+
+        phoneInput.addEventListener('keydown', function(event) {
+
+            const allowedKeys = [
+                'Backspace',
+                'Delete',
+                'ArrowLeft',
+                'ArrowRight',
+                'Tab',
+                'Home',
+                'End'
+            ];
+
+
+            if (
+                allowedKeys.includes(event.key) ||
+                /^[0-9]$/.test(event.key)
+            ) {
+                return;
+            }
+
+
+            event.preventDefault();
+
+        });
+
+
+        /* ========================================
+           VALIDAR NÚMERO
+        ======================================== */
+
+        function validateNumber() {
+
+            const number = phoneInput.value.trim();
+
+
+            if (
+                !/^\d{9,13}$/.test(number)
+            ) {
+
+                numberError.classList.add('show');
+
+                phoneInput.focus();
+
+                return false;
+            }
+
+
+            numberError.classList.remove('show');
+
+            goToStep(3);
+
+            return true;
+        }
+
+
+        /* ========================================
+           VALIDAR SENHAS
+        ======================================== */
+
+        const passwordInput =
+            document.getElementById('password');
+
+        const confirmPasswordInput =
+            document.getElementById('confirm_password');
+
+        const passwordError =
+            document.getElementById('passwordError');
+
+
+        function validatePasswords() {
+
+            const password =
+                passwordInput.value;
+
+            const confirmPassword =
+                confirmPasswordInput.value;
+
+
+            if (
+                password.length === 0 ||
+                confirmPassword.length === 0
+            ) {
+
+                return false;
+
+            }
+
+
+            if (
+                password !== confirmPassword
+            ) {
+
+                passwordError.classList.add('show');
+
+                confirmPasswordInput.focus();
+
+                return false;
+
+            }
+
+
+            passwordError.classList.remove('show');
+
+            return true;
+        }
+
+
+        confirmPasswordInput.addEventListener(
+            'input',
+            function() {
+
+                passwordError.classList.remove('show');
+
+            }
+        );
+
+
+        /* ========================================
+           CÓDIGO DE CONVITE AUTOMÁTICO
+        ======================================== */
+
+        function loadInviteCode() {
+
+            const urlParams =
+                new URLSearchParams(window.location.search);
+
+
+            /*
+             * Procura:
+             *
+             * ?invite=CODIGO
+             */
+
+            const invite =
+                urlParams.get('invite');
+
+
+            const inviteInput =
+                document.getElementById('invite_code');
+
+
+            const inviteStatus =
+                document.getElementById('inviteStatus');
+
+
+            if (
+                invite &&
+                invite.trim() !== ''
+            ) {
+
+                /*
+                 * Preenche automaticamente
+                 * o código recebido pelo link.
+                 */
+
+                inviteInput.value =
+                    invite.trim();
+
+
+                /*
+                 * Mostra confirmação visual.
+                 */
+
+                inviteStatus.classList.add('show');
+
+            }
+
+        }
+
+
+        /* ========================================
+           SUBMISSÃO DO FORMULÁRIO
+        ======================================== */
+
+        const registrationForm =
+            document.getElementById('registrationForm');
+
+
+        registrationForm.addEventListener(
+            'submit',
+            function(event) {
+
+
+                /*
+                 * Confirma o número novamente
+                 * antes de enviar ao Django.
+                 */
+
+                const number =
+                    phoneInput.value.trim();
+
+
+                if (
+                    !/^\d{9,13}$/.test(number)
+                ) {
+
+                    event.preventDefault();
+
+                    goToStep(2);
+
+                    numberError.classList.add('show');
+
+                    phoneInput.focus();
+
+                    return;
+
+                }
+
+
+                /*
+                 * Confirma se as senhas são iguais.
+                 */
+
+                if (!validatePasswords()) {
+
+                    event.preventDefault();
+
+                    return;
+
+                }
+
+
+                /*
+                 * O formulário segue normalmente
+                 * para o backend Django.
+                 *
+                 * Não alteramos:
+                 * - method="post"
+                 * - csrf_token
+                 * - phone_number
+                 * - password
+                 * - confirm_password
+                 * - invited_by_code
+                 */
+
+            }
+        );
+
+
+        /* ========================================
+           CARREGAR CONVITE AO ABRIR A PÁGINA
+        ======================================== */
+
+        window.addEventListener(
+            'DOMContentLoaded',
+            function() {
+
+                loadInviteCode();
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>

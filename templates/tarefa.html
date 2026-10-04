@@ -1,0 +1,1039 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Monitor de Processamento IA{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<input type="hidden" id="django-csrf-token" value="{{ csrf_token }}">
+
+<div class="monitor-container">
+    <div class="monitor-header">
+        <div class="pulse-box">
+            <span class="pulse-dot"></span>
+            <h2>CENTRAL DE PROCESSAMENTO IA</h2>
+        </div>
+        <p class="header-subtitle">
+            <i class="fas fa-microchip"></i>
+            Redes Neurais Ativas em Tempo Real
+        </p>
+    </div>
+
+    {% if has_active_plans %}
+        <div class="grid-monitors">
+            {% for monitor in active_monitors %}
+                <div class="monitor-card {% if monitor.is_locked %}disabled-card{% endif %}"
+                     id="card-{{ monitor.user_level_id }}">
+
+                    <!-- Topo do Card -->
+                    <div class="card-top">
+                        <div class="badge-wrapper">
+                            <span class="badge-type {{ monitor.category }}">
+                                <i class="fas fa-brain"></i>
+                                {{ monitor.category_display|upper }}
+                            </span>
+
+                            <span class="level-name">
+                                VIP {{ monitor.name }}
+                            </span>
+                        </div>
+
+                        <span class="status-tag {% if monitor.is_locked %}status-locked{% else %}status-active{% endif %}">
+                            {% if monitor.is_locked %}
+                                <i class="fas fa-lock"></i> BLOQUEADO
+                            {% else %}
+                                <i class="fas fa-circle-notch fa-spin"></i> ATIVO
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <!-- Gráfico Ilustrativo de IA -->
+                    <div class="ai-visualizer-box">
+                        <div class="ai-visualizer-header">
+                            <span class="ai-node-info">
+                                <i class="fas fa-network-wired"></i>
+                                Nó Neural Ativo
+                            </span>
+
+                            <span class="ai-sync-rate text-green">
+                                <i class="fas fa-signal"></i>
+                                99.8% Sync
+                            </span>
+                        </div>
+
+                        <div class="neural-waveform">
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Métricas Financeiras -->
+                    <div class="metrics-row">
+
+                        <div class="metric-item">
+                            <span class="m-label">
+                                <i class="fas fa-wallet"></i>
+                                Investido
+                            </span>
+
+                            <span class="m-value highlight-gold val-deposit"
+                                  data-raw="{{ monitor.deposit_value }}">
+                                KZ {{ monitor.deposit_value }}
+                            </span>
+                        </div>
+
+                        <div class="metric-item">
+                            <span class="m-label">
+                                <i class="fas fa-chart-line"></i>
+                                Diário
+                            </span>
+
+                            <span class="m-value text-green val-daily"
+                                  data-raw="{{ monitor.daily_gain }}">
+                                +{{ monitor.daily_gain }}
+                            </span>
+                        </div>
+
+                        <div class="metric-item">
+                            <span class="m-label">
+                                <i class="fas fa-hourglass-half"></i>
+                                Ciclo
+                            </span>
+
+                            <span class="m-value"
+                                  id="days-txt-{{ monitor.user_level_id }}">
+                                {{ monitor.days_passed }}/{{ monitor.cycle_days }}d
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <!-- Barra de Progresso -->
+                    <div class="bar-bg">
+                        <div class="bar-fill"
+                             id="bar-{{ monitor.user_level_id }}"
+                             style="width: {% widthratio monitor.days_passed monitor.cycle_days 100 %}%">
+                        </div>
+                    </div>
+
+                    <!-- Rodapé -->
+                    <div class="card-footer">
+
+                        <div class="footer-balance">
+                            <span class="m-label">
+                                Acumulado
+                            </span>
+
+                            <span class="acc-val val-acc"
+                                  id="acc-{{ monitor.user_level_id }}"
+                                  data-raw="{{ monitor.accumulated_profit }}">
+                                KZ {{ monitor.accumulated_profit }}
+                            </span>
+                        </div>
+
+                        <div class="footer-timer">
+                            <div class="cronometro-display"
+                                 id="timer-{{ monitor.user_level_id }}">
+                                24:00:00
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+
+        <div class="no-plans">
+            <i class="fa-solid fa-server-slash"></i>
+
+            <h3>Nenhum Modelo IA Ativo</h3>
+
+            <p>
+                Adquira um plano na aba de níveis para iniciar
+                os seus lucros automáticos diários.
+            </p>
+        </div>
+
+    {% endif %}
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const csrfElement = document.getElementById('django-csrf-token');
+    const csrfToken = csrfElement ? csrfElement.value : '';
+
+    const TAXA_CONVERSAO = 200;
+
+    function formatarMoedas(valorKz, isPositivo = false) {
+
+        const numKz = parseFloat(valorKz) || 0;
+        const numBrl = numKz / TAXA_CONVERSAO;
+
+        const fmtKz = numKz.toLocaleString('pt-AO', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        });
+
+        const fmtBrl = numBrl.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        const prefix = isPositivo ? '+' : '';
+
+        return `${prefix}${fmtKz} KZ <span class="currency-brl">(R$ ${fmtBrl})</span>`;
+    }
+
+
+    /*
+     * Formatação inicial dos valores
+     */
+    document.querySelectorAll('.monitor-card').forEach(function (card) {
+
+        const depEl = card.querySelector('.val-deposit');
+        const dailyEl = card.querySelector('.val-daily');
+        const accEl = card.querySelector('.val-acc');
+
+        if (depEl) {
+            depEl.innerHTML = formatarMoedas(
+                depEl.getAttribute('data-raw'),
+                false
+            );
+        }
+
+        if (dailyEl) {
+            dailyEl.innerHTML = formatarMoedas(
+                dailyEl.getAttribute('data-raw'),
+                true
+            );
+        }
+
+        if (accEl) {
+            accEl.innerHTML = formatarMoedas(
+                accEl.getAttribute('data-raw'),
+                false
+            );
+        }
+    });
+
+
+    /*
+     * Dados enviados pelo Django
+     */
+    const monitors = [
+
+        {% for m in active_monitors %}
+
+        {
+            userLevelId: "{{ m.user_level_id }}",
+
+            isLocked:
+                {% if m.is_locked %}
+                    true
+                {% else %}
+                    false
+                {% endif %},
+
+            cycleDays:
+                parseInt("{{ m.cycle_days }}", 10) || 1,
+
+            daysProcessed:
+                parseInt("{{ m.days_passed }}", 10) || 0,
+
+            remainingSeconds:
+                parseInt("{{ m.remaining_seconds|default:86400 }}", 10),
+
+            isActive:
+                {% if m.is_active %}
+                    true
+                {% else %}
+                    false
+                {% endif %}
+        }
+
+        {% if not forloop.last %},{% endif %}
+
+        {% endfor %}
+    ];
+
+
+    /*
+     * Processamento de cada monitor
+     */
+    monitors.forEach(function (monitor) {
+
+        const timerEl = document.getElementById(
+            `timer-${monitor.userLevelId}`
+        );
+
+        if (!timerEl) {
+            return;
+        }
+
+
+        /*
+         * Plano bloqueado
+         */
+        if (monitor.isLocked) {
+
+            timerEl.textContent = "BLOQUEADO";
+            timerEl.classList.add("text-red");
+
+            return;
+        }
+
+
+        /*
+         * Plano já concluído
+         */
+        if (!monitor.isActive) {
+
+            timerEl.textContent = "CONCLUÍDO";
+            timerEl.classList.remove("text-green");
+            timerEl.classList.add("text-red");
+
+            return;
+        }
+
+
+        let totalSeconds = monitor.remainingSeconds;
+
+        if (!Number.isFinite(totalSeconds) || totalSeconds < 0) {
+            totalSeconds = 0;
+        }
+
+
+        let processing = false;
+        let finished = false;
+
+
+        /*
+         * Atualiza o contador
+         */
+        function updateCronometro() {
+
+            if (finished) {
+                return;
+            }
+
+
+            /*
+             * Quando chega a zero,
+             * solicita ao servidor o processamento real.
+             */
+            if (totalSeconds <= 0) {
+
+                if (processing) {
+                    return;
+                }
+
+                processing = true;
+
+                timerEl.textContent = "PROCESSANDO...";
+                timerEl.classList.remove("text-green");
+
+
+                fetch("{% url 'process_level_task' %}", {
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+
+                    body: JSON.stringify({
+                        user_level_id: monitor.userLevelId
+                    })
+                })
+
+                .then(function (response) {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            `Erro HTTP: ${response.status}`
+                        );
+                    }
+
+                    return response.json();
+                })
+
+                .then(function (data) {
+
+                    processing = false;
+
+
+                    if (!data.success) {
+
+                        totalSeconds =
+                            parseInt(data.remaining_seconds, 10) || 30;
+
+                        return;
+                    }
+
+
+                    /*
+                     * Atualiza dias processados
+                     */
+                    if (data.days_processed !== undefined) {
+
+                        const daysElement = document.getElementById(
+                            `days-txt-${monitor.userLevelId}`
+                        );
+
+                        if (daysElement) {
+
+                            daysElement.textContent =
+                                `${data.days_processed}/${monitor.cycleDays}d`;
+                        }
+
+
+                        const barElement = document.getElementById(
+                            `bar-${monitor.userLevelId}`
+                        );
+
+                        if (barElement) {
+
+                            let progressPercent =
+                                (Number(data.days_processed) /
+                                Number(monitor.cycleDays)) * 100;
+
+                            progressPercent =
+                                Math.max(
+                                    0,
+                                    Math.min(100, progressPercent)
+                                );
+
+                            barElement.style.width =
+                                `${progressPercent}%`;
+                        }
+                    }
+
+
+                    /*
+                     * Atualiza o acumulado visual
+                     */
+                    if (data.accumulated_profit !== undefined) {
+
+                        const accElem = document.getElementById(
+                            `acc-${monitor.userLevelId}`
+                        );
+
+                        if (accElem) {
+
+                            accElem.setAttribute(
+                                'data-raw',
+                                data.accumulated_profit
+                            );
+
+                            accElem.innerHTML =
+                                formatarMoedas(
+                                    data.accumulated_profit,
+                                    false
+                                );
+                        }
+                    }
+
+
+                    /*
+                     * Se o ciclo terminou,
+                     * não faz mais chamadas ao servidor.
+                     */
+                    if (data.is_active === false) {
+
+                        finished = true;
+
+                        timerEl.textContent = "CONCLUÍDO";
+                        timerEl.classList.remove("text-green");
+                        timerEl.classList.add("text-red");
+
+                        const card =
+                            document.getElementById(
+                                `card-${monitor.userLevelId}`
+                            );
+
+                        if (card) {
+                            card.classList.add("disabled-card");
+                        }
+
+                        return;
+                    }
+
+
+                    /*
+                     * Ciclo continua.
+                     * Começa uma nova contagem de 24 horas.
+                     */
+                    totalSeconds = 86400;
+
+                    timerEl.classList.remove("text-green");
+
+                })
+
+                .catch(function () {
+
+                    processing = false;
+
+                    /*
+                     * Em caso de falha de comunicação,
+                     * tenta novamente depois de 30 segundos.
+                     */
+                    totalSeconds = 30;
+
+                    timerEl.textContent = "AGUARDANDO...";
+                });
+
+                return;
+            }
+
+
+            /*
+             * Últimos 5 segundos
+             */
+            if (totalSeconds < 5) {
+
+                timerEl.textContent = "PRONTO";
+                timerEl.classList.add("text-green");
+
+            } else {
+
+                timerEl.classList.remove("text-green");
+
+                const hours =
+                    String(Math.floor(totalSeconds / 3600))
+                    .padStart(2, '0');
+
+                const minutes =
+                    String(Math.floor((totalSeconds % 3600) / 60))
+                    .padStart(2, '0');
+
+                const seconds =
+                    String(totalSeconds % 60)
+                    .padStart(2, '0');
+
+                timerEl.textContent =
+                    `${hours}:${minutes}:${seconds}`;
+            }
+
+
+            totalSeconds--;
+        }
+
+
+        /*
+         * Inicia o contador.
+         */
+        updateCronometro();
+
+        setInterval(updateCronometro, 1000);
+
+    });
+
+});
+</script>
+
+
+<style>
+
+:root {
+    --bg: #060d1a;
+    --card: linear-gradient(180deg, #0d1625 0%, #070c14 100%);
+    --border: rgba(255, 255, 255, 0.06);
+    --green: #00f5d4;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --text: #e2e8f0;
+    --dim: #64748b;
+}
+
+
+html,
+body {
+    background:
+        radial-gradient(
+            circle at top,
+            #060d1a 0%,
+            #02050a 100%
+        ) !important;
+
+    margin: 0;
+    padding: 0;
+
+    font-family: 'Inter', sans-serif;
+}
+
+
+.monitor-container {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 12px;
+    color: var(--text);
+    box-sizing: border-box;
+}
+
+
+.monitor-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+
+.pulse-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--green);
+    animation: pulseGlow 2s infinite;
+}
+
+
+.monitor-header h2 {
+    font-size: 14px;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: 0.8px;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(0, 245, 212, 0.2);
+}
+
+
+.header-subtitle {
+    font-size: 10px;
+    color: var(--dim);
+    margin: 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+
+.grid-monitors {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+.monitor-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+
+.card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 6px;
+}
+
+
+.badge-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+
+.badge-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 3px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+
+.badge-type.long_term {
+    background: rgba(0, 245, 212, 0.1);
+    color: var(--green);
+    border: 1px solid rgba(0, 245, 212, 0.25);
+}
+
+
+.badge-type.activities {
+    background: rgba(156, 39, 176, 0.15);
+    color: #cc5de8;
+    border: 1px solid rgba(156, 39, 176, 0.3);
+}
+
+
+.level-name {
+    font-size: 11px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.3px;
+}
+
+
+.status-tag {
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+
+.status-locked {
+    color: var(--red);
+}
+
+
+.ai-visualizer-box {
+    background: #04080f;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+}
+
+
+.ai-visualizer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+    color: var(--dim);
+    margin-bottom: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+
+.neural-waveform {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 22px;
+    gap: 4px;
+    padding: 0 4px;
+}
+
+
+.wave-bar {
+    flex: 1;
+    background: linear-gradient(
+        180deg,
+        #00f5d4 0%,
+        #0077b6 100%
+    );
+    border-radius: 2px;
+    animation:
+        aiWavePulse 1.2s ease-in-out infinite alternate;
+}
+
+
+.wave-bar:nth-child(1) {
+    animation-delay: 0.1s;
+    height: 40%;
+}
+
+.wave-bar:nth-child(2) {
+    animation-delay: 0.3s;
+    height: 80%;
+}
+
+.wave-bar:nth-child(3) {
+    animation-delay: 0.2s;
+    height: 60%;
+}
+
+.wave-bar:nth-child(4) {
+    animation-delay: 0.5s;
+    height: 100%;
+}
+
+.wave-bar:nth-child(5) {
+    animation-delay: 0.2s;
+    height: 50%;
+}
+
+.wave-bar:nth-child(6) {
+    animation-delay: 0.4s;
+    height: 90%;
+}
+
+.wave-bar:nth-child(7) {
+    animation-delay: 0.1s;
+    height: 70%;
+}
+
+.wave-bar:nth-child(8) {
+    animation-delay: 0.6s;
+    height: 30%;
+}
+
+.wave-bar:nth-child(9) {
+    animation-delay: 0.3s;
+    height: 85%;
+}
+
+.wave-bar:nth-child(10) {
+    animation-delay: 0.5s;
+    height: 45%;
+}
+
+.wave-bar:nth-child(11) {
+    animation-delay: 0.2s;
+    height: 95%;
+}
+
+.wave-bar:nth-child(12) {
+    animation-delay: 0.4s;
+    height: 65%;
+}
+
+
+@keyframes aiWavePulse {
+
+    0% {
+        transform: scaleY(0.3);
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: scaleY(1);
+        opacity: 1;
+        box-shadow:
+            0 0 8px rgba(0, 245, 212, 0.4);
+    }
+}
+
+
+.metrics-row {
+    display: grid;
+    grid-template-columns: 1.1fr 1.1fr 0.8fr;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.015);
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    margin-bottom: 8px;
+}
+
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+
+.metric-item:nth-child(2) {
+    align-items: center;
+}
+
+
+.metric-item:nth-child(3) {
+    align-items: flex-end;
+}
+
+
+.m-label {
+    font-size: 8px;
+    color: var(--dim);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-weight: 700;
+}
+
+
+.m-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: #f1f5f9;
+    white-space: nowrap;
+}
+
+
+.currency-brl {
+    font-size: 8px;
+    color: var(--yellow);
+    font-weight: 600;
+    display: block;
+}
+
+
+.highlight-gold {
+    color: var(--yellow);
+}
+
+
+.bar-bg {
+    width: 100%;
+    height: 4px;
+    background: #04080f;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255,255,255,0.02);
+}
+
+
+.bar-fill {
+    height: 100%;
+    background:
+        linear-gradient(
+            90deg,
+            #0077b6 0%,
+            var(--green) 100%
+        );
+
+    box-shadow: 0 0 6px var(--green);
+
+    transition: width 0.4s ease;
+}
+
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #050911;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+
+.footer-balance {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+
+.acc-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 800;
+    color: #fbbf24;
+}
+
+
+.cronometro-display {
+    background: rgba(251, 191, 36, 0.05);
+    border: 1px solid rgba(251, 191, 36, 0.15);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--yellow);
+    letter-spacing: 0.5px;
+}
+
+
+.text-green {
+    color: var(--green) !important;
+}
+
+
+.text-red {
+    color: var(--red) !important;
+}
+
+
+.disabled-card {
+    opacity: 0.5;
+    filter: grayscale(30%);
+    border: 1px dashed rgba(248, 113, 113, 0.3);
+}
+
+
+.no-plans {
+    text-align: center;
+    padding: 35px 15px;
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px dashed var(--border);
+}
+
+
+.no-plans i {
+    font-size: 28px;
+    color: var(--dim);
+    margin-bottom: 10px;
+}
+
+
+.no-plans h3 {
+    font-size: 13px;
+    margin: 0 0 4px 0;
+    color: #ffffff;
+    font-weight: 800;
+}
+
+
+.no-plans p {
+    font-size: 10px;
+    color: var(--dim);
+    margin: 0;
+    line-height: 1.3;
+}
+
+
+@keyframes pulseGlow {
+
+    0% {
+        transform: scale(0.95);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.95);
+        opacity: 0.5;
+    }
+}
+
+</style>
+
+{% endblock %}

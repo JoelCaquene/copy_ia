@@ -1,0 +1,3048 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Depósito{% endblock %}
+
+{% block content %}
+<div class="deposit-container">
+    <div class="jackpay-header">
+        <div class="logo-box">
+            <span class="logo-icon">💠</span> JackPay
+        </div>
+    </div>
+
+    <!-- Stepper Fluido e Responsivo -->
+    <div class="stepper">
+        <div class="step-item">
+            <div class="circle active" id="dot-1">1</div>
+            <span>Escolher</span>
+        </div>
+        <div class="line" id="line-1"></div>
+        <div class="step-item">
+            <div class="circle" id="dot-2">2</div>
+            <span>Pagar</span>
+        </div>
+        <div class="line" id="line-2"></div>
+        <div class="step-item">
+            <div class="circle" id="dot-3">3</div>
+            <span>Validar</span>
+        </div>
+    </div>
+
+    {% if deposit_success %}
+        <div class="success-screen">
+            <div class="success-badge">
+                <div class="success-icon">✓</div>
+            </div>
+
+            <span class="success-status">PAGAMENTO RECEBIDO</span>
+
+            <h2>Depósito enviado com sucesso!</h2>
+
+            <p>
+                Recebemos o seu comprovativo.
+                Agora aguarde a aprovação do depósito pela nossa equipa.
+            </p>
+
+            <div class="success-note">
+                <span class="success-note-icon">⏳</span>
+                <span>O saldo será atualizado após a confirmação.</span>
+            </div>
+
+            <a href="{% url 'menu' %}" class="btn-main success-btn">
+                Voltar ao Menu
+            </a>
+        </div>
+
+    {% else %}
+
+        <!-- ========================================================= -->
+        <!-- TELA DE SUCESSO APÓS ENVIO DO COMPROVATIVO -->
+        <!-- ========================================================= -->
+
+        <div id="deposit-sent-screen" class="deposit-sent-screen" style="display: none;">
+
+            <div class="deposit-sent-badge">
+                <div class="deposit-sent-icon">✓</div>
+            </div>
+
+            <span class="deposit-sent-status">
+                DEPÓSITO ENVIADO
+            </span>
+
+            <h2>Depósito enviado com sucesso!</h2>
+
+            <p>
+                O seu comprovativo foi enviado com sucesso.
+                Agora aguarde a aprovação do depósito pela nossa equipa.
+            </p>
+
+            <div class="deposit-sent-note">
+
+                <span class="deposit-sent-note-icon">⏳</span>
+
+                <div>
+                    <strong>Aguardando aprovação</strong>
+
+                    <small>
+                        O seu saldo será atualizado depois da confirmação.
+                    </small>
+                </div>
+
+            </div>
+
+            <a href="{% url 'menu' %}" class="btn-main success-btn">
+                Voltar ao Menu
+            </a>
+
+        </div>
+
+
+        <form
+            id="deposit-form"
+            method="post"
+            enctype="multipart/form-data"
+            novalidate
+        >
+
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="{{ form.amount.name }}"
+                id="id_amount"
+                value=""
+            >
+
+            <input
+                type="hidden"
+                name="selected_bank"
+                id="id_selected_bank"
+                value=""
+            >
+
+            <input
+                type="hidden"
+                name="payment_method"
+                id="id_payment_method"
+                value="fiat"
+            >
+
+            <input
+                type="hidden"
+                name="usdt_amount"
+                id="id_usdt_amount"
+                value=""
+            >
+
+
+            <!-- ========================================================= -->
+            <!-- ETAPA 1: VALOR -->
+            <!-- ========================================================= -->
+
+            <div id="step-1" class="step-content">
+
+                <!-- Seletor de Método -->
+                <div class="payment-method-tabs">
+
+                    <button
+                        type="button"
+                        class="tab-btn active"
+                        data-method="fiat"
+                    >
+                        <span>🇦🇴 Kwanza</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="tab-btn"
+                        data-method="usdt"
+                    >
+                        <span>🇧🇷 Real (PIX)</span>
+                    </button>
+
+                </div>
+
+
+                <div class="balance-card">
+
+                    <p>Saldo Atual</p>
+
+                    <h3>Kz 0.00</h3>
+
+                </div>
+
+
+                <!-- ===================================================== -->
+                <!-- ABA KWANZA -->
+                <!-- ===================================================== -->
+
+                <div
+                    id="panel-fiat"
+                    class="currency-panel"
+                >
+
+                    <div class="amount-section">
+
+                        <label
+                            class="section-label"
+                            for="manual-amount-fiat"
+                        >
+                            Valor do Recarregamento (Kwanza)
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+                            <span>Kz</span>
+
+                            <input
+                                type="number"
+                                id="manual-amount-fiat"
+                                inputmode="decimal"
+                                placeholder="Digite o valor"
+                            >
+
+                        </div>
+
+
+                        <p class="label-small">
+                            Valores Rápidos
+                        </p>
+
+
+                        <div
+                            class="grid-amounts"
+                            id="grid-fiat"
+                        >
+
+                            {% for deposit_value in level_deposits_list %}
+
+                                <button
+                                    type="button"
+                                    class="amount-btn"
+                                    data-value="{{ deposit_value }}"
+                                >
+                                    {{ deposit_value }}
+                                </button>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ===================================================== -->
+                <!-- ABA REAL / PIX -->
+                <!-- ===================================================== -->
+
+                <div
+                    id="panel-usdt"
+                    class="currency-panel"
+                    style="display: none;"
+                >
+
+                    <div class="amount-section">
+
+                        <label
+                            class="section-label"
+                            for="manual-amount-usdt"
+                        >
+                            Valor do Recarregamento (Real via PIX)
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+                            <span>R$</span>
+
+                            <input
+                                type="number"
+                                id="manual-amount-usdt"
+                                inputmode="decimal"
+                                placeholder="Digite o valor em Real"
+                            >
+
+                        </div>
+
+
+                        <p class="label-small">
+                            Valores Rápidos Convertidos
+                            (Câmbio Fixo: 1000 Kz = R$ 5,00)
+                        </p>
+
+
+                        <div
+                            class="grid-amounts"
+                            id="grid-usdt"
+                        >
+
+                            {% for deposit_value in level_deposits_list %}
+
+                                <button
+                                    type="button"
+                                    class="amount-btn usdt-quick-btn"
+                                    data-kwanza-value="{{ deposit_value }}"
+                                >
+                                    --
+                                </button>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ===================================================== -->
+                <!-- INFORMAÇÕES IMPORTANTES -->
+                <!-- ===================================================== -->
+
+                <div class="info-rules">
+
+                    <h4>
+                        Informações Importantes
+                    </h4>
+
+                    <ul>
+
+                        <li>
+                            <span>1</span>
+                            Não Deposite valores em bancos diferentes.
+                        </li>
+
+                        <li>
+                            <span>2</span>
+                            Não falsifique os comprovativos,
+                            sob risco de banimento.
+                        </li>
+
+                        <li>
+                            <span>3</span>
+                            Horário de depósito:
+                            <strong>08:30 até 20:00</strong>.
+                        </li>
+
+                        <li>
+                            <span>4</span>
+                            Dias de Depósito:
+                            <strong>Segunda a Domingo</strong>.
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-main"
+                    id="to-step-2"
+                    disabled
+                >
+                    Recarregar Agora
+                </button>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+            <!-- ETAPA 2: BANCO / CANAL -->
+            <!-- ========================================================= -->
+
+            <div
+                id="step-2"
+                class="step-content"
+                style="display: none;"
+            >
+
+                <label
+                    class="section-label center-label"
+                    id="bank-step-label"
+                >
+                    Escolha o Banco Destino
+                </label>
+
+
+                <!-- Lista para Fiat -->
+
+                <div
+                    class="bank-list"
+                    id="list-fiat"
+                >
+
+                    {% for bank in platform_bank_details %}
+
+                        {% if not bank.is_crypto %}
+
+                            <button
+                                type="button"
+                                class="bank-option-btn"
+                                data-bank-id="{{ forloop.counter }}"
+                            >
+                                {{ bank.bank_name }}
+                            </button>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Lista para PIX -->
+
+                <div
+                    class="bank-list"
+                    id="list-usdt"
+                    style="display: none;"
+                >
+
+                    {% for bank in platform_bank_details %}
+
+                        {% if bank.is_crypto %}
+
+                            <button
+                                type="button"
+                                class="bank-option-btn"
+                                data-bank-id="{{ forloop.counter }}"
+                            >
+                                💠 {{ bank.bank_name }}
+                            </button>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-main space-top"
+                    id="to-step-3"
+                    disabled
+                >
+                    Próxima etapa
+                </button>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+            <!-- ETAPA 3: TRANSFERÊNCIA -->
+            <!-- ========================================================= -->
+
+            <div
+                id="step-3"
+                class="step-content"
+                style="display: none;"
+            >
+
+                <label
+                    class="section-label"
+                    id="transfer-label"
+                >
+                    Dados para Transferência
+                </label>
+
+
+                <div class="bank-details-wrapper">
+
+                    {% for bank in platform_bank_details %}
+
+                        <div
+                            id="details-{{ forloop.counter }}"
+                            class="bank-info-card"
+                            style="display: none;"
+                        >
+
+                            <div class="info-group">
+
+                                <label>
+                                    {% if bank.is_crypto %}
+                                        Nome
+                                    {% else %}
+                                        Método de Pagamento
+                                    {% endif %}
+                                </label>
+
+
+                                <div class="copy-input">
+
+                                    <input
+                                        type="text"
+                                        value="{{ bank.bank_name }}"
+                                        id="bank-name-{{ forloop.counter }}"
+                                        readonly
+                                    >
+
+                                    <button
+                                        type="button"
+                                        class="copy-icon"
+                                        onclick="copyText('bank-name-{{ forloop.counter }}')"
+                                    >
+                                        📋
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="info-group">
+
+                                <label>
+                                    {% if bank.is_crypto %}
+                                        Tipo de Chave PIX
+                                    {% else %}
+                                        Nome de Usuário
+                                    {% endif %}
+                                </label>
+
+
+                                <div class="copy-input">
+
+                                    <input
+                                        type="text"
+                                        value="{{ bank.account_holder_name }}"
+                                        id="holder-{{ forloop.counter }}"
+                                        readonly
+                                    >
+
+                                    <button
+                                        type="button"
+                                        class="copy-icon"
+                                        onclick="copyText('holder-{{ forloop.counter }}')"
+                                    >
+                                        📋
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="info-group">
+
+                                <label>
+                                    {% if bank.is_crypto %}
+                                        Chave PIX
+                                    {% else %}
+                                        Número da Conta (IBAN)
+                                    {% endif %}
+                                </label>
+
+
+                                <div class="copy-input">
+
+                                    <input
+                                        type="text"
+                                        value="{{ bank.IBAN }}"
+                                        id="iban-{{ forloop.counter }}"
+                                        readonly
+                                    >
+
+                                    <button
+                                        type="button"
+                                        class="copy-icon"
+                                        onclick="copyText('iban-{{ forloop.counter }}')"
+                                    >
+                                        📋
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="info-group">
+
+                                <label>
+                                    Valor do Pagamento
+                                </label>
+
+
+                                <div class="copy-input">
+
+                                    <input
+                                        type="text"
+                                        class="display-final-amount"
+                                        id="amount-{{ forloop.counter }}"
+                                        readonly
+                                    >
+
+                                    <button
+                                        type="button"
+                                        class="copy-icon"
+                                        onclick="copyText('amount-{{ forloop.counter }}')"
+                                    >
+                                        📋
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-main"
+                    id="to-step-4"
+                >
+                    Já fiz o pagamento
+                </button>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+            <!-- ETAPA 4: COMPROVATIVO -->
+            <!-- ========================================================= -->
+
+            <div
+                id="step-4"
+                class="step-content"
+                style="display: none;"
+            >
+
+                <p class="upload-label">
+                    Envie o comprovativo de pagamento
+                </p>
+
+
+                <div
+                    class="upload-box"
+                    onclick="document.getElementById('file-upload').click()"
+                >
+
+                    <div class="upload-icon">
+                        ☁️
+                    </div>
+
+                    <p id="upload-text">
+                        Clique para selecionar o ficheiro
+                    </p>
+
+
+                    <input
+                        type="file"
+                        name="{{ form.proof_of_payment.name }}"
+                        id="file-upload"
+                        hidden
+                        accept="image/*,application/pdf"
+                    >
+
+
+                    <p id="file-name"></p>
+
+                </div>
+
+
+                <div class="info-group space-top-lg">
+
+                    <label for="payer_name">
+                        Nome do Titular da Conta Pagadora
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="payer_name"
+                        name="payer_name"
+                        placeholder="Ex: João Silva"
+                        class="simple-input"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn-main btn-submit"
+                    id="deposit-submit-btn"
+                >
+                    Enviar Confirmação
+                </button>
+
+            </div>
+
+        </form>
+
+    {% endif %}
+
+</div>
+
+
+<style>
+
+    :root {
+
+        --bg-dark-blue: #0a1128;
+        --card-blue: #101f42;
+        --glow-blue: #00d2ff;
+        --accent-purple: #7000ff;
+        --text-light: #e2e8f0;
+        --text-muted: #718096;
+        --success: #00e676;
+        --error: #ff1744;
+
+    }
+
+
+    html,
+    body {
+
+        max-width: 100%;
+        overflow-x: hidden;
+        background-color: var(--bg-dark-blue);
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: var(--text-light);
+
+    }
+
+
+    .deposit-container {
+
+        width: 100%;
+        max-width: 480px;
+        margin: 0 auto;
+
+        background:
+            linear-gradient(
+                180deg,
+                #0d1b3e 0%,
+                #060d22 100%
+            );
+
+        min-height: 100vh;
+
+        padding: 24px 16px;
+
+        box-shadow:
+            0 0 40px rgba(0, 0, 0, 0.6);
+
+        box-sizing: border-box;
+
+    }
+
+
+    .jackpay-header {
+
+        text-align: center;
+        margin-bottom: 28px;
+
+    }
+
+
+    .logo-box {
+
+        background:
+            rgba(0, 210, 255, 0.08);
+
+        border:
+            1px solid rgba(0, 210, 255, 0.2);
+
+        padding: 10px 28px;
+
+        display: inline-block;
+
+        border-radius: 12px;
+
+        font-weight: 700;
+
+        color: var(--glow-blue);
+
+        font-size: 24px;
+
+        letter-spacing: 1px;
+
+    }
+
+
+    .stepper {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        margin-bottom: 32px;
+
+        padding: 0 4px;
+
+    }
+
+
+    .step-item {
+
+        text-align: center;
+
+        font-size: 11px;
+
+        color: var(--text-muted);
+
+        flex-shrink: 0;
+
+        width: 68px;
+
+    }
+
+
+    .step-item span {
+
+        display: block;
+
+        margin-top: 6px;
+
+        font-weight: 500;
+
+    }
+
+
+    .step-item .circle {
+
+        width: 32px;
+        height: 32px;
+
+        border-radius: 50%;
+
+        border: 2px solid #2d3748;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto;
+
+        background: var(--bg-dark-blue);
+
+        color: var(--text-muted);
+
+        font-weight: 600;
+
+        font-size: 13px;
+
+        box-sizing: border-box;
+
+    }
+
+
+    .step-item .circle.active {
+
+        border-color: var(--glow-blue);
+
+        background: var(--glow-blue);
+
+        color: var(--bg-dark-blue);
+
+        box-shadow:
+            0 0 12px rgba(0, 210, 255, 0.4);
+
+    }
+
+
+    .step-item .circle.checked {
+
+        border-color: var(--success);
+
+        background: var(--success);
+
+        color: var(--bg-dark-blue);
+
+    }
+
+
+    .stepper .line {
+
+        flex: 1;
+
+        height: 2px;
+
+        background: #2d3748;
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .stepper .line.active {
+
+        background: var(--glow-blue);
+
+    }
+
+
+    .step-content {
+
+        animation: fadeIn 0.2s ease-in-out;
+
+    }
+
+
+    @keyframes fadeIn {
+
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+
+    }
+
+
+    .section-label {
+
+        display: block;
+
+        font-size: 13px;
+
+        color: var(--glow-blue);
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.5px;
+
+        font-weight: 600;
+
+        margin-bottom: 10px;
+
+    }
+
+
+    .center-label {
+
+        text-align: center;
+
+        margin-bottom: 16px;
+
+    }
+
+
+    .payment-method-tabs {
+
+        display: flex;
+
+        gap: 8px;
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .tab-btn {
+
+        flex: 1;
+
+        padding: 12px;
+
+        background:
+            rgba(10, 17, 40, 0.5);
+
+        border:
+            1px solid rgba(255, 255, 255, 0.08);
+
+        border-radius: 12px;
+
+        color: var(--text-muted);
+
+        font-weight: 600;
+
+        font-size: 14px;
+
+        cursor: pointer;
+
+        transition: all 0.2s;
+
+    }
+
+
+    .tab-btn.active {
+
+        background:
+            rgba(0, 210, 255, 0.12);
+
+        border-color:
+            var(--glow-blue);
+
+        color:
+            var(--glow-blue);
+
+        box-shadow:
+            0 0 10px rgba(0, 210, 255, 0.2);
+
+    }
+
+
+    .balance-card {
+
+        background:
+            linear-gradient(
+                135deg,
+                #162a56 0%,
+                #0f1c3f 100%
+            );
+
+        border:
+            1px solid rgba(255,255,255,0.05);
+
+        padding: 20px;
+
+        border-radius: 16px;
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .balance-card p {
+
+        margin: 0;
+
+        font-size: 13px;
+
+        color: #a2b4cd;
+
+    }
+
+
+    .balance-card h3 {
+
+        margin: 5px 0 0;
+
+        font-size: 26px;
+
+        font-weight: 700;
+
+        color: #fff;
+
+    }
+
+
+    .amount-section {
+
+        background: var(--card-blue);
+
+        border:
+            1px solid rgba(255,255,255,0.03);
+
+        border-radius: 16px;
+
+        padding: 20px;
+
+    }
+
+
+    .input-wrapper {
+
+        display: flex;
+
+        align-items: center;
+
+        background:
+            rgba(10, 17, 40, 0.7);
+
+        border:
+            1px solid rgba(0, 210, 255, 0.2);
+
+        border-radius: 12px;
+
+        padding: 12px 16px;
+
+        margin: 8px 0 20px;
+
+    }
+
+
+    .input-wrapper:focus-within {
+
+        border-color: var(--glow-blue);
+
+    }
+
+
+    .input-wrapper span {
+
+        font-weight: 600;
+
+        color: var(--glow-blue);
+
+        font-size: 18px;
+
+        margin-right: 12px;
+
+    }
+
+
+    .input-wrapper input {
+
+        background: transparent;
+
+        border: none;
+
+        outline: none;
+
+        width: 100%;
+
+        color: #fff;
+
+        font-size: 18px;
+
+        font-weight: 600;
+
+    }
+
+
+    .label-small {
+
+        font-size: 13px;
+
+        color: var(--text-muted);
+
+        margin-bottom: 12px;
+
+        font-weight: 500;
+
+    }
+
+
+    .grid-amounts {
+
+        display: grid;
+
+        grid-template-columns: repeat(4, 1fr);
+
+        gap: 8px;
+
+        margin: 8px 0;
+
+    }
+
+
+    @media (max-width: 360px) {
+
+        .grid-amounts {
+
+            grid-template-columns: repeat(2, 1fr);
+
+        }
+
+    }
+
+
+    .amount-btn {
+
+        border:
+            1px solid rgba(255,255,255,0.08);
+
+        background:
+            rgba(10, 17, 40, 0.5);
+
+        color: var(--text-light);
+
+        padding: 12px 4px;
+
+        border-radius: 10px;
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        cursor: pointer;
+
+        text-align: center;
+
+        box-sizing: border-box;
+
+    }
+
+
+    .amount-btn.active {
+
+        border-color: var(--glow-blue);
+
+        color: var(--glow-blue);
+
+        background:
+            rgba(0, 210, 255, 0.1);
+
+    }
+
+
+    .info-rules {
+
+        margin-top: 20px;
+
+        font-size: 13px;
+
+        color: #b4c6ef;
+
+        background:
+            rgba(255, 23, 68, 0.04);
+
+        border:
+            1px solid rgba(255, 23, 68, 0.15);
+
+        padding: 16px;
+
+        border-radius: 14px;
+
+    }
+
+
+    .info-rules h4 {
+
+        margin: 0 0 12px 0;
+
+        color: #ff5252;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+    }
+
+
+    .info-rules ul {
+
+        list-style: none;
+
+        padding: 0;
+
+        margin: 0;
+
+    }
+
+
+    .info-rules li {
+
+        margin-bottom: 10px;
+
+        display: flex;
+
+        align-items: flex-start;
+
+        line-height: 1.4;
+
+    }
+
+
+    .info-rules li:last-child {
+
+        margin-bottom: 0;
+
+    }
+
+
+    .info-rules li span {
+
+        background:
+            rgba(255, 23, 68, 0.2);
+
+        color: #ff5252;
+
+        width: 18px;
+
+        height: 18px;
+
+        border-radius: 50%;
+
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 11px;
+
+        font-weight: bold;
+
+        margin-right: 10px;
+
+        flex-shrink: 0;
+
+        margin-top: 2px;
+
+    }
+
+
+    .bank-option-btn {
+
+        width: 100%;
+
+        padding: 16px;
+
+        margin-bottom: 10px;
+
+        background: var(--card-blue);
+
+        border:
+            1px solid rgba(255,255,255,0.05);
+
+        color: var(--text-light);
+
+        text-align: left;
+
+        border-radius: 12px;
+
+        cursor: pointer;
+
+        font-weight: 600;
+
+        font-size: 15px;
+
+        box-sizing: border-box;
+
+    }
+
+
+    .bank-option-btn.active {
+
+        border-color: var(--glow-blue);
+
+        background:
+            rgba(0, 210, 255, 0.08);
+
+        color: var(--glow-blue);
+
+    }
+
+
+    .bank-info-card {
+
+        background: var(--card-blue);
+
+        border:
+            1px solid rgba(255,255,255,0.04);
+
+        padding: 16px;
+
+        border-radius: 16px;
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .info-group {
+
+        margin-bottom: 16px;
+
+    }
+
+
+    .info-group:last-child {
+
+        margin-bottom: 0;
+
+    }
+
+
+    .info-group label {
+
+        display: block;
+
+        font-size: 11px;
+
+        color: var(--text-muted);
+
+        margin-bottom: 6px;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.5px;
+
+    }
+
+
+    .copy-input {
+
+        display: flex;
+
+        align-items: center;
+
+        background:
+            rgba(10, 17, 40, 0.6);
+
+        border:
+            1px solid rgba(255,255,255,0.06);
+
+        border-radius: 10px;
+
+        box-sizing: border-box;
+
+        width: 100%;
+
+    }
+
+
+    .copy-input input {
+
+        border: none;
+
+        padding: 12px;
+
+        min-width: 0;
+
+        flex: 1;
+
+        outline: none;
+
+        font-size: 14px;
+
+        background: transparent;
+
+        color: #fff;
+
+        font-weight: 500;
+
+    }
+
+
+    .copy-icon {
+
+        background:
+            rgba(0, 210, 255, 0.12);
+
+        color: var(--glow-blue);
+
+        border: none;
+
+        width: 46px;
+
+        height: 44px;
+
+        flex-shrink: 0;
+
+        cursor: pointer;
+
+        font-size: 16px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 0 9px 9px 0;
+
+    }
+
+
+    .upload-label {
+
+        text-align: center;
+
+        color: var(--text-light);
+
+        font-size: 14px;
+
+        margin-bottom: 16px;
+
+    }
+
+
+    .upload-box {
+
+        border:
+            2px dashed rgba(0, 210, 255, 0.25);
+
+        background:
+            rgba(16, 31, 66, 0.4);
+
+        border-radius: 16px;
+
+        padding: 32px 16px;
+
+        text-align: center;
+
+        cursor: pointer;
+
+    }
+
+
+    .upload-icon {
+
+        font-size: 38px;
+
+        color: var(--glow-blue);
+
+        margin-bottom: 8px;
+
+    }
+
+
+    #upload-text {
+
+        margin: 0;
+
+        font-size: 14px;
+
+        color: #a2b4cd;
+
+    }
+
+
+    #file-name {
+
+        font-size: 12px;
+
+        color: var(--glow-blue);
+
+        margin-top: 8px;
+
+        font-weight: bold;
+
+        word-break: break-all;
+
+    }
+
+
+    .simple-input {
+
+        width: 100%;
+
+        border:
+            1px solid rgba(255,255,255,0.08);
+
+        border-radius: 12px;
+
+        padding: 14px;
+
+        box-sizing: border-box;
+
+        background:
+            rgba(10, 17, 40, 0.6);
+
+        color: #fff;
+
+        font-size: 15px;
+
+        outline: none;
+
+    }
+
+
+    .simple-input:focus {
+
+        border-color: var(--glow-blue);
+
+    }
+
+
+    .btn-main {
+
+        width: 100%;
+
+        background:
+            linear-gradient(
+                90deg,
+                #0052d4 0%,
+                #4364f7 50%,
+                #6fb1fc 100%
+            );
+
+        color: white;
+
+        border: none;
+
+        padding: 15px;
+
+        border-radius: 12px;
+
+        font-size: 15px;
+
+        font-weight: 600;
+
+        cursor: pointer;
+
+        margin-top: 12px;
+
+        text-align: center;
+
+        display: block;
+
+        box-sizing: border-box;
+
+        text-decoration: none;
+
+    }
+
+
+    .btn-submit {
+
+        background:
+            linear-gradient(
+                135deg,
+                #00d2ff 0%,
+                #0066ff 100%
+            );
+
+        box-shadow:
+            0 4px 12px rgba(0, 210, 255, 0.3);
+
+    }
+
+
+    .btn-main:disabled {
+
+        background: #1e293b !important;
+
+        color: #475569 !important;
+
+        border: 1px solid #334155;
+
+        box-shadow: none !important;
+
+        cursor: not-allowed;
+
+    }
+
+
+    .space-top {
+
+        margin-top: 16px;
+
+    }
+
+
+    .space-top-lg {
+
+        margin-top: 20px;
+
+    }
+
+
+    /* ============================================================
+       TELA DE SUCESSO
+       ============================================================ */
+
+    .success-screen {
+
+        text-align: center;
+
+        padding: 30px 18px 24px;
+
+        background:
+            linear-gradient(
+                180deg,
+                rgba(0, 230, 118, 0.07),
+                rgba(16, 31, 66, 0.72)
+            );
+
+        border:
+            1px solid rgba(0, 230, 118, 0.18);
+
+        border-radius: 20px;
+
+        box-shadow:
+            0 14px 35px rgba(0, 0, 0, 0.22);
+
+    }
+
+
+    .success-badge {
+
+        width: 76px;
+        height: 76px;
+
+        margin: 0 auto 14px;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        background:
+            rgba(0, 230, 118, 0.10);
+
+        box-shadow:
+            0 0 0 8px rgba(0, 230, 118, 0.045),
+            0 0 28px rgba(0, 230, 118, 0.16);
+
+    }
+
+
+    .success-icon {
+
+        width: 58px;
+        height: 58px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #00e676,
+                #00b85a
+            );
+
+        color: #062b18;
+
+        border:
+            3px solid rgba(255, 255, 255, 0.12);
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        font-size: 30px;
+
+        font-weight: 900;
+
+        box-shadow:
+            0 7px 18px rgba(0, 230, 118, 0.22);
+
+    }
+
+
+    .success-status {
+
+        display: inline-block;
+
+        padding: 5px 10px;
+
+        border-radius: 999px;
+
+        background:
+            rgba(0, 230, 118, 0.10);
+
+        color: var(--success);
+
+        font-size: 10px;
+
+        font-weight: 800;
+
+        letter-spacing: 1px;
+
+        margin-bottom: 10px;
+
+    }
+
+
+    .success-screen h2 {
+
+        font-size: 20px;
+
+        font-weight: 750;
+
+        margin: 0 0 10px;
+
+        color: #fff;
+
+    }
+
+
+    .success-screen p {
+
+        color: #aebed4;
+
+        font-size: 13px;
+
+        line-height: 1.55;
+
+        margin: 0 auto 16px;
+
+        max-width: 340px;
+
+    }
+
+
+    .success-note {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 9px;
+
+        text-align: left;
+
+        max-width: 340px;
+
+        margin: 0 auto 18px;
+
+        padding: 11px 12px;
+
+        border-radius: 12px;
+
+        background:
+            rgba(10, 17, 40, 0.48);
+
+        border:
+            1px solid rgba(255, 255, 255, 0.06);
+
+        color: #c4d1e3;
+
+        font-size: 12px;
+
+        line-height: 1.35;
+
+    }
+
+
+    .success-note-icon {
+
+        width: 27px;
+        height: 27px;
+
+        flex-shrink: 0;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background:
+            rgba(0, 210, 255, 0.10);
+
+        font-size: 14px;
+
+    }
+
+
+    .success-btn {
+
+        margin-top: 0;
+
+    }
+
+
+    /* ============================================================
+       TELA DEPÓSITO ENVIADO
+       ============================================================ */
+
+    .deposit-sent-screen {
+
+        text-align: center;
+
+        padding: 34px 18px 28px;
+
+        background:
+            linear-gradient(
+                180deg,
+                rgba(0, 210, 255, 0.08),
+                rgba(16, 31, 66, 0.78)
+            );
+
+        border:
+            1px solid rgba(0, 210, 255, 0.20);
+
+        border-radius: 20px;
+
+        box-shadow:
+            0 14px 35px rgba(0, 0, 0, 0.25);
+
+        animation:
+            depositSentFadeIn 0.35s ease-in-out;
+
+    }
+
+
+    @keyframes depositSentFadeIn {
+
+        from {
+
+            opacity: 0;
+
+            transform:
+                translateY(10px);
+
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                translateY(0);
+
+        }
+
+    }
+
+
+    .deposit-sent-badge {
+
+        width: 86px;
+        height: 86px;
+
+        margin: 0 auto 16px;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        background:
+            rgba(0, 230, 118, 0.10);
+
+        box-shadow:
+            0 0 0 9px rgba(0, 230, 118, 0.045),
+            0 0 32px rgba(0, 230, 118, 0.18);
+
+    }
+
+
+    .deposit-sent-icon {
+
+        width: 66px;
+        height: 66px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #00e676,
+                #00b85a
+            );
+
+        color: #062b18;
+
+        border:
+            3px solid rgba(255, 255, 255, 0.14);
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        font-size: 34px;
+
+        font-weight: 900;
+
+        box-shadow:
+            0 8px 20px rgba(0, 230, 118, 0.25);
+
+    }
+
+
+    .deposit-sent-status {
+
+        display: inline-block;
+
+        padding: 6px 12px;
+
+        border-radius: 999px;
+
+        background:
+            rgba(0, 230, 118, 0.10);
+
+        color: var(--success);
+
+        font-size: 10px;
+
+        font-weight: 800;
+
+        letter-spacing: 1px;
+
+        margin-bottom: 12px;
+
+    }
+
+
+    .deposit-sent-screen h2 {
+
+        color: #ffffff;
+
+        font-size: 22px;
+
+        font-weight: 750;
+
+        margin: 0 0 12px;
+
+    }
+
+
+    .deposit-sent-screen > p {
+
+        color: #b8c7db;
+
+        font-size: 14px;
+
+        line-height: 1.6;
+
+        margin: 0 auto 20px;
+
+        max-width: 350px;
+
+    }
+
+
+    .deposit-sent-note {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 12px;
+
+        text-align: left;
+
+        max-width: 350px;
+
+        margin: 0 auto 22px;
+
+        padding: 14px;
+
+        border-radius: 14px;
+
+        background:
+            rgba(10, 17, 40, 0.55);
+
+        border:
+            1px solid rgba(0, 210, 255, 0.12);
+
+    }
+
+
+    .deposit-sent-note-icon {
+
+        width: 38px;
+        height: 38px;
+
+        flex-shrink: 0;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background:
+            rgba(0, 210, 255, 0.10);
+
+        font-size: 20px;
+
+    }
+
+
+    .deposit-sent-note strong {
+
+        display: block;
+
+        color: #ffffff;
+
+        font-size: 13px;
+
+        margin-bottom: 4px;
+
+    }
+
+
+    .deposit-sent-note small {
+
+        display: block;
+
+        color: #91a4bf;
+
+        font-size: 11px;
+
+        line-height: 1.4;
+
+    }
+
+</style>
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Taxa de câmbio fixa:
+    // 1000 Kz = R$ 5,00
+    const usdtRate = 200.0;
+
+    let currentMethod = 'fiat';
+
+
+    const tabBtns =
+        document.querySelectorAll('.tab-btn');
+
+    const panelFiat =
+        document.getElementById('panel-fiat');
+
+    const panelUsdt =
+        document.getElementById('panel-usdt');
+
+
+    const manualAmountFiat =
+        document.getElementById('manual-amount-fiat');
+
+    const manualAmountUsdt =
+        document.getElementById('manual-amount-usdt');
+
+
+    const gridFiatBtns =
+        document.querySelectorAll(
+            '#grid-fiat .amount-btn'
+        );
+
+    const gridUsdtBtns =
+        document.querySelectorAll(
+            '#grid-usdt .amount-btn'
+        );
+
+
+    const amountInput =
+        document.getElementById('id_amount');
+
+    const usdtAmountInput =
+        document.getElementById('id_usdt_amount');
+
+    const paymentMethodInput =
+        document.getElementById('id_payment_method');
+
+
+    const bankInput =
+        document.getElementById('id_selected_bank');
+
+    const next1 =
+        document.getElementById('to-step-2');
+
+    const next2 =
+        document.getElementById('to-step-3');
+
+
+    /* =========================================================
+       INICIALIZAR BOTÕES RÁPIDOS PIX
+       ========================================================= */
+
+    gridUsdtBtns.forEach(btn => {
+
+        const kwanzaVal =
+            parseFloat(
+                btn.dataset.kwanzaValue
+            );
+
+        const usdtVal =
+            (kwanzaVal / usdtRate).toFixed(2);
+
+        btn.innerText =
+            'R$ ' + usdtVal;
+
+        btn.dataset.usdtValue =
+            usdtVal;
+
+        btn.dataset.kwanzaVal =
+            kwanzaVal;
+
+    });
+
+
+    /* =========================================================
+       ALTERNÂNCIA DE ABAS
+       ========================================================= */
+
+    tabBtns.forEach(tab => {
+
+        tab.addEventListener('click', () => {
+
+            tabBtns.forEach(b =>
+                b.classList.remove('active')
+            );
+
+            tab.classList.add('active');
+
+
+            currentMethod =
+                tab.dataset.method;
+
+            paymentMethodInput.value =
+                currentMethod;
+
+
+            manualAmountFiat.value = '';
+
+            manualAmountUsdt.value = '';
+
+            amountInput.value = '';
+
+            usdtAmountInput.value = '';
+
+
+            gridFiatBtns.forEach(b =>
+                b.classList.remove('active')
+            );
+
+            gridUsdtBtns.forEach(b =>
+                b.classList.remove('active')
+            );
+
+
+            next1.disabled = true;
+
+
+            if (currentMethod === 'usdt') {
+
+                panelFiat.style.display =
+                    'none';
+
+                panelUsdt.style.display =
+                    'block';
+
+            } else {
+
+                panelUsdt.style.display =
+                    'none';
+
+                panelFiat.style.display =
+                    'block';
+
+            }
+
+        });
+
+    });
+
+
+    /* =========================================================
+       INPUT MANUAL KWANZA
+       ========================================================= */
+
+    manualAmountFiat.addEventListener(
+        'input',
+        (e) => {
+
+            const val =
+                e.target.value;
+
+
+            gridFiatBtns.forEach(b =>
+                b.classList.remove('active')
+            );
+
+
+            if (
+                val &&
+                parseFloat(val) > 0
+            ) {
+
+                const kwanzaNum =
+                    parseFloat(val);
+
+
+                amountInput.value =
+                    kwanzaNum.toFixed(2);
+
+
+                usdtAmountInput.value =
+                    (
+                        kwanzaNum / usdtRate
+                    ).toFixed(2);
+
+
+                document
+                    .querySelectorAll(
+                        '.display-final-amount'
+                    )
+                    .forEach(el => {
+
+                        el.value =
+                            kwanzaNum.toFixed(2)
+                            + ' Kz';
+
+                    });
+
+
+                next1.disabled = false;
+
+            } else {
+
+                next1.disabled = true;
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       INPUT MANUAL REAL
+       ========================================================= */
+
+    manualAmountUsdt.addEventListener(
+        'input',
+        (e) => {
+
+            const val =
+                e.target.value;
+
+
+            gridUsdtBtns.forEach(b =>
+                b.classList.remove('active')
+            );
+
+
+            if (
+                val &&
+                parseFloat(val) > 0
+            ) {
+
+                const usdtNum =
+                    parseFloat(val);
+
+
+                const calculatedKwanza =
+                    usdtNum * usdtRate;
+
+
+                amountInput.value =
+                    calculatedKwanza.toFixed(2);
+
+
+                usdtAmountInput.value =
+                    usdtNum.toFixed(2);
+
+
+                document
+                    .querySelectorAll(
+                        '.display-final-amount'
+                    )
+                    .forEach(el => {
+
+                        el.value =
+                            'R$ ' +
+                            usdtNum.toFixed(2);
+
+                    });
+
+
+                next1.disabled = false;
+
+            } else {
+
+                next1.disabled = true;
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       BOTÕES RÁPIDOS KWANZA
+       ========================================================= */
+
+    gridFiatBtns.forEach(btn => {
+
+        btn.addEventListener('click', () => {
+
+            gridFiatBtns.forEach(b =>
+                b.classList.remove('active')
+            );
+
+
+            btn.classList.add('active');
+
+
+            manualAmountFiat.value = '';
+
+
+            const val =
+                parseFloat(
+                    btn.dataset.value
+                );
+
+
+            amountInput.value =
+                val.toFixed(2);
+
+
+            usdtAmountInput.value =
+                (val / usdtRate).toFixed(2);
+
+
+            document
+                .querySelectorAll(
+                    '.display-final-amount'
+                )
+                .forEach(el => {
+
+                    el.value =
+                        val.toFixed(2)
+                        + ' Kz';
+
+                });
+
+
+            next1.disabled = false;
+
+        });
+
+    });
+
+
+    /* =========================================================
+       BOTÕES RÁPIDOS PIX
+       ========================================================= */
+
+    gridUsdtBtns.forEach(btn => {
+
+        btn.addEventListener('click', () => {
+
+            gridUsdtBtns.forEach(b =>
+                b.classList.remove('active')
+            );
+
+
+            btn.classList.add('active');
+
+
+            manualAmountUsdt.value = '';
+
+
+            const usdtVal =
+                parseFloat(
+                    btn.dataset.usdtValue
+                );
+
+            const kwanzaVal =
+                parseFloat(
+                    btn.dataset.kwanzaVal
+                );
+
+
+            amountInput.value =
+                kwanzaVal.toFixed(2);
+
+
+            usdtAmountInput.value =
+                usdtVal.toFixed(2);
+
+
+            document
+                .querySelectorAll(
+                    '.display-final-amount'
+                )
+                .forEach(el => {
+
+                    el.value =
+                        'R$ ' +
+                        usdtVal.toFixed(2);
+
+                });
+
+
+            next1.disabled = false;
+
+        });
+
+    });
+
+
+    /* =========================================================
+       STEP 1 -> 2
+       ========================================================= */
+
+    next1.addEventListener('click', () => {
+
+        const listFiat =
+            document.getElementById(
+                'list-fiat'
+            );
+
+        const listUsdt =
+            document.getElementById(
+                'list-usdt'
+            );
+
+        const bankStepLabel =
+            document.getElementById(
+                'bank-step-label'
+            );
+
+
+        document
+            .querySelectorAll(
+                '.bank-option-btn'
+            )
+            .forEach(b =>
+                b.classList.remove('active')
+            );
+
+
+        bankInput.value = '';
+
+        next2.disabled = true;
+
+
+        if (currentMethod === 'usdt') {
+
+            listFiat.style.display =
+                'none';
+
+            listUsdt.style.display =
+                'block';
+
+            bankStepLabel.innerText =
+                'Escolha a opção PIX';
+
+        } else {
+
+            listUsdt.style.display =
+                'none';
+
+            listFiat.style.display =
+                'block';
+
+            bankStepLabel.innerText =
+                'Escolha o Banco Destino';
+
+        }
+
+
+        goToStep(2);
+
+        updateStepper(2);
+
+    });
+
+
+    /* =========================================================
+       SELEÇÃO DE BANCO / CANAL
+       ========================================================= */
+
+    const bankBtns =
+        document.querySelectorAll(
+            '.bank-option-btn'
+        );
+
+
+    bankBtns.forEach(btn => {
+
+        btn.addEventListener('click', () => {
+
+            bankBtns.forEach(b =>
+                b.classList.remove('active')
+            );
+
+
+            btn.classList.add('active');
+
+
+            bankInput.value =
+                btn.dataset.bankId;
+
+
+            next2.disabled = false;
+
+        });
+
+    });
+
+
+    /* =========================================================
+       STEP 2 -> 3
+       ========================================================= */
+
+    next2.addEventListener('click', () => {
+
+        const bankId =
+            bankInput.value;
+
+
+        document
+            .querySelectorAll(
+                '.bank-info-card'
+            )
+            .forEach(card => {
+
+                card.style.display =
+                    'none';
+
+            });
+
+
+        document.getElementById(
+            `details-${bankId}`
+        ).style.display = 'block';
+
+
+        const transferLabel =
+            document.getElementById(
+                'transfer-label'
+            );
+
+
+        transferLabel.innerText =
+            currentMethod === 'usdt'
+            ? 'Dados para Pagamento via PIX'
+            : 'Dados para Transferência';
+
+
+        goToStep(3);
+
+        updateStepper(2);
+
+    });
+
+
+    /* =========================================================
+       STEP 3 -> 4
+       ========================================================= */
+
+    document
+        .getElementById('to-step-4')
+        .addEventListener('click', () => {
+
+            goToStep(4);
+
+            updateStepper(3);
+
+        });
+
+
+    /* =========================================================
+       UPLOAD PREVIEW
+       ========================================================= */
+
+    document
+        .getElementById('file-upload')
+        .addEventListener(
+            'change',
+            function() {
+
+                if (this.files[0]) {
+
+                    document
+                        .getElementById(
+                            'file-name'
+                        )
+                        .innerText =
+                        'Ficheiro: ' +
+                        this.files[0].name;
+
+
+                    document
+                        .getElementById(
+                            'upload-text'
+                        )
+                        .innerText =
+                        'Alterar ficheiro';
+
+                }
+
+            }
+        );
+
+
+    /* =========================================================
+       ENVIO DO COMPROVATIVO
+       ========================================================= */
+
+    const depositForm =
+        document.getElementById(
+            'deposit-form'
+        );
+
+    const depositSentScreen =
+        document.getElementById(
+            'deposit-sent-screen'
+        );
+
+    const depositSubmitBtn =
+        document.getElementById(
+            'deposit-submit-btn'
+        );
+
+    const fileUpload =
+        document.getElementById(
+            'file-upload'
+        );
+
+    const payerName =
+        document.getElementById(
+            'payer_name'
+        );
+
+
+    if (depositForm) {
+
+        depositForm.addEventListener(
+            'submit',
+            async function(event) {
+
+                /*
+                 * Impede a página de sair
+                 * da tela de sucesso.
+                 */
+                event.preventDefault();
+
+
+                /*
+                 * Não permite dois envios.
+                 */
+                if (
+                    depositForm.dataset.submitting
+                    === 'true'
+                ) {
+
+                    return;
+
+                }
+
+
+                /*
+                 * Verifica comprovativo.
+                 */
+                if (
+                    !fileUpload.files ||
+                    fileUpload.files.length === 0
+                ) {
+
+                    alert(
+                        'Por favor, envie o comprovativo de pagamento.'
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                 * Verifica nome.
+                 */
+                if (
+                    !payerName.value.trim()
+                ) {
+
+                    alert(
+                        'Por favor, informe o nome do titular da conta pagadora.'
+                    );
+
+                    payerName.focus();
+
+                    return;
+
+                }
+
+
+                /*
+                 * Marca como enviando.
+                 */
+                depositForm.dataset.submitting =
+                    'true';
+
+
+                if (depositSubmitBtn) {
+
+                    depositSubmitBtn.disabled =
+                        true;
+
+                    depositSubmitBtn.innerText =
+                        'A enviar...';
+
+                }
+
+
+                try {
+
+                    /*
+                     * Cria os dados completos
+                     * do formulário.
+                     */
+                    const formData =
+                        new FormData(
+                            depositForm
+                        );
+
+
+                    /*
+                     * Envia para o Django
+                     * sem mudar de página.
+                     */
+                    const response =
+                        await fetch(
+                            depositForm.action ||
+                            window.location.href,
+                            {
+                                method: 'POST',
+
+                                body: formData,
+
+                                credentials:
+                                    'same-origin',
+
+                                headers: {
+                                    'X-Requested-With':
+                                        'XMLHttpRequest'
+                                }
+                            }
+                        );
+
+
+                    /*
+                     * Verifica se o servidor
+                     * recebeu corretamente.
+                     */
+                    if (!response.ok) {
+
+                        throw new Error(
+                            'Falha no envio do comprovativo.'
+                        );
+
+                    }
+
+
+                    /*
+                     * Esconde o formulário.
+                     */
+                    depositForm.style.display =
+                        'none';
+
+
+                    /*
+                     * Esconde o stepper.
+                     */
+                    const stepper =
+                        document.querySelector(
+                            '.stepper'
+                        );
+
+
+                    if (stepper) {
+
+                        stepper.style.display =
+                            'none';
+
+                    }
+
+
+                    /*
+                     * Mostra a tela de sucesso.
+                     *
+                     * Ela permanece visível.
+                     */
+                    if (depositSentScreen) {
+
+                        depositSentScreen.style.display =
+                            'block';
+
+
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+
+                    }
+
+                } catch (error) {
+
+                    /*
+                     * Se houver erro,
+                     * permite tentar novamente.
+                     */
+                    depositForm.dataset.submitting =
+                        'false';
+
+
+                    if (depositSubmitBtn) {
+
+                        depositSubmitBtn.disabled =
+                            false;
+
+                        depositSubmitBtn.innerText =
+                            'Enviar Confirmação';
+
+                    }
+
+
+                    alert(
+                        'Não foi possível enviar o comprovativo. Verifique a sua ligação e tente novamente.'
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       MUDAR ETAPA
+       ========================================================= */
+
+    function goToStep(step) {
+
+        document
+            .querySelectorAll(
+                '.step-content'
+            )
+            .forEach(el => {
+
+                el.style.display =
+                    'none';
+
+            });
+
+
+        document.getElementById(
+            `step-${step}`
+        ).style.display =
+            'block';
+
+    }
+
+
+    /* =========================================================
+       ATUALIZAR STEPPER
+       ========================================================= */
+
+    function updateStepper(activeStep) {
+
+        const dots = [
+
+            document.getElementById('dot-1'),
+
+            document.getElementById('dot-2'),
+
+            document.getElementById('dot-3')
+
+        ];
+
+
+        const lines = [
+
+            document.getElementById('line-1'),
+
+            document.getElementById('line-2')
+
+        ];
+
+
+        dots.forEach((dot, idx) => {
+
+            const stepNum =
+                idx + 1;
+
+
+            if (
+                stepNum < activeStep
+            ) {
+
+                dot.className =
+                    'circle checked';
+
+                dot.innerHTML =
+                    '✓';
+
+
+                if (lines[idx]) {
+
+                    lines[idx]
+                        .classList
+                        .add('active');
+
+                }
+
+            } else if (
+                stepNum === activeStep
+            ) {
+
+                dot.className =
+                    'circle active';
+
+                dot.innerHTML =
+                    stepNum;
+
+            } else {
+
+                dot.className =
+                    'circle';
+
+                dot.innerHTML =
+                    stepNum;
+
+            }
+
+        });
+
+    }
+
+});
+
+
+/* =========================================================
+   COPIAR DADOS
+   ========================================================= */
+
+function copyText(id) {
+
+    const copyInput =
+        document.getElementById(id);
+
+
+    copyInput.select();
+
+    copyInput.setSelectionRange(
+        0,
+        99999
+    );
+
+
+    navigator.clipboard
+        .writeText(copyInput.value)
+        .then(() => {
+
+            const btn =
+                copyInput.nextElementSibling;
+
+
+            const originalIcon =
+                btn.innerText;
+
+
+            btn.innerText =
+                '✓';
+
+
+            setTimeout(() => {
+
+                btn.innerText =
+                    originalIcon;
+
+            }, 1500);
+
+        })
+        .catch(() => {
+
+            alert(
+                'Erro ao copiar dados.'
+            );
+
+        });
+
+}
+
+</script>
+
+{% endblock %}

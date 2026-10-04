@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Lucrar mais{% endblock %}
+
+{% block content %}
+<div class="lucrar-container">
+    
+    <!-- Topo / Navegação -->
+    <div class="top-bar">
+        <a href="{% url 'menu' %}" class="btn-back">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <h1 class="page-title">Lucrar mais</h1>
+        <div style="width: 32px;"></div> <!-- Espaçador para centralizar o título -->
+    </div>
+
+    <!-- Container Seamless de Imagens Verticais -->
+    <div class="image-wrapper">
+        <img src="{% static 'images/lucrar_parte1.jpg' %}" alt="Lucrar mais - Parte 1" class="full-img">
+        <img src="{% static 'images/lucrar_parte2.jpg' %}" alt="Lucrar mais - Parte 2" class="full-img">
+        <img src="{% static 'images/lucrar_parte3.jpg' %}" alt="Lucrar mais - Parte 3" class="full-img">
+        <img src="{% static 'images/lucrar_parte4.jpg' %}" alt="Lucrar mais - Parte 4" class="full-img">
+    </div>
+
+</div>
+
+<style>
+    /* Reset e Fundo Absoluto */
+    html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #040911;
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .lucrar-container {
+        width: 100%;
+        min-height: 100vh;
+        background-color: #040911;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Barra Superior Fixa */
+    .top-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 56px;
+        background: rgba(4, 9, 17, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        z-index: 100;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        box-sizing: border-box;
+    }
+
+    .btn-back {
+        color: #00d2ff;
+        font-size: 1.1rem;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: rgba(0, 210, 255, 0.1);
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+
+    .btn-back:active {
+        background: rgba(0, 210, 255, 0.25);
+    }
+
+    .page-title {
+        color: #ffffff;
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 0.5px;
+    }
+
+    /* Bloco de Imagens Contínuas */
+    .image-wrapper {
+        margin-top: 56px; /* Compensação da barra superior */
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .full-img {
+        width: 100%;
+        height: auto;
+        display: block; /* Remove o gap/espaço entre imagens verticais */
+        margin: 0;
+        padding: 0;
+        border: none;
+        outline: none;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}

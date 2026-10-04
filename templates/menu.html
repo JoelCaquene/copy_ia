@@ -1,0 +1,1221 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}copy_ia - Alta Performance{% endblock %}
+
+{% block content %}
+<!-- POP-UP DE BOAS-VINDAS COMPACTO E ELEGANTE -->
+<div id="welcomeModal" class="modal-overlay">
+    <div class="modal-content-box">
+        <button class="btn-close-modal" onclick="closeModal()">&times;</button>
+        <div class="modal-header-icon">
+            <i class="fa-solid fa-headset"></i>
+        </div>
+        <h3 class="modal-title">Canais Oficiais</h3>
+        <p class="modal-subtitle">Entre em nossa comunidade de suporte oficial:</p>
+        
+        <div class="modal-buttons-group">
+            <a href="{{ whatsapp_link }}" target="_blank" class="modal-btn btn-wa">
+                <i class="fa-brands fa-whatsapp"></i> Suporte WhatsApp
+            </a>
+            <a href="https://t.me/apoi" target="_blank" class="modal-btn btn-tg">
+                <i class="fa-brands fa-telegram"></i> Canal Telegram
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 1. TICKER SUPERIOR COM TODAS AS PROVÍNCIAS DE ANGOLA -->
+<div class="top-ticker">
+    <div class="ticker-content">
+
+        <div class="ticker-item">🇦🇴 Bengo</div>
+        <div class="ticker-item">🇦🇴 Benguela</div>
+        <div class="ticker-item">🇦🇴 Bié</div>
+        <div class="ticker-item">🇦🇴 Cabinda</div>
+        <div class="ticker-item">🇦🇴 Cuando</div>
+        <div class="ticker-item">🇦🇴 Cubango</div>
+        <div class="ticker-item">🇦🇴 Cuanza Norte</div>
+        <div class="ticker-item">🇦🇴 Cuanza Sul</div>
+        <div class="ticker-item">🇦🇴 Cunene</div>
+        <div class="ticker-item">🇦🇴 Huambo</div>
+        <div class="ticker-item">🇦🇴 Huíla</div>
+        <div class="ticker-item">🇦🇴 Icolo e Bengo</div>
+        <div class="ticker-item">🇦🇴 Luanda</div>
+        <div class="ticker-item">🇦🇴 Lunda Norte</div>
+        <div class="ticker-item">🇦🇴 Lunda Sul</div>
+        <div class="ticker-item">🇦🇴 Malanje</div>
+        <div class="ticker-item">🇦🇴 Moxico</div>
+        <div class="ticker-item">🇦🇴 Namibe</div>
+        <div class="ticker-item">🇦🇴 Uíge</div>
+        <div class="ticker-item">🇦🇴 Zaire</div>
+
+        <!-- REPETIÇÃO PARA MANTER O MOVIMENTO CONTÍNUO -->
+        <div class="ticker-item">🇦🇴 Bengo</div>
+        <div class="ticker-item">🇦🇴 Benguela</div>
+        <div class="ticker-item">🇦🇴 Bié</div>
+        <div class="ticker-item">🇦🇴 Cabinda</div>
+        <div class="ticker-item">🇦🇴 Cuando</div>
+        <div class="ticker-item">🇦🇴 Cubango</div>
+        <div class="ticker-item">🇦🇴 Cuanza Norte</div>
+        <div class="ticker-item">🇦🇴 Cuanza Sul</div>
+        <div class="ticker-item">🇦🇴 Cunene</div>
+        <div class="ticker-item">🇦🇴 Huambo</div>
+        <div class="ticker-item">🇦🇴 Huíla</div>
+        <div class="ticker-item">🇦🇴 Icolo e Bengo</div>
+        <div class="ticker-item">🇦🇴 Luanda</div>
+        <div class="ticker-item">🇦🇴 Lunda Norte</div>
+        <div class="ticker-item">🇦🇴 Lunda Sul</div>
+        <div class="ticker-item">🇦🇴 Malanje</div>
+        <div class="ticker-item">🇦🇴 Moxico</div>
+        <div class="ticker-item">🇦🇴 Namibe</div>
+        <div class="ticker-item">🇦🇴 Uíge</div>
+        <div class="ticker-item">🇦🇴 Zaire</div>
+
+    </div>
+</div>
+
+<!-- 2. WRAPPER PRINCIPAL COM PROTEÇÃO DE ROLAGEM E CONTEÚDO VISÍVEL -->
+<div class="safe-viewport-wrapper">
+    <div class="main-content-container">
+
+        <!-- CARROSSEL DE INTELIGÊNCIA ARTIFICIAL -->
+        <div class="carousel-container">
+
+            <div class="carousel-slide active"
+                style="background-image: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=85');">
+            </div>
+
+            <div class="carousel-slide"
+                style="background-image: url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=85');">
+            </div>
+
+            <div class="carousel-slide"
+                style="background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=85');">
+            </div>
+
+            <div class="carousel-slide"
+                style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=85');">
+            </div>
+
+            <div class="carousel-slide"
+                style="background-image: url('https://images.unsplash.com/photo-1555255707-c07966088b7b?auto=format&fit=crop&w=1200&q=85');">
+            </div>
+
+            <div class="carousel-overlay">
+                <div class="ai-badge-top">
+                    <i class="fa-solid fa-microchip"></i> Core Neural Ativo v4.8
+                </div>
+
+                <h1 class="brand-title">copy_ia</h1>
+
+                <p class="brand-subtitle">
+                    MINERAÇÃO DE ALTA PERFORMANCE COM IA
+                </p>
+
+                <div class="carousel-indicators">
+                    <span class="carousel-dot active"></span>
+                    <span class="carousel-dot"></span>
+                    <span class="carousel-dot"></span>
+                    <span class="carousel-dot"></span>
+                    <span class="carousel-dot"></span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TRANSAÇÕES GLOBAIS EM PARES (AO / BR) -->
+        <div class="transaction-feed">
+            <div class="feed-title">
+                <span><i class="fa-solid fa-globe"></i> Transações Globais</span>
+                <span class="live-dot-indicator">● Ao vivo</span>
+            </div>
+            <div class="feed-content">
+                <div class="feed-slider-viewport" id="feedViewport">
+                    <!-- Gerado dinamicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- CARDS DE BOTÕES PRINCIPAIS -->
+        <div class="action-card-wrapper">
+            <a href="{% url 'deposito' %}" class="action-btn">
+                <div class="icon-circle cyan"><i class="fa-solid fa-vault"></i></div>
+                <span>Recarga</span>
+            </a>
+
+            <a href="{% url 'tarefa' %}" class="action-btn">
+                <div class="icon-circle teal"><i class="fa-solid fa-brain"></i></div>
+                <span>Mineração</span>
+            </a>
+
+            <a href="{% url 'roleta' %}" class="action-btn">
+                <div class="icon-circle yellow"><i class="fa-solid fa-gift"></i></div>
+                <span>Cupom</span>
+            </a>
+
+            <a href="{% url 'sobre' %}" class="action-btn">
+                <div class="icon-circle purple"><i class="fa-solid fa-book-open"></i></div>
+                <span>Blog</span>
+            </a>
+        </div>
+
+        <!-- Tempo DE REDES NEURAIS NAS PROVÍNCIAS DO BRASIL -->
+        <div class="ai-provinces-section">
+            <div class="ai-section-header">
+                <div class="ai-pulse-dot"></div>
+                <h2>Tempo de IA - Redes Brasil</h2>
+            </div>
+
+            <p class="ai-section-desc">
+                Monitoramento autônomo de rendimento em tempo real alocado por estados operacionais:
+            </p>
+            
+            <div class="provinces-grid" id="provincesGrid">
+                <!-- Gerado via JS -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA E SEGURA -->
+<div class="trading-nav-wrapper">
+    <nav class="trading-nav">
+
+        <a href="{% url 'home' %}" class="nav-link active">
+            <i class="fa-solid fa-house-chimney"></i>
+            <span>Início</span>
+        </a>
+
+        <a href="{% url 'nivel' %}" class="nav-link">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>VIP</span>
+        </a>
+
+        <a href="{% url 'renda' %}" class="nav-link">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Empresa</span>
+        </a>
+
+        <a href="{% url 'equipa' %}" class="nav-link">
+            <i class="fa-solid fa-users-viewfinder"></i>
+            <span>Afiliados</span>
+        </a>
+
+        <a href="{% url 'perfil' %}" class="nav-link">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Mais</span>
+        </a>
+
+    </nav>
+</div>
+
+<style>
+    :root {
+        --bg-dark: #b58cff;
+        --card-bg: rgba(14, 22, 39, 0.9);
+        --card-border: rgba(255, 255, 255, 0.22);
+        --text-white: #f8fafc;
+        --text-gray: #94a3b8;
+        --cyan-accent: #00d2ff;
+        --teal-accent: #00f5d4;
+        --purple-accent: #9b5de5;
+        --yellow-accent: #fee440;
+        --green-profit: #10b981;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        background-color: #b58cff;
+        color: var(--text-white);
+        font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        background-image: linear-gradient(
+            135deg,
+            #b58cff 0%,
+            #c9a7ff 45%,
+            #a875f5 100%
+        );
+        background-attachment: fixed;
+        min-height: 100vh;
+    }
+
+    /* TICKER SUPERIOR */
+    .top-ticker {
+        width: 100%;
+        background-color: rgba(7, 13, 25, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        white-space: nowrap;
+        padding: 8px 0;
+        z-index: 1000;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+
+    .ticker-content {
+        display: inline-block;
+        animation: tickerSlide 55s linear infinite;
+        padding-left: 100%;
+    }
+
+    .ticker-item {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 35px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-gray);
+    }
+
+    @keyframes tickerSlide {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
+    /* CONTAINER PRINCIPAL RESPONSIVO E SEGURO CONTRA CORTES */
+    .safe-viewport-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding-top: 50px;
+        padding-bottom: 110px;
+    }
+
+    .main-content-container {
+        width: 100%;
+        max-width: 480px;
+        padding: 0 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* CARROSSEL PROFISSIONAL DE IA */
+    .carousel-container {
+        width: 100%;
+        height: 150px;
+        margin-top: 10px;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 210, 255, 0.25);
+        box-shadow:
+            0 8px 25px rgba(0, 0, 0, 0.22),
+            0 0 25px rgba(155, 93, 229, 0.15);
+        position: relative;
+        background: #111827;
+    }
+
+    .carousel-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transform: scale(1.08);
+        transition:
+            opacity 1.2s ease-in-out,
+            transform 5s ease-in-out;
+        z-index: 1;
+    }
+
+    .carousel-slide.active {
+        opacity: 1;
+        transform: scale(1);
+        z-index: 2;
+    }
+
+    .carousel-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(7, 13, 25, 0.78) 0%,
+                rgba(3, 8, 16, 0.88) 100%
+            );
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 15px;
+        z-index: 5;
+    }
+
+    .ai-badge-top {
+        background: rgba(0, 210, 255, 0.12);
+        border: 1px solid rgba(0, 210, 255, 0.35);
+        color: var(--cyan-accent);
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 20px;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        letter-spacing: 0.8px;
+    }
+
+    .brand-title {
+        font-size: 28px;
+        font-weight: 900;
+        letter-spacing: 4px;
+        margin: 0;
+        background: linear-gradient(
+            to right,
+            #ffffff,
+            #00d2ff
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .brand-subtitle {
+        font-size: 8.5px;
+        color: var(--teal-accent);
+        letter-spacing: 2px;
+        margin: 5px 0 0 0;
+        font-weight: 700;
+    }
+
+    .carousel-indicators {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        margin-top: 10px;
+    }
+
+    .carousel-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.45);
+        transition:
+            width 0.35s ease,
+            background 0.35s ease,
+            transform 0.35s ease;
+    }
+
+    .carousel-dot.active {
+        width: 18px;
+        border-radius: 10px;
+        background: var(--cyan-accent);
+        box-shadow: 0 0 8px rgba(0, 210, 255, 0.65);
+    }
+
+    /* FEED DE TRANSAÇÕES GLOBAIS EM PARES */
+    .transaction-feed {
+        width: 100%;
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        border-radius: 16px;
+        padding: 12px 14px;
+        border: 1px solid var(--card-border);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .feed-title {
+        font-size: 10.5px;
+        color: var(--text-gray);
+        margin-bottom: 8px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .live-dot-indicator {
+        font-size: 9px;
+        color: var(--green-profit);
+        background: rgba(16, 185, 129, 0.12);
+        padding: 2px 7px;
+        border-radius: 8px;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .feed-content {
+        height: 48px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .feed-slider-viewport {
+        position: absolute;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .feed-row-pair {
+        display: flex;
+        justify-content: space-between;
+        height: 48px;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .feed-card-item {
+        flex: 1;
+        background: rgba(20, 32, 56, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        border-radius: 10px;
+        padding: 5px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .user-info-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .country-flag {
+        font-size: 14px;
+    }
+
+    .user-name-text {
+        font-size: 10.5px;
+        font-weight: 700;
+        color: var(--text-white);
+    }
+
+    .user-action-text {
+        font-size: 9px;
+        color: var(--text-gray);
+    }
+
+    .transaction-amount-val {
+        font-size: 10.5px;
+        font-weight: 800;
+    }
+
+    .amount-ao {
+        color: var(--teal-accent);
+    }
+
+    .amount-br {
+        color: var(--green-profit);
+    }
+
+    /* BOTÕES PRINCIPAIS */
+    .action-card-wrapper {
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 14px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .action-btn {
+        background: rgba(20, 32, 56, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: var(--text-white);
+        font-size: 10.5px;
+        font-weight: 600;
+        height: 72px;
+        transition: transform 0.15s ease;
+    }
+
+    .action-btn:active {
+        transform: scale(0.95);
+    }
+
+    .icon-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+
+    .icon-circle.cyan {
+        background: rgba(0, 210, 255, 0.12);
+        color: var(--cyan-accent);
+        border: 1px solid rgba(0, 210, 255, 0.3);
+    }
+
+    .icon-circle.teal {
+        background: rgba(0, 245, 212, 0.12);
+        color: var(--teal-accent);
+        border: 1px solid rgba(0, 245, 212, 0.3);
+    }
+
+    .icon-circle.yellow {
+        background: rgba(254, 228, 64, 0.12);
+        color: var(--yellow-accent);
+        border: 1px solid rgba(254, 228, 64, 0.3);
+    }
+
+    .icon-circle.purple {
+        background: rgba(155, 93, 229, 0.12);
+        color: var(--purple-accent);
+        border: 1px solid rgba(155, 93, 229, 0.3);
+    }
+
+    /* Tempo DE IA NAS PROVÍNCIAS DO BRASIL */
+    .ai-provinces-section {
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--card-border);
+    }
+
+    .ai-section-header {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 5px;
+    }
+
+    .ai-pulse-dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--green-profit);
+        border-radius: 50%;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        animation: pulseAi 1.5s infinite;
+    }
+
+    @keyframes pulseAi {
+        0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        }
+
+        70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 7px rgba(16, 185, 129, 0);
+        }
+
+        100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+        }
+    }
+
+    .ai-section-header h2 {
+        font-size: 13.5px;
+        font-weight: 800;
+        margin: 0;
+        color: var(--text-white);
+    }
+
+    .ai-section-desc {
+        font-size: 10.5px;
+        color: var(--text-gray);
+        line-height: 1.35;
+        margin: 0 0 12px 0;
+    }
+
+    .provinces-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .province-card {
+        background: rgba(20, 32, 56, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .prov-name {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-white);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .prov-status {
+        font-size: 8.5px;
+        color: var(--green-profit);
+        font-weight: 600;
+    }
+
+    .prov-metric {
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--teal-accent);
+        font-family: monospace;
+        margin-top: 3px;
+    }
+
+    /* BARRA DE NAVEGAÇÃO INFERIOR */
+    .trading-nav-wrapper {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(14, 22, 39, 0.96);
+        backdrop-filter: blur(16px);
+        border-radius: 16px 16px 0 0;
+        z-index: 999;
+        box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.18);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .trading-nav {
+        height: 62px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        max-width: 480px;
+        margin: 0 auto;
+    }
+
+    .nav-link {
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.45);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 9.5px;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    .nav-link i {
+        font-size: 16px;
+        margin-bottom: 2px;
+    }
+
+    .nav-link.active {
+        color: var(--cyan-accent);
+        text-shadow: 0 0 10px rgba(0, 210, 255, 0.4);
+    }
+
+    /* POP-UP DE BOAS-VINDAS */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(3, 8, 16, 0.85);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(8px);
+        padding: 16px;
+    }
+
+    .modal-content-box {
+        background: linear-gradient(
+            135deg,
+            #0e1627 0%,
+            #131f36 100%
+        );
+        border: 1px solid rgba(0, 210, 255, 0.35);
+        box-shadow:
+            0 15px 35px rgba(0, 0, 0, 0.6),
+            0 0 20px rgba(0, 210, 255, 0.15);
+        width: 100%;
+        max-width: 300px;
+        border-radius: 16px;
+        padding: 20px 18px;
+        position: relative;
+        text-align: center;
+    }
+
+    .btn-close-modal {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        background: transparent;
+        border: none;
+        color: var(--text-gray);
+        font-size: 24px;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.2s;
+    }
+
+    .btn-close-modal:hover {
+        color: var(--text-white);
+    }
+
+    .modal-header-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(0, 210, 255, 0.12);
+        border: 1px solid rgba(0, 210, 255, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 8px auto;
+        color: var(--cyan-accent);
+        font-size: 18px;
+    }
+
+    .modal-title {
+        font-size: 15px;
+        font-weight: 800;
+        margin: 0 0 4px 0;
+        color: var(--text-white);
+    }
+
+    .modal-subtitle {
+        font-size: 10.5px;
+        color: var(--text-gray);
+        margin: 0 0 14px 0;
+        line-height: 1.3;
+    }
+
+    .modal-buttons-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .modal-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: white;
+        text-decoration: none;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 11.5px;
+        width: 100%;
+        transition: transform 0.15s ease;
+    }
+
+    .modal-btn:active {
+        transform: scale(0.97);
+    }
+
+    .btn-wa {
+        background: #25d366;
+        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+    }
+
+    .btn-tg {
+        background: #0088cc;
+        box-shadow: 0 4px 12px rgba(0, 136, 204, 0.25);
+    }
+</style>
+
+<script>
+    function closeModal() {
+        document.getElementById('welcomeModal').style.display = 'none';
+    }
+
+    /* ============================================================
+       CARROSSEL PROFISSIONAL DE INTELIGÊNCIA ARTIFICIAL
+       5 IMAGENS - TROCA AUTOMÁTICA A CADA 5 SEGUNDOS
+    ============================================================ */
+
+    const carouselSlides =
+        document.querySelectorAll('.carousel-slide');
+
+    const carouselDots =
+        document.querySelectorAll('.carousel-dot');
+
+    let currentCarouselIndex = 0;
+
+    function changeCarouselSlide(index) {
+
+        carouselSlides.forEach((slide, i) => {
+            slide.classList.toggle(
+                'active',
+                i === index
+            );
+        });
+
+        carouselDots.forEach((dot, i) => {
+            dot.classList.toggle(
+                'active',
+                i === index
+            );
+        });
+    }
+
+    function nextCarouselSlide() {
+
+        currentCarouselIndex =
+            (currentCarouselIndex + 1) %
+            carouselSlides.length;
+
+        changeCarouselSlide(currentCarouselIndex);
+    }
+
+    setInterval(
+        nextCarouselSlide,
+        5000
+    );
+
+
+    /* ============================================================
+       1. GERADOR DE 50 TRANSAÇÕES GLOBAIS (AO E BR)
+    ============================================================ */
+
+    const allTransactions = [];
+
+    const namesList = [
+        'André M.', 'Beatriz C.', 'Carlos D.', 'Dilma F.', 'Eduardo S.', 'Fernando P.',
+        'Gabriel R.', 'Helena T.', 'Igor J.', 'João K.', 'Karla L.', 'Lucas M.',
+        'Maria N.', 'Nelson O.', 'Olívia P.', 'Pedro Q.', 'Quitéria R.', 'Rafael S.',
+        'Sara T.', 'Tiago U.', 'Ulysses V.', 'Vera W.', 'Wagner X.', 'Xavier Y.',
+        'Ana S.', 'Bruno L.', 'Camila V.', 'Diego R.', 'Eliane M.', 'Felipe K.',
+        'Gustavo T.', 'Heloísa P.', 'Isabel O.', 'Julio C.', 'Karen N.', 'Leandro B.',
+        'Marcos V.', 'Natália G.', 'Otávio H.', 'Patrícia D.', 'Renato F.', 'Sabrina Z.',
+        'Tatiane A.', 'Vitor J.', 'Yasmin E.', 'Zeca W.', 'Clarissa B.', 'Dante L.', 'Evelyn M.', 'Flávia S.'
+    ];
+
+    for (let i = 0; i < 50; i++) {
+
+        const isAngola = i % 2 === 0;
+
+        const name =
+            namesList[i % namesList.length];
+
+        const action =
+            Math.random() > 0.4
+                ? 'investiu'
+                : 'sacou lucro';
+
+        let amount, formatted;
+
+        if (isAngola) {
+
+            amount =
+                (Math.floor(Math.random() * 45) + 10) *
+                10000;
+
+            formatted =
+                new Intl.NumberFormat('pt-AO', {
+                    style: 'currency',
+                    currency: 'AOA',
+                    minimumFractionDigits: 0
+                })
+                .format(amount)
+                .replace('AOA', 'KZ');
+
+            allTransactions.push({
+                name,
+                action,
+                formatted,
+                flag: '🇦🇴',
+                type: 'amount-ao'
+            });
+
+        } else {
+
+            amount =
+                (Math.floor(Math.random() * 3000) + 500);
+
+            formatted =
+                new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                    minimumFractionDigits: 0
+                })
+                .format(amount);
+
+            allTransactions.push({
+                name,
+                action,
+                formatted,
+                flag: '🇧🇷',
+                type: 'amount-br'
+            });
+        }
+    }
+
+    function renderFeedPairs() {
+
+        const viewport =
+            document.getElementById('feedViewport');
+
+        let html = '';
+
+        for (
+            let i = 0;
+            i < allTransactions.length;
+            i += 2
+        ) {
+
+            let t1 =
+                allTransactions[i];
+
+            let t2 =
+                allTransactions[
+                    (i + 1) %
+                    allTransactions.length
+                ];
+
+            html += `
+                <div class="feed-row-pair">
+
+                    <div class="feed-card-item">
+
+                        <div class="user-info-group">
+
+                            <span class="country-flag">
+                                ${t1.flag}
+                            </span>
+
+                            <div>
+                                <div class="user-name-text">
+                                    ${t1.name}
+                                </div>
+
+                                <div class="user-action-text">
+                                    ${t1.action}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="transaction-amount-val ${t1.type}">
+                            ${t1.formatted}
+                        </div>
+
+                    </div>
+
+
+                    <div class="feed-card-item">
+
+                        <div class="user-info-group">
+
+                            <span class="country-flag">
+                                ${t2.flag}
+                            </span>
+
+                            <div>
+                                <div class="user-name-text">
+                                    ${t2.name}
+                                </div>
+
+                                <div class="user-action-text">
+                                    ${t2.action}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="transaction-amount-val ${t2.type}">
+                            ${t2.formatted}
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+        }
+
+        viewport.innerHTML = html;
+
+        let currentIndex = 0;
+
+        const totalRows =
+            allTransactions.length / 2;
+
+        setInterval(() => {
+
+            currentIndex =
+                (currentIndex + 1) %
+                totalRows;
+
+            viewport.style.transform =
+                `translateY(-${currentIndex * 48}px)`;
+
+        }, 3200);
+    }
+
+
+    /* ============================================================
+       2. TODOS OS ESTADOS DO BRASIL + DISTRITO FEDERAL
+    ============================================================ */
+
+    const brazilianProvinces = [
+
+        { name: 'Acre (AC)', base: 45200 },
+        { name: 'Alagoas (AL)', base: 33800 },
+        { name: 'Amapá (AP)', base: 29400 },
+        { name: 'Amazonas (AM)', base: 25600 },
+        { name: 'Bahia (BA)', base: 22150 },
+        { name: 'Ceará (CE)', base: 19800 },
+        { name: 'Distrito Federal (DF)', base: 47500 },
+        { name: 'Espírito Santo (ES)', base: 26700 },
+        { name: 'Goiás (GO)', base: 31400 },
+        { name: 'Maranhão (MA)', base: 18500 },
+        { name: 'Mato Grosso (MT)', base: 28900 },
+        { name: 'Mato Grosso do Sul (MS)', base: 24300 },
+        { name: 'Minas Gerais (MG)', base: 45200 },
+        { name: 'Pará (PA)', base: 32600 },
+        { name: 'Paraíba (PB)', base: 21400 },
+        { name: 'Paraná (PR)', base: 43800 },
+        { name: 'Pernambuco (PE)', base: 36500 },
+        { name: 'Piauí (PI)', base: 17900 },
+        { name: 'Rio de Janeiro (RJ)', base: 52800 },
+        { name: 'Rio Grande do Norte (RN)', base: 20500 },
+        { name: 'Rio Grande do Sul (RS)', base: 39700 },
+        { name: 'Rondônia (RO)', base: 19800 },
+        { name: 'Roraima (RR)', base: 15400 },
+        { name: 'Santa Catarina (SC)', base: 42100 },
+        { name: 'São Paulo (SP)', base: 68200 },
+        { name: 'Sergipe (SE)', base: 18800 },
+        { name: 'Tocantins (TO)', base: 17100 }
+
+    ];
+
+
+    function renderProvinces() {
+
+        const grid =
+            document.getElementById('provincesGrid');
+
+        let html = '';
+
+        brazilianProvinces.forEach(
+            (prov, idx) => {
+
+                const liveVal =
+                    prov.base +
+                    Math.floor(
+                        Math.random() * 450
+                    );
+
+                const formattedVal =
+                    new Intl.NumberFormat(
+                        'pt-BR',
+                        {
+                            style: 'currency',
+                            currency: 'BRL',
+                            minimumFractionDigits: 0
+                        }
+                    ).format(liveVal);
+
+                html += `
+                    <div class="province-card">
+
+                        <div class="prov-name">
+
+                            <span>
+                                ${prov.name}
+                            </span>
+
+                            <span class="prov-status">
+                                ● Ativa
+                            </span>
+
+                        </div>
+
+                        <div
+                            class="prov-metric"
+                            id="prov-val-${idx}">
+                            ${formattedVal}
+                        </div>
+
+                    </div>
+                `;
+            }
+        );
+
+        grid.innerHTML = html;
+    }
+
+
+    function updateProvincesLive() {
+
+        brazilianProvinces.forEach(
+            (prov, idx) => {
+
+                const el =
+                    document.getElementById(
+                        `prov-val-${idx}`
+                    );
+
+                if (el) {
+
+                    prov.base +=
+                        Math.floor(
+                            Math.random() * 140
+                        ) - 50;
+
+                    el.innerText =
+                        new Intl.NumberFormat(
+                            'pt-BR',
+                            {
+                                style: 'currency',
+                                currency: 'BRL',
+                                minimumFractionDigits: 0
+                            }
+                        ).format(prov.base);
+                }
+            }
+        );
+    }
+
+
+    /* ============================================================
+       INICIALIZAÇÃO
+    ============================================================ */
+
+    renderFeedPairs();
+
+    renderProvinces();
+
+    setInterval(
+        updateProvincesLive,
+        3500
+    );
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,496 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Levantamento de Salário{% endblock %}
+
+{% block content %}
+<div class="forex-bg">
+    <div class="saque-wrapper">
+        
+        <!-- Navegação Superior / Botão Voltar Profissional -->
+        <div class="top-nav-saque">
+            <a href="{% url 'perfil' %}" class="btn-back-pro">
+                <div class="btn-back-icon">
+                    <i class="fas fa-arrow-left-long"></i>
+                </div>
+                <span>Voltar ao Perfil</span>
+            </a>
+        </div>
+
+        <div class="saque-card">
+            
+            <!-- CARTÃO DE SALDO DUPLA MOEDA (KZ / REAL) -->
+            <div class="card-header-saque">
+                <div class="dual-currency-box">
+                    <div class="dc-item">
+                        <span class="dc-label"><i class="fas fa-coins text-warning"></i> Saldo em Kwanza</span>
+                        <span class="dc-val" id="raw-kz-balance" data-kz="{{ request.user.available_balance|default:0 }}">{{ request.user.available_balance|default:"0.00" }} KZ</span>
+                    </div>
+                    <div class="dc-divider"></div>
+                    <div class="dc-item">
+                        <span class="dc-label"><i class="fas fa-money-bill-wave text-success"></i> Saldo em Real</span>
+                        <span class="dc-val text-real" id="converted-brl-balance">R$ 0,00</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Área de Mensagens Django #}
+            {% if messages %}
+                <ul class="messages-custom">
+                    {% for message in messages %}
+                        <li class="{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {# BLOCO DE DOMINGO (ALERTA ORGANIZADO) #}
+            <div id="sunday-warning" style="display: none;">
+                <div class="alert-box-sunday">
+                    <i class="fas fa-calendar-xmark"></i>
+                    <p><strong>Aviso Importante</strong><br>
+                    Caro cliente, hoje é domingo. O saque está disponível apenas de segunda a sábado. Hoje apenas depósitos estão disponíveis. Obrigado.</p>
+                </div>
+            </div>
+
+            {% if not has_bank_details %}
+                <div class="alert-box-saque" id="bank-warning">
+                    <i class="fas fa-triangle-exclamation"></i> 
+                    <p>Adicione suas coordenadas bancárias no Perfil antes de sacar.</p>
+                </div>
+            {% endif %}
+
+            <form method="post" id="form-saque">
+                {% csrf_token %}
+                
+                <div class="input-section">
+                    <label for="id_amount"><i class="fas fa-wallet"></i> Valor a Sacar (KZ)</label>
+                    <div class="input-container-custom">
+                        {{ form.amount }}
+                        <span class="currency-label">KZ</span>
+                    </div>
+                    <!-- Conversão em tempo real no input -->
+                    <div class="input-real-hint">Equivalente a: <strong id="input-brl-preview">R$ 0,00</strong></div>
+                </div>
+
+                <!-- Painel de Detalhamento da Taxa (5%) e Total Líquido -->
+                <div class="fee-breakdown-card">
+                    <div class="fee-row">
+                        <span>Taxa de Processamento (5%):</span>
+                        <strong id="fee-amount">0.00 KZ</strong>
+                    </div>
+                    <div class="fee-row total-row">
+                        <span>Valor Líquido a Receber:</span>
+                        <strong id="net-amount">0.00 KZ</strong>
+                    </div>
+                </div>
+
+                <!-- Mensagem Dinâmica de Validação -->
+                <div id="min-warning-msg" class="val-warning" style="display: none;">
+                    <i class="fas fa-circle-exclamation"></i> O valor mínimo para levantamento é de R$ 10,00 / 2.000 KZ.
+                </div>
+
+                <button type="submit" id="btn-submit-saque" class="confirm-saque-btn" {% if not has_bank_details %}disabled{% endif %}>
+                    <i class="fas fa-paper-plane"></i> <span>CONFIRMAR SAQUE</span>
+                </button>
+            </form>
+
+            <div class="min-amount-footer">
+                <i class="fas fa-circle-info"></i> Saque mínimo permitido: <strong>R$ 10,00 / 2.000 KZ</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Estilos Globais do Fundo com Brilho Profissional */
+    .forex-bg {
+        background: radial-gradient(circle at 50% 15%, #0f172a 0%, #020617 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        padding: 20px 15px;
+        position: relative;
+        overflow: hidden;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .forex-bg::before {
+        content: "";
+        position: absolute;
+        top: -50%; left: -50%; right: -50%; bottom: -50%;
+        background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
+        pointer-events: none;
+    }
+
+    .saque-wrapper {
+        width: 100%;
+        max-width: 480px;
+        z-index: 2;
+    }
+
+    /* Botão Voltar Profissional */
+    .top-nav-saque {
+        margin-bottom: 18px;
+    }
+
+    .btn-back-pro {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: #94a3b8;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back-icon {
+        width: 38px;
+        height: 38px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #38bdf8;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .btn-back-pro:hover .btn-back-icon {
+        background: rgba(56, 189, 248, 0.2);
+        border-color: #38bdf8;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        transform: translateX(-3px);
+    }
+
+    .btn-back-pro:hover span {
+        color: #ffffff;
+    }
+
+    /* Cartão Principal com Brilho */
+    .saque-card {
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 24px;
+        padding: 25px 20px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(56, 189, 248, 0.1);
+    }
+
+    .card-header-saque { 
+        margin-bottom: 20px; 
+    }
+
+    /* Cartão Brasileiro / Dupla Moeda */
+    .dual-currency-box {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        border-radius: 16px;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .dc-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+    }
+
+    .dc-label {
+        font-size: 0.72rem;
+        color: #94a3b8;
+        margin-bottom: 4px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .dc-val {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #f8fafc;
+    }
+
+    .dc-val.text-real {
+        color: #4ade80;
+    }
+
+    .dc-divider {
+        width: 1px;
+        height: 35px;
+        background: rgba(255, 255, 255, 0.1);
+        margin: 0 10px;
+    }
+
+    /* Input Personalizado */
+    .input-section { margin-bottom: 15px; }
+    .input-section label {
+        display: block;
+        color: #cbd5e1;
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .input-container-custom {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-container-custom input {
+        width: 100%;
+        background: rgba(2, 6, 23, 0.7) !important;
+        border: 1px solid rgba(56, 189, 248, 0.3) !important;
+        border-radius: 12px !important;
+        padding: 14px 45px 14px 15px !important;
+        color: #ffffff !important;
+        font-size: 1.3rem !important;
+        font-weight: 700;
+        outline: none;
+        transition: all 0.3s;
+    }
+
+    .input-container-custom input::-webkit-outer-spin-button,
+    .input-container-custom input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .input-container-custom input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .input-container-custom input:focus {
+        border-color: #38bdf8 !important;
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+    }
+
+    .currency-label {
+        position: absolute;
+        right: 15px;
+        color: #64748b;
+        font-weight: 700;
+        font-size: 0.9rem;
+        pointer-events: none;
+    }
+
+    .input-real-hint {
+        font-size: 0.75rem;
+        color: #38bdf8;
+        margin-top: 6px;
+        text-align: right;
+        font-weight: 600;
+    }
+
+    /* Detalhamento da Taxa */
+    .fee-breakdown-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+    }
+
+    .fee-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.82rem;
+        color: #94a3b8;
+        margin-bottom: 6px;
+    }
+
+    .fee-row strong { color: #f87171; }
+
+    .fee-row.total-row {
+        margin-bottom: 0;
+        padding-top: 6px;
+        border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        font-size: 0.9rem;
+        color: #f8fafc;
+    }
+
+    .fee-row.total-row strong { color: #4ade80; font-size: 1rem; }
+
+    /* Alertas e Avisos */
+    .val-warning {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: #fca5a5;
+        font-size: 0.8rem;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .alert-box-sunday {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid #ef4444;
+        color: #ef4444;
+        padding: 15px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 20px;
+        animation: shake 0.5s ease-in-out;
+    }
+    .alert-box-sunday i { font-size: 1.5rem; margin-bottom: 8px; }
+    .alert-box-sunday p { margin: 0; font-size: 0.85rem; line-height: 1.4; color: #f8fafc; }
+    .alert-box-sunday strong { color: #ef4444; text-transform: uppercase; }
+
+    .alert-box-saque {
+        background: rgba(245, 158, 11, 0.15);
+        border: 1px solid #f59e0b;
+        color: #fbbf24;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Botão Enviar */
+    .confirm-saque-btn {
+        width: 100%;
+        padding: 16px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+        transition: all 0.3s;
+    }
+
+    .confirm-saque-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
+    }
+
+    .confirm-saque-btn:disabled {
+        background: #1e293b !important;
+        color: #475569 !important;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .messages-custom { list-style: none; padding: 0; margin-bottom: 15px; }
+    .messages-custom li { padding: 10px; border-radius: 8px; text-align: center; font-size: 0.85rem; margin-bottom: 8px; }
+    .messages-custom .success { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .messages-custom .error { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .min-amount-footer {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.78rem;
+        margin-top: 18px;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const today = new Date();
+        const isSunday = today.getDay() === 0; // 0 é Domingo
+        
+        const submitBtn = document.getElementById('btn-submit-saque');
+        const sundayWarning = document.getElementById('sunday-warning');
+        const bankWarning = document.getElementById('bank-warning');
+        const formSaque = document.getElementById('form-saque');
+        
+        const rawKzEl = document.getElementById('raw-kz-balance');
+        const convertedBrlEl = document.getElementById('converted-brl-balance');
+        const amountInput = document.querySelector('input[name="amount"]');
+        const inputBrlPreview = document.getElementById('input-brl-preview');
+        
+        const feeAmountEl = document.getElementById('fee-amount');
+        const netAmountEl = document.getElementById('net-amount');
+        const minWarningMsg = document.getElementById('min-warning-msg');
+
+        // Câmbio: 1000 KZ = 5 BRL -> 1 KZ = 0.005 BRL
+        const exchangeRate = 0.005;
+
+        // Converter saldo inicial do usuário para o Cartão Brasileiro
+        if (rawKzEl) {
+            let kzBalance = parseFloat(rawKzEl.getAttribute('data-kz')) || 0;
+            let brlBalance = kzBalance * exchangeRate;
+            convertedBrlEl.innerText = `R$ ${brlBalance.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        // Configuração de verificação de domingo
+        if (isSunday) {
+            sundayWarning.style.display = 'block';
+            if (bankWarning) bankWarning.style.display = 'none';
+            
+            submitBtn.disabled = true;
+            submitBtn.querySelector('span').innerText = "INDISPONÍVEL HOJE";
+            
+            formSaque.onsubmit = function(e) {
+                e.preventDefault();
+                return false;
+            };
+        }
+
+        // Função para calcular taxas (5%) e prever conversão em Reais
+        function calculateFees() {
+            if (!amountInput) return;
+            
+            let val = parseFloat(amountInput.value) || 0;
+            
+            if (val > 0) {
+                let brlPreview = val * exchangeRate;
+                inputBrlPreview.innerText = `R$ ${brlPreview.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+                let fee = val * 0.05; // Taxa de 5%
+                let net = val - fee;
+
+                feeAmountEl.innerText = fee.toLocaleString('pt-AO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' KZ';
+                netAmountEl.innerText = net.toLocaleString('pt-AO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' KZ';
+            } else {
+                inputBrlPreview.innerText = 'R$ 0,00';
+                feeAmountEl.innerText = '0.00 KZ';
+                netAmountEl.innerText = '0.00 KZ';
+            }
+
+            // Alerta visual de valor mínimo (2000 KZ / R$ 10)
+            if (val > 0 && val < 2000) {
+                minWarningMsg.style.display = 'block';
+            } else {
+                minWarningMsg.style.display = 'none';
+            }
+        }
+
+        if (amountInput) {
+            amountInput.placeholder = "Digite o valor (Ex: 2000)";
+            amountInput.addEventListener('input', calculateFees);
+        }
+
+        // Validação no submit (mínimo de 2000 KZ)
+        formSaque.addEventListener('submit', function(e) {
+            let val = parseFloat(amountInput.value) || 0;
+            if (val < 2000) {
+                e.preventDefault();
+                minWarningMsg.style.display = 'block';
+                amountInput.focus();
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,1626 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Meu Perfil{% endblock %}
+
+{% block content %}
+<div class="profile-main-container">
+    
+    <!-- HEADER COMPACTO -->
+    <div class="profile-header">
+        <a href="{% url 'menu' %}" class="btn-back" title="Voltar">
+            <i class="fas fa-arrow-left-long"></i>
+        </a>
+
+        <h1 class="header-title">Meu Perfil</h1>
+
+        <div class="user-id-badge">
+            <span>ID:</span>
+            <strong>{{ request.user.phone_number }}</strong>
+        </div>
+    </div>
+
+    <!-- INDICADORES MULTIMOEDA -->
+    <div class="top-stats-strip">
+
+        <div class="stat-pill border-green">
+            <span class="p-label">
+                <i class="fas fa-calendar-day text-success"></i>
+                HOJE
+            </span>
+
+            <span class="p-val"
+                  title="KZ {{ daily_income|default:'0.00' }}">
+                KZ {{ daily_income|default:"0.00" }}
+            </span>
+
+            <span class="p-subval"
+                  data-kz="{{ daily_income|default:0 }}">
+                R$ 0,00
+            </span>
+        </div>
+
+        <div class="stat-pill border-blue">
+            <span class="p-label">
+                <i class="fas fa-wallet text-primary"></i>
+                SALDO
+            </span>
+
+            <span class="p-val"
+                  title="KZ {{ user.available_balance|default:'0.00' }}">
+                KZ {{ user.available_balance|default:"0.00" }}
+            </span>
+
+            <span class="p-subval"
+                  data-kz="{{ user.available_balance|default:0 }}">
+                R$ 0,00
+            </span>
+        </div>
+
+        <div class="stat-pill border-cyan">
+            <span class="p-label">
+                <i class="fas fa-hand-holding-dollar text-info"></i>
+                SUBSÍDIO
+            </span>
+
+            <span class="p-val"
+                  title="KZ {{ user.subsidy_balance|default:'0.00' }}">
+                KZ {{ user.subsidy_balance|default:"0.00" }}
+            </span>
+
+            <span class="p-subval"
+                  data-kz="{{ user.subsidy_balance|default:0 }}">
+                R$ 0,00
+            </span>
+        </div>
+
+    </div>
+
+    <!-- MENSAGENS -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="custom-alert alert-{{ message.tags }}">
+                <i class="fas fa-circle-info"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- CARD DE IDENTIDADE -->
+    <div class="identity-card">
+
+        <div class="avatar-wrapper">
+            <i class="fas fa-id-card-clip"></i>
+        </div>
+
+        <div class="identity-info">
+
+            <span class="id-label">
+                <i class="fas fa-badge-check"></i>
+                CONTA VERIFICADA & SEGURA
+            </span>
+
+            <span class="id-number">
+                {{ request.user.phone_number }}
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- MENU DE AÇÕES -->
+    <div class="action-grid">
+
+        <button type="button"
+                class="action-item"
+                onclick="openModal('bank-modal')">
+
+            <div class="action-icon">
+                <i class="fas fa-landmark"></i>
+            </div>
+
+            <span>Dados Bancários</span>
+
+        </button>
+
+        <a href="{% url 'saque' %}"
+           class="action-item">
+
+            <div class="action-icon icon-withdraw">
+                <i class="fas fa-money-bill-transfer"></i>
+            </div>
+
+            <span>Sacar</span>
+
+        </a>
+
+        <button type="button"
+                class="action-item"
+                onclick="openModal('history-modal')">
+
+            <div class="action-icon">
+                <i class="fas fa-receipt"></i>
+            </div>
+
+            <span>Histórico</span>
+
+        </button>
+
+        <button type="button"
+                class="action-item"
+                onclick="openModal('password-modal')">
+
+            <div class="action-icon">
+                <i class="fas fa-key"></i>
+            </div>
+
+            <span>Segurança</span>
+
+        </button>
+
+    </div>
+
+    <!-- DOWNLOAD APK -->
+    <a href="{% static 'app/copy_ia.apk' %}"
+       class="btn-download-app"
+       download>
+
+        <div class="app-btn-icon">
+            <i class="fas fa-mobile-screen-button"></i>
+        </div>
+
+        <div class="app-btn-text">
+
+            <strong>
+                BAIXAR APLICATIVO APK
+            </strong>
+
+            <small>
+                Depois clica em instalar mesmo assim
+            </small>
+
+        </div>
+
+    </a>
+
+    <!-- LOGOUT -->
+    <a href="{% url 'logout' %}"
+       class="btn-logout">
+
+        <i class="fas fa-power-off"></i>
+
+        Encerrar Sessão
+
+    </a>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- MODAL DADOS BANCÁRIOS -->
+<!-- ========================================================= -->
+
+<div id="bank-modal"
+     class="modal-overlay">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>
+                <i class="fas fa-building-columns"></i>
+                Configurar Contas Bancárias
+            </h3>
+
+            <button type="button"
+                    class="close-btn"
+                    onclick="closeModal('bank-modal')">
+                &times;
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <!-- ESCOLHA -->
+            <div id="agency-selection-view"
+                 class="agency-selection-container">
+
+                <p class="selection-instruction">
+                    Selecione o país / método de pagamento:
+                </p>
+
+
+                <!-- KWANZA -->
+                <div class="currency-card-option"
+                     onclick="selectAgencyType('kwanza')">
+
+                    <div class="c-opt-icon kzt">
+                        <i class="fas fa-coins"></i>
+                    </div>
+
+                    <div class="c-opt-info">
+
+                        <strong>
+                            A) Angola - Kwanza (KZ)
+                        </strong>
+
+                        <span>
+                            Titular, Banco e IBAN bancário
+                        </span>
+
+                    </div>
+
+                    <i class="fas fa-chevron-right arrow-icon"></i>
+
+                </div>
+
+
+                <!-- PIX -->
+                <div class="currency-card-option"
+                     onclick="selectAgencyType('pix')">
+
+                    <div class="c-opt-icon pix">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+
+                    <div class="c-opt-info">
+
+                        <strong>
+                            B) Brasil - PIX (BRL)
+                        </strong>
+
+                        <span>
+                            Tipo de Chave e Chave PIX
+                        </span>
+
+                    </div>
+
+                    <i class="fas fa-chevron-right arrow-icon"></i>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- FORMULÁRIO KWANZA -->
+            <!-- ================================================= -->
+
+            <div id="form-kwanza-view"
+                 class="sub-form-view"
+                 style="display:none;">
+
+                <button type="button"
+                        class="btn-back-selection"
+                        onclick="backToSelection()">
+
+                    <i class="fas fa-arrow-left-long"></i>
+
+                    Voltar às opções
+
+                </button>
+
+
+                <form method="post"
+                      class="modern-form">
+
+                    {% csrf_token %}
+
+                    <div class="field-box">
+
+                        <label>
+                            Nome do Titular
+                        </label>
+
+                        {{ form.account_holder_name }}
+
+                    </div>
+
+
+                    <div class="field-box">
+
+                        <label>
+                            Instituição Bancária
+                        </label>
+
+                        {{ form.bank_name }}
+
+                    </div>
+
+
+                    <div class="field-box">
+
+                        <label>
+                            IBAN da Conta
+                        </label>
+
+                        {{ form.IBAN }}
+
+                    </div>
+
+
+                    <!-- MANTIDO EXATAMENTE COMO ESTAVA -->
+                    <button type="submit"
+                            name="update_bank"
+                            class="btn-primary">
+
+                        <i class="fas fa-floppy-disk"></i>
+
+                        SALVAR DADOS KWANZA
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- FORMULÁRIO PIX -->
+            <!-- ================================================= -->
+
+            <div id="form-usdt-view"
+                 class="sub-form-view"
+                 style="display:none;">
+
+                <button type="button"
+                        class="btn-back-selection"
+                        onclick="backToSelection()">
+
+                    <i class="fas fa-arrow-left-long"></i>
+
+                    Voltar às opções
+
+                </button>
+
+
+                <!--
+                    IMPORTANTE:
+
+                    O PIX usa AGORA A MESMA AÇÃO:
+                        update_bank
+
+                    Assim ele segue a mesma rota/processamento
+                    usado pelo Kwanza.
+                -->
+
+                <form method="post"
+                      class="modern-form"
+                      id="pixBankForm">
+
+                    {% csrf_token %}
+
+
+                    <!--
+                        ESTES CAMPOS OCULTOS USAM OS MESMOS NOMES
+                        QUE O FORMULÁRIO KWANZA.
+
+                        O valor será preenchido pelo JavaScript
+                        antes do envio.
+                    -->
+
+                    <input type="hidden"
+                           name="account_holder_name"
+                           id="pixAccountHolderHidden"
+                           value="PIX">
+
+
+                    <input type="hidden"
+                           name="bank_name"
+                           id="pixBankNameHidden"
+                           value="PIX">
+
+
+                    <input type="hidden"
+                           name="IBAN"
+                           id="pixIbanHidden"
+                           value="">
+
+
+                    <div class="field-box">
+
+                        <label>
+                            Tipo de Chave PIX
+                        </label>
+
+                        <select name="usdt_channel"
+                                id="pixTypeSelect"
+                                class="custom-select-field"
+                                onchange="updatePixPlaceholder()"
+                                required>
+
+                            <option value=""
+                                    disabled
+                                    selected>
+
+                                Selecione o tipo de chave...
+
+                            </option>
+
+                            <option value="CPF">
+                                CPF
+                            </option>
+
+                            <option value="Telefone">
+                                Telefone
+                            </option>
+
+                            <option value="Email">
+                                E-mail
+                            </option>
+
+                            <option value="Aleatoria">
+                                Chave Aleatória (EVP)
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field-box">
+
+                        <label>
+                            Chave PIX
+                        </label>
+
+                        <input type="text"
+                               name="usdt_address"
+                               id="pixInput"
+                               placeholder="Selecione o tipo de chave primeiro..."
+                               required>
+
+                    </div>
+
+
+                    <!--
+                        MESMA AÇÃO DO KWANZA
+                    -->
+                    <button type="submit"
+                            name="update_bank"
+                            class="btn-primary">
+
+                        <i class="fas fa-qrcode"></i>
+
+                        SALVAR CHAVE PIX
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- HISTÓRICO -->
+<!-- ========================================================= -->
+
+<div id="history-modal"
+     class="modal-overlay">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>
+                <i class="fas fa-list-check"></i>
+                Histórico de Transações
+            </h3>
+
+            <button type="button"
+                    class="close-btn"
+                    onclick="closeModal('history-modal')">
+
+                &times;
+
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <div class="pane-header">
+
+                <span>
+                    Registros de Saques
+                    (Aprovados, Pendentes e Rejeitados)
+                </span>
+
+            </div>
+
+
+            <div class="transaction-list">
+
+                {% if withdrawal_records %}
+
+                    {% for record in withdrawal_records %}
+
+                        <div class="history-card-item status-{{ record.status|lower|slugify }}">
+
+                            <div class="h-card-icon">
+
+                                {% if record.status == 'Aprovado' or record.status == 'Approved' %}
+
+                                    <i class="fas fa-circle-check text-success"></i>
+
+                                {% elif record.status == 'Pendente' or record.status == 'Pending' %}
+
+                                    <i class="fas fa-clock-rotate-left text-warning"></i>
+
+                                {% else %}
+
+                                    <i class="fas fa-circle-xmark text-danger"></i>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="h-card-info">
+
+                                <span class="h-amount">
+                                    - {{ record.amount }} KZ
+                                </span>
+
+                                <span class="h-subval-trans"
+                                      data-kz="{{ record.amount }}">
+
+                                    R$ 0,00
+
+                                </span>
+
+                                <span class="h-date">
+                                    {{ record.created_at|date:"d/m/Y - H:i" }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="h-card-status">
+
+                                <span class="status-badge status-{{ record.status|lower|slugify }}">
+
+                                    {{ record.status }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="empty-state-container">
+
+                        <i class="fas fa-folder-open"></i>
+
+                        <p>
+                            Nenhum registro de saque encontrado.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- SENHA -->
+<!-- ========================================================= -->
+
+<div id="password-modal"
+     class="modal-overlay">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>
+                <i class="fas fa-shield-halved"></i>
+                Alterar Senha
+            </h3>
+
+            <button type="button"
+                    class="close-btn"
+                    onclick="closeModal('password-modal')">
+
+                &times;
+
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <form method="post"
+                  class="modern-form">
+
+                {% csrf_token %}
+
+                <div class="field-box">
+
+                    <label>
+                        Senha Atual
+                    </label>
+
+                    {{ password_form.old_password }}
+
+                </div>
+
+
+                <div class="field-box">
+
+                    <label>
+                        Nova Senha
+                    </label>
+
+                    {{ password_form.new_password1 }}
+
+                </div>
+
+
+                <div class="field-box">
+
+                    <label>
+                        Confirmar Nova Senha
+                    </label>
+
+                    {{ password_form.new_password2 }}
+
+                </div>
+
+
+                <button type="submit"
+                        name="change_password"
+                        class="btn-primary btn-black">
+
+                    <i class="fas fa-lock"></i>
+
+                    ATUALIZAR SENHA
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+:root {
+    --bg-main: #ffffff;
+    --card-bg: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-dark: #1e293b;
+    --text-gray: #64748b;
+    --primary-blue: #0284c7;
+    --accent-green: #10b981;
+    --accent-cyan: #06b6d4;
+    --accent-pix: #14b8a6;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+    background: var(--bg-main) !important;
+    color: var(--text-dark) !important;
+    font-family: 'Poppins', 'Segoe UI', Roboto, sans-serif;
+}
+
+.profile-main-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 12px 15px 50px 15px;
+    box-sizing: border-box;
+}
+
+
+/* HEADER */
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0 12px 0;
+}
+
+.btn-back {
+    color: var(--primary-blue);
+    font-size: 13px;
+    background: rgba(2, 132, 199, 0.08);
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(2, 132, 199, 0.2);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.header-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.user-id-badge {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    color: var(--text-gray);
+}
+
+.user-id-badge strong {
+    color: var(--primary-blue);
+    font-weight: 700;
+}
+
+
+/* ESTATÍSTICAS */
+
+.top-stats-strip {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    width: 100% !important;
+    margin-bottom: 15px !important;
+}
+
+.stat-pill {
+    width: 100% !important;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 8px 4px !important;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.border-green {
+    border-bottom: 3px solid var(--accent-green);
+}
+
+.border-blue {
+    border-bottom: 3px solid var(--primary-blue);
+}
+
+.border-cyan {
+    border-bottom: 3px solid var(--accent-cyan);
+}
+
+.p-label {
+    font-size: 8px !important;
+    font-weight: 800;
+    color: var(--text-gray);
+    margin-bottom: 2px;
+}
+
+.p-val {
+    font-size: 9.5px !important;
+    font-weight: 800;
+    color: var(--text-dark);
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.p-subval {
+    font-size: 8px !important;
+    color: var(--accent-green);
+    font-weight: 700;
+    margin-top: 1px;
+}
+
+
+/* ALERTAS */
+
+.custom-alert {
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background: rgba(2, 132, 199, 0.08);
+    color: var(--primary-blue);
+    text-align: center;
+    font-size: 0.8rem;
+    border: 1px solid rgba(2, 132, 199, 0.2);
+}
+
+
+/* IDENTIDADE */
+
+.identity-card {
+    background: linear-gradient(
+        135deg,
+        #f1f5f9 0%,
+        #e2e8f0 100%
+    );
+
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    margin-bottom: 20px;
+}
+
+.avatar-wrapper {
+    width: 46px;
+    height: 46px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--primary-blue);
+}
+
+.id-label {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--accent-green);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.id-number {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    letter-spacing: 0.5px;
+}
+
+
+/* BOTÕES */
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.action-item {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.action-icon {
+    width: 100%;
+    max-width: 58px;
+    aspect-ratio: 1/1;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--primary-blue);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.action-icon.icon-withdraw {
+    color: var(--accent-green);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.action-item span {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-gray);
+}
+
+
+/* SELEÇÃO */
+
+.agency-selection-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.selection-instruction {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+    margin: 0 0 5px 0;
+}
+
+.currency-card-option {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.currency-card-option:hover {
+    background: #f1f5f9;
+    border-color: var(--primary-blue);
+}
+
+.c-opt-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.c-opt-icon.kzt {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--accent-green);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.c-opt-icon.pix {
+    background: rgba(20, 184, 166, 0.1);
+    color: var(--accent-pix);
+    border: 1px solid rgba(20, 184, 166, 0.2);
+}
+
+.c-opt-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.c-opt-info strong {
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    margin-bottom: 2px;
+}
+
+.c-opt-info span {
+    font-size: 0.7rem;
+    color: var(--text-gray);
+}
+
+.arrow-icon {
+    color: var(--text-gray);
+    font-size: 0.8rem;
+}
+
+.btn-back-selection {
+    background: none;
+    border: none;
+    color: var(--primary-blue);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 15px;
+    padding: 0;
+}
+
+
+/* DOWNLOAD */
+
+.btn-download-app {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(
+        135deg,
+        rgba(2, 132, 199, 0.08) 0%,
+        rgba(16, 185, 129, 0.08) 100%
+    );
+    border: 1px solid var(--border-color);
+    padding: 14px;
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+}
+
+.app-btn-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-blue);
+    color: #ffffff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.app-btn-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.app-btn-text strong {
+    font-size: 0.85rem;
+    color: var(--text-dark);
+}
+
+.app-btn-text small {
+    font-size: 0.7rem;
+    color: var(--text-gray);
+}
+
+
+/* LOGOUT */
+
+.btn-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #ef4444;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 14px;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* MODAIS */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 30px;
+    box-sizing: border-box;
+}
+
+.modal-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    width: 92%;
+    max-width: 500px;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: slideDown 0.3s ease;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--primary-blue);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 15px;
+    overflow-y: auto;
+}
+
+
+/* FORMULÁRIOS */
+
+.modern-form .field-box {
+    margin-bottom: 12px;
+}
+
+.modern-form label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-gray);
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.modern-form input,
+.custom-select-field {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: #f8fafc;
+    color: var(--text-dark);
+    font-size: 0.85rem;
+    box-sizing: border-box;
+}
+
+.custom-select-field option {
+    background: #ffffff;
+    color: var(--text-dark);
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary-blue);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+
+.btn-black {
+    background: #334155;
+    color: #ffffff;
+    border: none;
+}
+
+
+/* HISTÓRICO */
+
+.pane-header {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-gray);
+    margin-bottom: 10px;
+}
+
+.history-card-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.h-card-icon {
+    width: 32px;
+    font-size: 1.1rem;
+}
+
+.h-card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.h-amount {
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--text-dark);
+}
+
+.h-subval-trans {
+    font-size: 0.7rem;
+    color: var(--accent-green);
+    font-weight: 700;
+}
+
+.h-date {
+    font-size: 0.65rem;
+    color: var(--text-gray);
+    margin-top: 2px;
+}
+
+.status-badge {
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+.status-badge.status-aprovado,
+.status-badge.status-approved {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--accent-green);
+}
+
+.status-badge.status-pendente,
+.status-badge.status-pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+}
+
+.status-badge.status-rejeitado,
+.status-badge.status-rejected {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+.empty-state-container {
+    text-align: center;
+    color: var(--text-gray);
+    padding: 20px;
+    font-size: 0.8rem;
+}
+
+.empty-state-container i {
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+    display: block;
+    color: var(--text-gray);
+}
+
+.text-success {
+    color: var(--accent-green);
+}
+
+.text-warning {
+    color: #f59e0b;
+}
+
+.text-danger {
+    color: #ef4444;
+}
+
+</style>
+
+
+<script>
+
+/* =========================================================
+   CONVERSÃO DE MOEDAS
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    const subvalElements =
+        document.querySelectorAll('.p-subval, .h-subval-trans');
+
+    subvalElements.forEach(function(el) {
+
+        const kzVal =
+            parseFloat(el.getAttribute('data-kz')) || 0;
+
+        const brlVal =
+            kzVal * 0.005;
+
+        el.textContent =
+            `R$ ${brlVal.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}`;
+
+    });
+
+});
+
+
+/* =========================================================
+   ABRIR MODAL
+   ========================================================= */
+
+function openModal(modalId) {
+
+    const modal =
+        document.getElementById(modalId);
+
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+
+}
+
+
+/* =========================================================
+   FECHAR MODAL
+   ========================================================= */
+
+function closeModal(modalId) {
+
+    const modal =
+        document.getElementById(modalId);
+
+    if (modal) {
+        modal.style.display = 'none';
+    }
+
+    if (modalId === 'bank-modal') {
+        backToSelection();
+    }
+
+}
+
+
+/* =========================================================
+   ESCOLHER KWANZA OU PIX
+   ========================================================= */
+
+function selectAgencyType(type) {
+
+    document.getElementById(
+        'agency-selection-view'
+    ).style.display = 'none';
+
+
+    if (type === 'kwanza') {
+
+        document.getElementById(
+            'form-kwanza-view'
+        ).style.display = 'block';
+
+        document.getElementById(
+            'form-usdt-view'
+        ).style.display = 'none';
+
+    }
+
+
+    if (type === 'pix') {
+
+        document.getElementById(
+            'form-usdt-view'
+        ).style.display = 'block';
+
+        document.getElementById(
+            'form-kwanza-view'
+        ).style.display = 'none';
+
+    }
+
+}
+
+
+/* =========================================================
+   VOLTAR
+   ========================================================= */
+
+function backToSelection() {
+
+    document.getElementById(
+        'agency-selection-view'
+    ).style.display = 'flex';
+
+    document.getElementById(
+        'form-kwanza-view'
+    ).style.display = 'none';
+
+    document.getElementById(
+        'form-usdt-view'
+    ).style.display = 'none';
+
+}
+
+
+/* =========================================================
+   PLACEHOLDER PIX
+   ========================================================= */
+
+function updatePixPlaceholder() {
+
+    const select =
+        document.getElementById('pixTypeSelect');
+
+    const input =
+        document.getElementById('pixInput');
+
+    const val =
+        select.value;
+
+
+    if (val === 'CPF') {
+
+        input.placeholder =
+            'Digite o seu CPF (ex: 000.000.000-00)';
+
+        input.type = 'text';
+
+    }
+
+    else if (val === 'Telefone') {
+
+        input.placeholder =
+            'Digite o número com DDD (ex: +5511999999999)';
+
+        input.type = 'tel';
+
+    }
+
+    else if (val === 'Email') {
+
+        input.placeholder =
+            'Digite o seu e-mail cadastrado';
+
+        input.type = 'email';
+
+    }
+
+    else if (val === 'Aleatoria') {
+
+        input.placeholder =
+            'Digite a chave aleatória (EVP)';
+
+        input.type = 'text';
+
+    }
+
+    else {
+
+        input.placeholder =
+            'Insira a chave PIX...';
+
+        input.type = 'text';
+
+    }
+
+}
+
+
+/* =========================================================
+   PIX -> MESMA ROTA DO KWANZA
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    const pixForm =
+        document.getElementById('pixBankForm');
+
+    if (!pixForm) {
+        return;
+    }
+
+
+    pixForm.addEventListener('submit', function() {
+
+        const pixType =
+            document.getElementById(
+                'pixTypeSelect'
+            ).value;
+
+        const pixAddress =
+            document.getElementById(
+                'pixInput'
+            ).value.trim();
+
+
+        /*
+         * Envia o PIX para os mesmos campos
+         * que o formulário Kwanza utiliza.
+         *
+         * O IBAN recebe a chave PIX.
+         * O banco recebe PIX + tipo da chave.
+         * O titular fica identificado como PIX.
+         */
+
+        document.getElementById(
+            'pixAccountHolderHidden'
+        ).value = 'PIX';
+
+
+        document.getElementById(
+            'pixBankNameHidden'
+        ).value =
+            'PIX - ' + pixType;
+
+
+        document.getElementById(
+            'pixIbanHidden'
+        ).value =
+            pixAddress;
+
+    });
+
+});
+
+
+/* =========================================================
+   FECHAR AO CLICAR FORA
+   ========================================================= */
+
+window.onclick = function(event) {
+
+    if (
+        event.target.classList.contains(
+            'modal-overlay'
+        )
+    ) {
+
+        event.target.style.display = 'none';
+
+
+        if (
+            event.target.id === 'bank-modal'
+        ) {
+
+            backToSelection();
+
+        }
+
+    }
+
+};
+
+</script>
+
+{% endblock %}

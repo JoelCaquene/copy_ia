@@ -1,0 +1,3316 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<div class="coupon-page">
+
+    <!-- =====================================================
+         FUNDO
+    ====================================================== -->
+
+    <div class="coupon-bg-effect"></div>
+    <div class="coupon-glow glow-one"></div>
+    <div class="coupon-glow glow-two"></div>
+
+
+    <!-- =====================================================
+         ÁUDIO AMBIENTE
+    ====================================================== -->
+
+    <audio
+        id="background-music"
+        loop
+        preload="auto"
+        playsinline
+    >
+        <source
+            src="https://assets.mixkit.co/music/preview/mixkit-relaxing-in-the-afternoon-458.mp3"
+            type="audio/mpeg"
+        >
+    </audio>
+
+
+    <!-- CONTROLE DE MÚSICA -->
+
+    <button
+        type="button"
+        id="music-toggle"
+        class="music-toggle"
+        aria-label="Ativar ou desativar música"
+    >
+        <i class="fas fa-volume-xmark"></i>
+    </button>
+
+
+    <!-- =====================================================
+         SETA VOLTAR
+    ====================================================== -->
+
+    <button
+        type="button"
+        class="back-button"
+        id="back-button"
+        aria-label="Voltar"
+    >
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+
+    <!-- =====================================================
+         CONTEÚDO
+    ====================================================== -->
+
+    <main class="coupon-container">
+
+
+        <!-- =================================================
+             CABEÇALHO
+        ================================================== -->
+
+        <section class="coupon-header">
+
+            <div class="brand-icon">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
+
+            <h1 class="coupon-title">
+                CUPOM DE RECOMPENSA
+            </h1>
+
+            <p class="coupon-subtitle">
+                RESGATE O SEU CÓDIGO E RECEBA A SUA RECOMPENSA
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             CARTÃO PRINCIPAL
+        ================================================== -->
+
+        <section class="coupon-card">
+
+
+            <!-- TOPO -->
+
+            <div class="coupon-card-top">
+
+                <div class="coupon-mini-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+
+                <div>
+
+                    <span class="small-label">
+                        RECOMPENSA
+                    </span>
+
+                    <h2>
+                        Seu cupom
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 INPUT DO CUPOM
+            ================================================== -->
+
+            <div class="coupon-input-area">
+
+                <label for="coupon-code">
+
+                    <i class="fas fa-ticket"></i>
+
+                    CÓDIGO DO CUPOM
+
+                </label>
+
+
+                <div class="coupon-input-wrapper">
+
+                    <span class="input-icon">
+
+                        <i class="fas fa-barcode"></i>
+
+                    </span>
+
+
+                    <input
+                        type="text"
+                        id="coupon-code"
+                        name="coupon_code"
+                        placeholder="DIGITE O SEU CÓDIGO"
+                        autocomplete="off"
+                        autocapitalize="characters"
+                        spellcheck="false"
+                        maxlength="100"
+                    >
+
+
+                    <button
+                        type="button"
+                        id="clear-coupon"
+                        class="clear-button"
+                        aria-label="Limpar código"
+                        style="display:none;"
+                    >
+
+                        <i class="fas fa-times"></i>
+
+                    </button>
+
+                </div>
+
+
+                <p class="input-help">
+
+                    <i class="fas fa-circle-info"></i>
+
+                    Digite exatamente o código recebido.
+
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 BOTÃO
+            ================================================== -->
+
+            <button
+                type="button"
+                id="redeem-coupon"
+                class="redeem-button"
+            >
+
+                <span class="button-normal">
+
+                    <i class="fas fa-gift"></i>
+
+                    RESGATAR CUPOM
+
+                </span>
+
+
+                <span
+                    class="button-loading"
+                    style="display:none;"
+                >
+
+                    <i class="fas fa-spinner fa-spin"></i>
+
+                    A VALIDAR...
+
+                </span>
+
+            </button>
+
+
+            <!-- =================================================
+                 MENSAGEM
+            ================================================== -->
+
+            <div
+                id="coupon-message"
+                class="coupon-message"
+                style="display:none;"
+            >
+
+                <i
+                    id="message-icon"
+                    class="fas fa-circle-info"
+                ></i>
+
+                <span id="message-text"></span>
+
+            </div>
+
+
+            <!-- =================================================
+                 INFORMAÇÕES
+            ================================================== -->
+
+            <div class="coupon-info">
+
+
+                <div class="info-item">
+
+                    <div class="info-icon">
+
+                        <i class="fas fa-shield-halved"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            SEGURO
+                        </strong>
+
+                        <span>
+                            Validação pelo servidor
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <div class="info-icon">
+
+                        <i class="fas fa-bolt"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            RÁPIDO
+                        </strong>
+
+                        <span>
+                            Processamento automático
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <div class="info-icon">
+
+                        <i class="fas fa-gift"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            RECOMPENSA
+                        </strong>
+
+                        <span>
+                            Valor definido pelo sistema
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             AVISO
+        ================================================== -->
+
+        <section class="coupon-notice">
+
+            <div class="notice-icon">
+
+                <i class="fas fa-circle-info"></i>
+
+            </div>
+
+
+            <div class="notice-content">
+
+                <strong>
+                    IMPORTANTE
+                </strong>
+
+                <p>
+                    Cada código de cupom poderá ser utilizado
+                    de acordo com as regras definidas pela
+                    plataforma. Não compartilhe o seu código
+                    com pessoas desconhecidas.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         MODAL DE RECOMPENSA
+    ====================================================== -->
+
+    <div
+        id="reward-modal"
+        class="reward-overlay"
+        style="display:none;"
+    >
+
+        <div class="reward-modal">
+
+
+            <!-- FECHAR -->
+
+            <button
+                type="button"
+                id="close-reward"
+                class="modal-close"
+                aria-label="Fechar"
+            >
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+
+            <!-- SUCESSO -->
+
+            <div class="success-animation">
+
+                <div class="success-circle">
+
+                    <i class="fas fa-check"></i>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 NOVO CABEÇALHO DA RECOMPENSA
+            ================================================== -->
+
+            <span class="reward-small-title">
+
+                COPY.IA ESTA DE PARABENS
+
+            </span>
+
+
+            <h2>
+                VOCE GANHOU
+            </h2>
+
+
+            <p class="reward-description">
+
+                Sua recompensa foi creditada com sucesso.
+
+            </p>
+
+
+            <!-- =================================================
+                 VALORES NAS DUAS MOEDAS
+            ================================================== -->
+
+            <div class="reward-box">
+
+                <span class="reward-label">
+                    VALOR DA SUA RECOMPENSA
+                </span>
+
+
+                <!-- KZ -->
+
+                <div class="currency-line">
+
+                    <span class="currency-flag">
+                        🇦🇴
+                    </span>
+
+                    <strong
+                        id="reward-kz"
+                        class="reward-kz"
+                    >
+                        0 KZ
+                    </strong>
+
+                </div>
+
+
+                <!-- DIVISOR -->
+
+                <div class="currency-divider">
+
+                    <span></span>
+
+                    <small>
+                        EQUIVALENTE
+                    </small>
+
+                    <span></span>
+
+                </div>
+
+
+                <!-- REAL -->
+
+                <div class="currency-line">
+
+                    <span class="currency-flag">
+                        🇧🇷
+                    </span>
+
+                    <strong
+                        id="reward-brl"
+                        class="reward-brl"
+                    >
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+
+                <!-- CAMBIO -->
+
+                <div class="exchange-rate">
+
+                    <i class="fas fa-arrows-rotate"></i>
+
+                    1.000 KZ = R$ 5,00
+
+                </div>
+
+            </div>
+
+
+            <!-- CÓDIGO UTILIZADO -->
+
+            <div class="reward-coupon-code">
+
+                <i class="fas fa-ticket"></i>
+
+                <span id="reward-coupon">
+                    --------
+                </span>
+
+            </div>
+
+
+            <!-- BOTÃO -->
+
+            <button
+                type="button"
+                id="reward-done"
+                class="reward-button"
+            >
+
+                <i class="fas fa-check"></i>
+
+                CONCLUÍDO
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<style>
+
+/* =========================================================
+   VARIÁVEIS
+========================================================= */
+
+:root {
+
+    --coupon-gold: #ffd700;
+
+    --coupon-gold-light: #fff09a;
+
+    --coupon-gold-dark: #b8860b;
+
+    --coupon-red: #520000;
+
+    --coupon-red-dark: #170000;
+
+    --coupon-black: #050505;
+
+    --coupon-white: #ffffff;
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+.coupon-page,
+.coupon-page * {
+
+    box-sizing: border-box;
+
+}
+
+
+/* =========================================================
+   PÁGINA
+========================================================= */
+
+.coupon-page {
+
+    min-height: 100vh;
+
+    position: relative;
+
+    overflow-x: hidden;
+
+    color: #fff;
+
+    font-family:
+        'Poppins',
+        'Segoe UI',
+        Arial,
+        sans-serif;
+
+    background:
+
+        radial-gradient(
+            circle at 50% 10%,
+            #700000 0%,
+            #350000 28%,
+            #100000 60%,
+            #000 100%
+        );
+
+    padding:
+
+        75px
+        15px
+        45px;
+
+}
+
+
+/* =========================================================
+   FUNDO DECORATIVO
+========================================================= */
+
+.coupon-bg-effect {
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+
+        repeating-conic-gradient(
+            from 0deg,
+            rgba(255,215,0,.025) 0deg 10deg,
+            transparent 10deg 20deg
+        );
+
+    pointer-events: none;
+
+}
+
+
+.coupon-glow {
+
+    position: absolute;
+
+    width: 260px;
+
+    height: 260px;
+
+    border-radius: 50%;
+
+    background: #ffd700;
+
+    filter: blur(120px);
+
+    opacity: .08;
+
+    pointer-events: none;
+
+}
+
+
+.glow-one {
+
+    top: -100px;
+
+    left: -100px;
+
+}
+
+
+.glow-two {
+
+    right: -100px;
+
+    bottom: -100px;
+
+}
+
+
+/* =========================================================
+   SETA VOLTAR
+========================================================= */
+
+.back-button {
+
+    position: fixed;
+
+    top: 18px;
+
+    left: 16px;
+
+    z-index: 9999;
+
+    width: 45px;
+
+    height: 45px;
+
+    border: 1px solid
+        rgba(255,215,0,.35);
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+
+        rgba(0,0,0,.55);
+
+    color: #ffd700;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(10px);
+
+    -webkit-backdrop-filter: blur(10px);
+
+    box-shadow:
+
+        0 8px 25px
+        rgba(0,0,0,.35);
+
+    transition:
+
+        .2s ease;
+
+}
+
+
+.back-button:hover {
+
+    transform: translateX(-2px);
+
+    background:
+
+        rgba(255,215,0,.12);
+
+    border-color: #ffd700;
+
+}
+
+
+.back-button:active {
+
+    transform: scale(.94);
+
+}
+
+
+/* =========================================================
+   CONTROLE DA MÚSICA
+========================================================= */
+
+.music-toggle {
+
+    position: fixed;
+
+    top: 18px;
+
+    right: 16px;
+
+    z-index: 9999;
+
+    width: 45px;
+
+    height: 45px;
+
+    border: 1px solid
+        rgba(255,215,0,.35);
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+
+        rgba(0,0,0,.55);
+
+    color: #ffd700;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(10px);
+
+    -webkit-backdrop-filter: blur(10px);
+
+    box-shadow:
+
+        0 8px 25px
+        rgba(0,0,0,.35);
+
+}
+
+
+.music-toggle.music-on {
+
+    background:
+
+        rgba(255,215,0,.13);
+
+    border-color: #ffd700;
+
+    animation:
+
+        musicPulse 1.8s infinite;
+
+}
+
+
+@keyframes musicPulse {
+
+    0%,
+    100% {
+
+        box-shadow:
+            0 8px 25px
+            rgba(0,0,0,.35);
+
+    }
+
+    50% {
+
+        box-shadow:
+            0 0 0 7px
+            rgba(255,215,0,.05),
+            0 8px 25px
+            rgba(0,0,0,.35);
+
+    }
+
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.coupon-container {
+
+    position: relative;
+
+    width: 100%;
+
+    max-width: 520px;
+
+    margin: 0 auto;
+
+    z-index: 2;
+
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.coupon-header {
+
+    text-align: center;
+
+    margin-bottom: 25px;
+
+}
+
+
+.brand-icon {
+
+    width: 64px;
+
+    height: 64px;
+
+    margin: 0 auto 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 20px;
+
+    font-size: 27px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #ffd700,
+            #a96f00
+        );
+
+    color: #160000;
+
+    box-shadow:
+
+        0 8px 30px
+        rgba(255,215,0,.20);
+
+}
+
+
+.coupon-title {
+
+    margin: 0;
+
+    font-size:
+        clamp(
+            1.55rem,
+            7vw,
+            2.25rem
+        );
+
+    line-height: 1.05;
+
+    font-weight: 900;
+
+    letter-spacing: -.5px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #fff4a8,
+            #ffd700,
+            #b8860b
+        );
+
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+
+}
+
+
+.coupon-subtitle {
+
+    margin: 9px auto 0;
+
+    max-width: 380px;
+
+    color:
+        rgba(255,255,255,.65);
+
+    font-size: .72rem;
+
+    line-height: 1.5;
+
+    letter-spacing: 1.4px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   CARTÃO
+========================================================= */
+
+.coupon-card {
+
+    position: relative;
+
+    padding: 22px;
+
+    border-radius: 26px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.09),
+            rgba(255,255,255,.025)
+        );
+
+    border:
+        1px solid
+        rgba(255,215,0,.24);
+
+    box-shadow:
+
+        0 25px 70px
+        rgba(0,0,0,.55),
+
+        inset 0 1px 0
+        rgba(255,255,255,.07);
+
+    backdrop-filter:
+        blur(12px);
+
+    -webkit-backdrop-filter:
+        blur(12px);
+
+}
+
+
+/* =========================================================
+   TOPO DO CARTÃO
+========================================================= */
+
+.coupon-card-top {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding-bottom: 20px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.08);
+
+}
+
+
+.coupon-mini-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    flex-shrink: 0;
+
+    border-radius: 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #ffd700;
+
+    background:
+        rgba(255,215,0,.10);
+
+    border:
+        1px solid
+        rgba(255,215,0,.25);
+
+    font-size: 20px;
+
+}
+
+
+.small-label {
+
+    display: block;
+
+    color: #ffd700;
+
+    font-size: .65rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1.3px;
+
+}
+
+
+.coupon-card-top h2 {
+
+    margin: 3px 0 0;
+
+    font-size: 1.25rem;
+
+    font-weight: 800;
+
+    color: #fff;
+
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.coupon-input-area {
+
+    margin-top: 22px;
+
+}
+
+
+.coupon-input-area label {
+
+    display: block;
+
+    margin-bottom: 9px;
+
+    color:
+        rgba(255,255,255,.88);
+
+    font-size: .76rem;
+
+    font-weight: 800;
+
+    letter-spacing: .7px;
+
+}
+
+
+.coupon-input-area label i {
+
+    color: #ffd700;
+
+    margin-right: 5px;
+
+}
+
+
+.coupon-input-wrapper {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+
+    height: 60px;
+
+    border-radius: 16px;
+
+    background:
+        rgba(0,0,0,.48);
+
+    border:
+        1px solid
+        rgba(255,215,0,.25);
+
+    transition:
+
+        border-color .2s,
+        box-shadow .2s;
+
+}
+
+
+.coupon-input-wrapper:focus-within {
+
+    border-color: #ffd700;
+
+    box-shadow:
+
+        0 0 0 3px
+        rgba(255,215,0,.08);
+
+}
+
+
+.input-icon {
+
+    width: 50px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #ffd700;
+
+    font-size: 17px;
+
+}
+
+
+#coupon-code {
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 100%;
+
+    padding: 0 8px 0 0;
+
+    border: 0;
+
+    outline: 0;
+
+    background: transparent;
+
+    color: #fff;
+
+    font-size: 1rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    text-transform: uppercase;
+
+}
+
+
+#coupon-code::placeholder {
+
+    color:
+        rgba(255,255,255,.32);
+
+    font-weight: 600;
+
+    font-size: .75rem;
+
+}
+
+
+.clear-button {
+
+    width: 42px;
+
+    height: 42px;
+
+    margin-right: 7px;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,.07);
+
+    color:
+        rgba(255,255,255,.65);
+
+    cursor: pointer;
+
+}
+
+
+.input-help {
+
+    margin: 8px 3px 0;
+
+    color:
+        rgba(255,255,255,.42);
+
+    font-size: .67rem;
+
+    line-height: 1.4;
+
+}
+
+
+.input-help i {
+
+    color: #ffd700;
+
+    margin-right: 3px;
+
+}
+
+
+/* =========================================================
+   BOTÃO
+========================================================= */
+
+.redeem-button {
+
+    width: 100%;
+
+    height: 58px;
+
+    margin-top: 20px;
+
+    border: 0;
+
+    border-radius: 16px;
+
+    cursor: pointer;
+
+    color: #180000;
+
+    font-size: .88rem;
+
+    font-weight: 900;
+
+    letter-spacing: .7px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #fff09a 0%,
+            #ffd700 45%,
+            #c38a00 100%
+        );
+
+    box-shadow:
+
+        0 10px 25px
+        rgba(255,215,0,.17);
+
+    transition:
+
+        transform .18s,
+        box-shadow .18s,
+        opacity .18s;
+
+}
+
+
+.redeem-button:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+
+        0 14px 32px
+        rgba(255,215,0,.25);
+
+}
+
+
+.redeem-button:active {
+
+    transform: translateY(0);
+
+}
+
+
+.redeem-button:disabled {
+
+    cursor: not-allowed;
+
+    opacity: .55;
+
+    transform: none;
+
+    box-shadow: none;
+
+}
+
+
+.redeem-button i {
+
+    margin-right: 7px;
+
+}
+
+
+/* =========================================================
+   MENSAGEM
+========================================================= */
+
+.coupon-message {
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 14px;
+
+    padding: 13px 14px;
+
+    border-radius: 13px;
+
+    font-size: .76rem;
+
+    line-height: 1.4;
+
+}
+
+
+.coupon-message.success {
+
+    display: flex !important;
+
+    color: #9cffbd;
+
+    background:
+        rgba(0,180,80,.10);
+
+    border:
+        1px solid
+        rgba(0,255,120,.20);
+
+}
+
+
+.coupon-message.error {
+
+    display: flex !important;
+
+    color: #ffaaaa;
+
+    background:
+        rgba(255,0,0,.09);
+
+    border:
+        1px solid
+        rgba(255,80,80,.20);
+
+}
+
+
+.coupon-message.info {
+
+    display: flex !important;
+
+    color: #ffeaa0;
+
+    background:
+        rgba(255,215,0,.08);
+
+    border:
+        1px solid
+        rgba(255,215,0,.18);
+
+}
+
+
+/* =========================================================
+   INFORMAÇÕES
+========================================================= */
+
+.coupon-info {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+
+    margin-top: 22px;
+
+}
+
+
+.info-item {
+
+    min-width: 0;
+
+    padding: 11px 7px;
+
+    text-align: center;
+
+    border-radius: 13px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid
+        rgba(255,255,255,.05);
+
+}
+
+
+.info-icon {
+
+    width: 28px;
+
+    height: 28px;
+
+    margin: 0 auto 7px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 9px;
+
+    color: #ffd700;
+
+    background:
+        rgba(255,215,0,.08);
+
+    font-size: 12px;
+
+}
+
+
+.info-item strong {
+
+    display: block;
+
+    color: #fff;
+
+    font-size: .65rem;
+
+}
+
+
+.info-item span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color:
+        rgba(255,255,255,.38);
+
+    font-size: .54rem;
+
+    line-height: 1.25;
+
+}
+
+
+/* =========================================================
+   AVISO
+========================================================= */
+
+.coupon-notice {
+
+    display: flex;
+
+    gap: 12px;
+
+    margin-top: 15px;
+
+    padding: 15px;
+
+    border-radius: 18px;
+
+    background:
+        rgba(0,0,0,.28);
+
+    border:
+        1px solid
+        rgba(255,255,255,.06);
+
+}
+
+
+.notice-icon {
+
+    width: 32px;
+
+    height: 32px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: #ffd700;
+
+    background:
+        rgba(255,215,0,.08);
+
+    font-size: 13px;
+
+}
+
+
+.notice-content strong {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: .73rem;
+
+    color: #ffd700;
+
+}
+
+
+.notice-content p {
+
+    margin: 0;
+
+    color:
+        rgba(255,255,255,.48);
+
+    font-size: .65rem;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.reward-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 99999;
+
+    padding: 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(0,0,0,.88);
+
+    backdrop-filter:
+        blur(8px);
+
+    -webkit-backdrop-filter:
+        blur(8px);
+
+}
+
+
+/* =========================================================
+   MODAL DE RECOMPENSA — MAIS CURTO E COMPACTO
+========================================================= */
+
+.reward-modal {
+
+    position: relative;
+
+    width: 100%;
+
+    max-width: 350px;
+
+    padding:
+        22px
+        18px
+        18px;
+
+    text-align: center;
+
+    border-radius: 23px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f7f7f7
+        );
+
+    color: #171717;
+
+    box-shadow:
+
+        0 25px 70px
+        rgba(0,0,0,.65),
+
+        0 0 35px
+        rgba(255,215,0,.18);
+
+    animation:
+
+        rewardPop .35s ease-out;
+
+}
+
+
+@keyframes rewardPop {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            scale(.88)
+            translateY(15px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            scale(1)
+            translateY(0);
+
+    }
+
+}
+
+
+.modal-close {
+
+    position: absolute;
+
+    top: 9px;
+
+    right: 9px;
+
+    width: 31px;
+
+    height: 31px;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    background: #f0f0f0;
+
+    color: #555;
+
+    cursor: pointer;
+
+}
+
+
+.success-animation {
+
+    margin-bottom: 8px;
+
+}
+
+
+.success-circle {
+
+    width: 57px;
+
+    height: 57px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #fff;
+
+    font-size: 23px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #15bd64,
+            #07853f
+        );
+
+    box-shadow:
+
+        0 8px 22px
+        rgba(0,150,70,.22);
+
+}
+
+
+.reward-small-title {
+
+    display: block;
+
+    color: #a07800;
+
+    font-size: .60rem;
+
+    font-weight: 900;
+
+    letter-spacing: 1.1px;
+
+}
+
+
+.reward-modal h2 {
+
+    margin: 3px 0 3px;
+
+    font-size: 1.55rem;
+
+    line-height: 1.05;
+
+    font-weight: 900;
+
+    color: #230000;
+
+}
+
+
+.reward-description {
+
+    margin: 0;
+
+    color: #777;
+
+    font-size: .70rem;
+
+}
+
+
+/* =========================================================
+   CAIXA DAS DUAS MOEDAS — COMPACTA
+========================================================= */
+
+.reward-box {
+
+    margin-top: 13px;
+
+    padding: 13px 11px;
+
+    border-radius: 16px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #fff8d6,
+            #fff1a3
+        );
+
+    border:
+        1px solid
+        rgba(190,145,0,.25);
+
+}
+
+
+.reward-label {
+
+    display: block;
+
+    color: #806900;
+
+    font-size: .55rem;
+
+    font-weight: 900;
+
+    letter-spacing: .8px;
+
+}
+
+
+/* LINHA DA MOEDA */
+
+.currency-line {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+}
+
+
+.currency-flag {
+
+    font-size: 18px;
+
+}
+
+
+.reward-kz {
+
+    display: block;
+
+    margin-top: 4px;
+
+    color: #8d0000;
+
+    font-size: 1.75rem;
+
+    line-height: 1;
+
+    font-weight: 950;
+
+}
+
+
+.reward-brl {
+
+    display: block;
+
+    color: #176b35;
+
+    font-size: 1.30rem;
+
+    line-height: 1;
+
+    font-weight: 950;
+
+}
+
+
+/* =========================================================
+   DIVISOR
+========================================================= */
+
+.currency-divider {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin: 7px 0;
+
+}
+
+
+.currency-divider span {
+
+    flex: 1;
+
+    height: 1px;
+
+    background:
+        rgba(80,60,0,.18);
+
+}
+
+
+.currency-divider small {
+
+    color:
+        rgba(80,60,0,.55);
+
+    font-size: .45rem;
+
+    font-weight: 900;
+
+    letter-spacing: .6px;
+
+}
+
+
+/* =========================================================
+   CAMBIO
+========================================================= */
+
+.exchange-rate {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    margin-top: 8px;
+
+    padding: 5px 8px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(255,255,255,.55);
+
+    color:
+        #806900;
+
+    font-size: .50rem;
+
+    font-weight: 800;
+
+}
+
+
+.exchange-rate i {
+
+    font-size: .48rem;
+
+}
+
+
+/* =========================================================
+   CUPOM UTILIZADO
+========================================================= */
+
+.reward-coupon-code {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-top: 8px;
+
+    padding: 5px 9px;
+
+    border-radius: 50px;
+
+    background: #f2f2f2;
+
+    color: #555;
+
+    font-size: .55rem;
+
+    font-weight: 800;
+
+    letter-spacing: .6px;
+
+}
+
+
+.reward-coupon-code i {
+
+    color: #a47a00;
+
+}
+
+
+/* =========================================================
+   BOTÃO CONCLUÍDO
+========================================================= */
+
+.reward-button {
+
+    width: 100%;
+
+    height: 43px;
+
+    margin-top: 12px;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    background: #160000;
+
+    color: #ffd700;
+
+    font-size: .70rem;
+
+    font-weight: 900;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .coupon-page {
+
+        padding:
+            75px
+            11px
+            35px;
+
+    }
+
+
+    .back-button,
+    .music-toggle {
+
+        width: 42px;
+
+        height: 42px;
+
+        top: 15px;
+
+    }
+
+
+    .back-button {
+
+        left: 11px;
+
+    }
+
+
+    .music-toggle {
+
+        right: 11px;
+
+    }
+
+
+    .coupon-card {
+
+        padding: 17px;
+
+        border-radius: 22px;
+
+    }
+
+
+    .brand-icon {
+
+        width: 57px;
+
+        height: 57px;
+
+        border-radius: 17px;
+
+        font-size: 24px;
+
+    }
+
+
+    .coupon-title {
+
+        font-size: 1.52rem;
+
+    }
+
+
+    .coupon-subtitle {
+
+        font-size: .62rem;
+
+        letter-spacing: 1px;
+
+    }
+
+
+    .coupon-input-wrapper {
+
+        height: 56px;
+
+    }
+
+
+    #coupon-code {
+
+        font-size: .9rem;
+
+    }
+
+
+    #coupon-code::placeholder {
+
+        font-size: .67rem;
+
+    }
+
+
+    .coupon-info {
+
+        gap: 5px;
+
+    }
+
+
+    .info-item {
+
+        padding:
+            9px
+            4px;
+
+    }
+
+
+    .info-item strong {
+
+        font-size: .58rem;
+
+    }
+
+
+    .info-item span {
+
+        font-size: .49rem;
+
+    }
+
+
+    .notice-content p {
+
+        font-size: .61rem;
+
+    }
+
+
+    /*
+     * Modal ainda mais compacto
+     * em telas pequenas.
+     */
+
+    .reward-modal {
+
+        max-width: 330px;
+
+        padding:
+            19px
+            14px
+            15px;
+
+        border-radius: 20px;
+
+    }
+
+
+    .success-circle {
+
+        width: 52px;
+
+        height: 52px;
+
+        font-size: 21px;
+
+    }
+
+
+    .reward-modal h2 {
+
+        font-size: 1.42rem;
+
+    }
+
+
+    .reward-description {
+
+        font-size: .65rem;
+
+    }
+
+
+    .reward-box {
+
+        margin-top: 11px;
+
+        padding: 11px 9px;
+
+    }
+
+
+    .reward-kz {
+
+        font-size: 1.60rem;
+
+    }
+
+
+    .reward-brl {
+
+        font-size: 1.18rem;
+
+    }
+
+
+    .reward-button {
+
+        height: 40px;
+
+        margin-top: 10px;
+
+    }
+
+}
+
+
+/* =========================================================
+   TELAS MUITO PEQUENAS
+========================================================= */
+
+@media (max-width: 340px) {
+
+    .coupon-page {
+
+        padding-left: 8px;
+
+        padding-right: 8px;
+
+    }
+
+
+    .coupon-card {
+
+        padding: 14px;
+
+    }
+
+
+    .coupon-info {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .info-item {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 9px;
+
+        text-align: left;
+
+    }
+
+
+    .info-icon {
+
+        margin: 0;
+
+    }
+
+
+    .reward-modal {
+
+        max-width: 305px;
+
+        padding:
+            17px
+            12px
+            13px;
+
+    }
+
+
+    .reward-kz {
+
+        font-size: 1.48rem;
+
+    }
+
+
+    .reward-brl {
+
+        font-size: 1.10rem;
+
+    }
+
+
+    .reward-modal h2 {
+
+        font-size: 1.30rem;
+
+    }
+
+
+    .reward-box {
+
+        padding: 10px 8px;
+
+    }
+
+}
+
+</style>
+
+
+<script>
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+
+    /* =====================================================
+       ELEMENTOS
+    ====================================================== */
+
+    const couponInput =
+        document.getElementById(
+            'coupon-code'
+        );
+
+
+    const redeemButton =
+        document.getElementById(
+            'redeem-coupon'
+        );
+
+
+    const clearButton =
+        document.getElementById(
+            'clear-coupon'
+        );
+
+
+    const messageBox =
+        document.getElementById(
+            'coupon-message'
+        );
+
+
+    const messageIcon =
+        document.getElementById(
+            'message-icon'
+        );
+
+
+    const messageText =
+        document.getElementById(
+            'message-text'
+        );
+
+
+    const rewardModal =
+        document.getElementById(
+            'reward-modal'
+        );
+
+
+    const rewardKz =
+        document.getElementById(
+            'reward-kz'
+        );
+
+
+    const rewardBrl =
+        document.getElementById(
+            'reward-brl'
+        );
+
+
+    const rewardCoupon =
+        document.getElementById(
+            'reward-coupon'
+        );
+
+
+    const closeReward =
+        document.getElementById(
+            'close-reward'
+        );
+
+
+    const rewardDone =
+        document.getElementById(
+            'reward-done'
+        );
+
+
+    const music =
+        document.getElementById(
+            'background-music'
+        );
+
+
+    const musicToggle =
+        document.getElementById(
+            'music-toggle'
+        );
+
+
+    const backButton =
+        document.getElementById(
+            'back-button'
+        );
+
+
+    let isSubmitting = false;
+
+
+    /* =====================================================
+       CÂMBIO
+
+       REGRA DA PLATAFORMA:
+
+       1000 KZ = 5 BRL
+
+       Portanto:
+
+       BRL = KZ / 200
+
+    ====================================================== */
+
+    const KZ_PER_BRL = 200;
+
+
+    /* =====================================================
+       FORMATAÇÃO KZ
+    ====================================================== */
+
+    function formatKz(value) {
+
+        const number =
+            Number(value) || 0;
+
+        return number.toLocaleString(
+            'pt-BR',
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }
+        ) + ' KZ';
+
+    }
+
+
+    /* =====================================================
+       FORMATAÇÃO REAL
+    ====================================================== */
+
+    function formatBrl(value) {
+
+        const number =
+            Number(value) || 0;
+
+        return number.toLocaleString(
+            'pt-BR',
+            {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       CONVERSÃO KZ → BRL
+    ====================================================== */
+
+    function kzToBrl(kz) {
+
+        const number =
+            Number(kz) || 0;
+
+        return number / KZ_PER_BRL;
+
+    }
+
+
+    /* =====================================================
+       MENSAGEM
+    ====================================================== */
+
+    function showMessage(
+        message,
+        type = 'info'
+    ) {
+
+        messageBox.className =
+            'coupon-message ' + type;
+
+
+        messageBox.style.display =
+            'flex';
+
+
+        messageText.textContent =
+            message;
+
+
+        if (type === 'success') {
+
+            messageIcon.className =
+                'fas fa-circle-check';
+
+        }
+
+        else if (type === 'error') {
+
+            messageIcon.className =
+                'fas fa-circle-exclamation';
+
+        }
+
+        else {
+
+            messageIcon.className =
+                'fas fa-circle-info';
+
+        }
+
+    }
+
+
+    function hideMessage() {
+
+        messageBox.style.display =
+            'none';
+
+        messageBox.className =
+            'coupon-message';
+
+    }
+
+
+    /* =====================================================
+       LOADING
+    ====================================================== */
+
+    function setLoading(
+        loading
+    ) {
+
+        isSubmitting =
+            loading;
+
+
+        redeemButton.disabled =
+            loading;
+
+
+        const normal =
+            redeemButton.querySelector(
+                '.button-normal'
+            );
+
+
+        const loader =
+            redeemButton.querySelector(
+                '.button-loading'
+            );
+
+
+        if (loading) {
+
+            normal.style.display =
+                'none';
+
+            loader.style.display =
+                'inline';
+
+        }
+
+        else {
+
+            normal.style.display =
+                'inline';
+
+            loader.style.display =
+                'none';
+
+        }
+
+    }
+
+
+    /* =====================================================
+       INPUT
+    ====================================================== */
+
+    couponInput.addEventListener(
+        'input',
+        function () {
+
+            this.value =
+                this.value
+                    .toUpperCase()
+                    .replace(/\s+/g, '')
+                    .trim();
+
+
+            clearButton.style.display =
+                this.value.length > 0
+                    ? 'flex'
+                    : 'none';
+
+
+            hideMessage();
+
+        }
+    );
+
+
+    /* =====================================================
+       LIMPAR INPUT
+    ====================================================== */
+
+    clearButton.addEventListener(
+        'click',
+        function () {
+
+            couponInput.value =
+                '';
+
+
+            clearButton.style.display =
+                'none';
+
+
+            hideMessage();
+
+
+            couponInput.focus();
+
+        }
+    );
+
+
+    /* =====================================================
+       MODAL DA RECOMPENSA
+    ====================================================== */
+
+    function showReward(data) {
+
+
+        let rewardKzValue;
+
+
+        if (
+            data.reward !== undefined &&
+            data.reward !== null
+        ) {
+
+            rewardKzValue =
+                Number(data.reward);
+
+        }
+
+        else if (
+            data.prize !== undefined &&
+            data.prize !== null
+        ) {
+
+            rewardKzValue =
+                Number(data.prize);
+
+        }
+
+        else {
+
+            rewardKzValue =
+                0;
+
+        }
+
+
+        /*
+         * Converte KZ para Real.
+         *
+         * 1000 KZ = 5 BRL
+         */
+
+        const rewardBrlValue =
+            kzToBrl(
+                rewardKzValue
+            );
+
+
+        /*
+         * Exibe KZ
+         */
+
+        rewardKz.textContent =
+            formatKz(
+                rewardKzValue
+            );
+
+
+        /*
+         * Exibe BRL
+         */
+
+        rewardBrl.textContent =
+            formatBrl(
+                rewardBrlValue
+            );
+
+
+        /*
+         * Código utilizado
+         */
+
+        rewardCoupon.textContent =
+            data.coupon ||
+            data.coupon_code ||
+            couponInput.value ||
+            '--------';
+
+
+        /*
+         * Abre modal
+         */
+
+        rewardModal.style.display =
+            'flex';
+
+
+        document.body.style.overflow =
+            'hidden';
+
+    }
+
+
+    /* =====================================================
+       FECHAR MODAL
+    ====================================================== */
+
+    function closeRewardModal() {
+
+        rewardModal.style.display =
+            'none';
+
+
+        document.body.style.overflow =
+            '';
+
+
+        couponInput.value =
+            '';
+
+
+        clearButton.style.display =
+            'none';
+
+
+        hideMessage();
+
+    }
+
+
+    closeReward.addEventListener(
+        'click',
+        closeRewardModal
+    );
+
+
+    rewardDone.addEventListener(
+        'click',
+        closeRewardModal
+    );
+
+
+    rewardModal.addEventListener(
+        'click',
+        function (event) {
+
+            if (
+                event.target ===
+                rewardModal
+            ) {
+
+                closeRewardModal();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       RESGATAR CUPOM
+    ====================================================== */
+
+    function redeemCoupon() {
+
+
+        if (isSubmitting) {
+
+            return;
+
+        }
+
+
+        const coupon =
+            couponInput.value.trim();
+
+
+        /*
+         * Validação básica no navegador.
+         *
+         * A validação REAL deve ser feita
+         * no Django.
+         */
+
+        if (!coupon) {
+
+            showMessage(
+                'Digite o código do cupom.',
+                'error'
+            );
+
+
+            couponInput.focus();
+
+            return;
+
+        }
+
+
+        if (coupon.length < 3) {
+
+            showMessage(
+                'O código informado é muito curto.',
+                'error'
+            );
+
+
+            couponInput.focus();
+
+            return;
+
+        }
+
+
+        setLoading(true);
+
+        hideMessage();
+
+
+        /*
+         * =================================================
+         *
+         * MESMA ROTA DA ROLETA
+         *
+         * =================================================
+         */
+
+        fetch(
+
+            '{% url "spin_roulette" %}',
+
+            {
+
+                method: 'POST',
+
+
+                headers: {
+
+                    'X-CSRFToken':
+                        '{{ csrf_token }}',
+
+                    'Content-Type':
+                        'application/json',
+
+                    'Accept':
+                        'application/json',
+
+                    'X-Requested-With':
+                        'XMLHttpRequest'
+
+                },
+
+
+                body:
+                    JSON.stringify({
+
+                        coupon:
+                            coupon,
+
+                        coupon_code:
+                            coupon
+
+                    })
+
+            }
+
+        )
+
+        .then(
+            function (response) {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        'Erro HTTP ' +
+                        response.status
+                    );
+
+                }
+
+
+                return response.json();
+
+            }
+        )
+
+        .then(
+            function (data) {
+
+
+                setLoading(false);
+
+
+                if (data.success) {
+
+
+                    showMessage(
+
+                        data.message ||
+                        'Cupom resgatado com sucesso.',
+
+                        'success'
+
+                    );
+
+
+                    /*
+                     * Mostra a recompensa
+                     * depois de uma pequena
+                     * animação.
+                     */
+
+                    setTimeout(
+
+                        function () {
+
+                            showReward(
+                                data
+                            );
+
+                        },
+
+                        350
+
+                    );
+
+                }
+
+                else {
+
+                    showMessage(
+
+                        data.message ||
+                        'Não foi possível resgatar este cupom.',
+
+                        'error'
+
+                    );
+
+                }
+
+            }
+        )
+
+        .catch(
+            function (error) {
+
+
+                console.error(
+                    'Erro ao resgatar cupom:',
+                    error
+                );
+
+
+                setLoading(false);
+
+
+                showMessage(
+
+                    'Não foi possível contactar o servidor. Tente novamente.',
+
+                    'error'
+
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       BOTÃO
+    ====================================================== */
+
+    redeemButton.addEventListener(
+        'click',
+        redeemCoupon
+    );
+
+
+    /* =====================================================
+       ENTER
+    ====================================================== */
+
+    couponInput.addEventListener(
+        'keydown',
+        function (event) {
+
+            if (
+                event.key ===
+                'Enter'
+            ) {
+
+                event.preventDefault();
+
+                redeemCoupon();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       VOLTAR AO MENU
+    ====================================================== */
+
+    backButton.addEventListener(
+        'click',
+        function () {
+
+            if (
+                window.history.length > 1
+            ) {
+
+                window.history.back();
+
+            }
+
+            else {
+
+                window.location.href =
+                    '/';
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       MÚSICA
+       
+       A música começa na primeira interação do usuário.
+       Isso é necessário porque navegadores modernos
+       normalmente bloqueiam autoplay com som.
+    ====================================================== */
+
+    let musicStarted =
+        false;
+
+
+    function updateMusicButton() {
+
+        if (!music.paused) {
+
+            musicToggle
+                .classList
+                .add(
+                    'music-on'
+                );
+
+
+            musicToggle
+                .innerHTML =
+                    '<i class="fas fa-volume-high"></i>';
+
+        }
+
+        else {
+
+            musicToggle
+                .classList
+                .remove(
+                    'music-on'
+                );
+
+
+            musicToggle.innerHTML =
+                '<i class="fas fa-volume-xmark"></i>';
+
+        }
+
+    }
+
+
+    function startMusic() {
+
+        if (musicStarted) {
+
+            return;
+
+        }
+
+
+        music.volume =
+            0.18;
+
+
+        const playPromise =
+            music.play();
+
+
+        if (
+            playPromise !==
+            undefined
+        ) {
+
+            playPromise
+                .then(
+                    function () {
+
+                        musicStarted =
+                            true;
+
+
+                        updateMusicButton();
+
+                    }
+                )
+                .catch(
+                    function () {
+
+                        /*
+                         * O navegador bloqueou
+                         * o autoplay.
+                         *
+                         * A próxima interação
+                         * tentará novamente.
+                         */
+
+                    }
+                );
+
+        }
+
+    }
+
+
+    /*
+     * Tentativa inicial.
+     */
+
+    startMusic();
+
+
+    /*
+     * Primeira interação do usuário.
+     *
+     * O clique/toque inicia a música
+     * automaticamente.
+     */
+
+    function firstUserInteraction() {
+
+        if (!musicStarted) {
+
+            startMusic();
+
+        }
+
+    }
+
+
+    document.addEventListener(
+        'click',
+        firstUserInteraction,
+        {
+            once: true
+        }
+    );
+
+
+    document.addEventListener(
+        'touchstart',
+        firstUserInteraction,
+        {
+            once: true,
+            passive: true
+        }
+    );
+
+
+    /* =====================================================
+       BOTÃO MÚSICA
+    ====================================================== */
+
+    musicToggle.addEventListener(
+        'click',
+        function (event) {
+
+            event.stopPropagation();
+
+
+            if (
+                music.paused
+            ) {
+
+                music.volume =
+                    0.18;
+
+
+                music.play()
+                    .then(
+                        function () {
+
+                            musicStarted =
+                                true;
+
+
+                            updateMusicButton();
+
+                        }
+                    )
+                    .catch(
+                        function () {
+
+                            showMessage(
+                                'Toque novamente para ativar a música.',
+                                'info'
+                            );
+
+                        }
+                    );
+
+            }
+
+            else {
+
+                music.pause();
+
+
+                musicToggle
+                    .classList
+                    .remove(
+                        'music-on'
+                    );
+
+
+                musicToggle.innerHTML =
+                    '<i class="fas fa-volume-xmark"></i>';
+
+            }
+
+        }
+    );
+
+
+});
+
+</script>
+
+{% endblock %}

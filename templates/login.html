@@ -1,0 +1,904 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Login - copy_ia</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <style>
+
+        :root {
+            --bg-dark: #031027;
+            --bg-dark-2: #061b3a;
+            --card-bg: rgba(7, 24, 52, 0.94);
+
+            --primary: #00c8ff;
+            --primary-hover: #24d8ff;
+            --secondary: #007bff;
+
+            --text-white: #f5f9ff;
+            --text-gray: #9db0c8;
+
+            --input-bg: rgba(2, 13, 31, 0.82);
+
+            --border-color: rgba(0, 200, 255, 0.20);
+
+            --error: #ff647c;
+        }
+
+
+        /* =====================================================
+           CONFIGURAÇÃO GERAL
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+
+            width: 100%;
+            min-height: 100vh;
+
+            overflow-x: hidden;
+            overflow-y: auto;
+
+            font-family: 'Poppins', sans-serif;
+
+            color: var(--text-white);
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+
+        /* =====================================================
+           FUNDO AZUL ESCURO COM BRILHO
+        ===================================================== */
+
+        body {
+
+            position: relative;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            background:
+                radial-gradient(
+                    circle at 50% -10%,
+                    rgba(0, 200, 255, 0.22) 0%,
+                    rgba(0, 110, 255, 0.12) 25%,
+                    transparent 55%
+                ),
+                radial-gradient(
+                    circle at 0% 50%,
+                    rgba(0, 100, 255, 0.10) 0%,
+                    transparent 42%
+                ),
+                radial-gradient(
+                    circle at 100% 75%,
+                    rgba(0, 210, 255, 0.08) 0%,
+                    transparent 40%
+                ),
+                linear-gradient(
+                    135deg,
+                    #020b1c 0%,
+                    #03152f 45%,
+                    #041d3d 100%
+                );
+
+            background-attachment: fixed;
+        }
+
+
+        /* Brilho decorativo no fundo */
+
+        body::before {
+            content: "";
+
+            position: fixed;
+
+            width: 320px;
+            height: 320px;
+
+            top: 18%;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            background: rgba(0, 190, 255, 0.08);
+
+            filter: blur(90px);
+
+            border-radius: 50%;
+
+            pointer-events: none;
+
+            z-index: 0;
+        }
+
+
+        body::after {
+            content: "";
+
+            position: fixed;
+
+            width: 220px;
+            height: 220px;
+
+            right: -80px;
+            bottom: -70px;
+
+            background: rgba(0, 120, 255, 0.10);
+
+            filter: blur(70px);
+
+            border-radius: 50%;
+
+            pointer-events: none;
+
+            z-index: 0;
+        }
+
+
+        /* =====================================================
+           BARRA SUPERIOR
+        ===================================================== */
+
+        .top-nav {
+
+            width: 100%;
+            max-width: 600px;
+
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 18px 20px 10px;
+
+            position: relative;
+
+            z-index: 10;
+        }
+
+
+        .logo-img {
+
+            font-size: 24px;
+
+            font-weight: 900;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #ffffff 0%,
+                    #8deaff 45%,
+                    var(--primary) 100%
+                );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            filter:
+                drop-shadow(
+                    0 0 10px rgba(0, 200, 255, 0.25)
+                );
+        }
+
+
+        .nav-link-register {
+
+            text-decoration: none;
+
+            color: var(--primary);
+
+            font-weight: 600;
+
+            font-size: 0.80rem;
+
+            padding: 7px 16px;
+
+            border: 1px solid rgba(0, 200, 255, 0.55);
+
+            border-radius: 50px;
+
+            background:
+                rgba(0, 160, 255, 0.07);
+
+            box-shadow:
+                0 0 12px rgba(0, 200, 255, 0.07);
+
+            transition: all 0.25s ease;
+        }
+
+
+        .nav-link-register:hover {
+
+            background:
+                rgba(0, 200, 255, 0.16);
+
+            box-shadow:
+                0 0 18px rgba(0, 200, 255, 0.15);
+        }
+
+
+        .nav-link-register:active {
+
+            transform: scale(0.96);
+
+            background: var(--primary);
+
+            color: #00101e;
+        }
+
+
+        /* =====================================================
+           CONTAINER DE LOGIN
+        ===================================================== */
+
+        .login-container {
+
+            position: relative;
+
+            z-index: 5;
+
+            margin-top: 38px;
+
+            margin-bottom: 40px;
+
+            width: 90%;
+            max-width: 420px;
+
+            padding: 32px 22px 28px;
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(8, 31, 65, 0.96),
+                    rgba(4, 19, 43, 0.97)
+                );
+
+            border:
+                1px solid rgba(0, 200, 255, 0.18);
+
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.50),
+                0 0 35px rgba(0, 150, 255, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.035);
+
+            text-align: center;
+
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+
+        /* Brilho superior do cartão */
+
+        .login-container::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 12%;
+
+            width: 76%;
+            height: 1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(0, 210, 255, 0.75),
+                    transparent
+                );
+
+            box-shadow:
+                0 0 12px rgba(0, 210, 255, 0.45);
+        }
+
+
+        /* =====================================================
+           FORMULÁRIO
+        ===================================================== */
+
+        .auth-form {
+
+            width: 100%;
+        }
+
+
+        .form-group {
+
+            margin-bottom: 20px;
+
+            text-align: left;
+        }
+
+
+        .form-group label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: var(--text-gray);
+
+            font-size: 0.74rem;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        .input-wrapper {
+
+            position: relative;
+
+            display: flex;
+            align-items: center;
+
+            width: 100%;
+        }
+
+
+        .input-wrapper i.main-icon {
+
+            position: absolute;
+
+            left: 15px;
+
+            z-index: 5;
+
+            color: var(--primary);
+
+            font-size: 1rem;
+
+            filter:
+                drop-shadow(
+                    0 0 5px rgba(0, 200, 255, 0.25)
+                );
+        }
+
+
+        /* =====================================================
+           CAMPOS
+        ===================================================== */
+
+        .auth-form input {
+
+            width: 100%;
+
+            padding: 13px 45px 13px 45px;
+
+            border:
+                1px solid rgba(0, 200, 255, 0.15);
+
+            border-radius: 12px;
+
+            background:
+                rgba(1, 12, 29, 0.82);
+
+            color: var(--text-white);
+
+            font-family: 'Poppins', sans-serif;
+
+            font-size: 0.94rem;
+
+            font-weight: 500;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+
+        .auth-form input::placeholder {
+
+            color: #8298b3;
+
+            font-size: 0.84rem;
+        }
+
+
+        .auth-form input:focus {
+
+            border-color: var(--primary);
+
+            background:
+                rgba(1, 17, 38, 0.95);
+
+            box-shadow:
+                0 0 0 2px rgba(0, 200, 255, 0.06),
+                0 0 18px rgba(0, 200, 255, 0.13);
+        }
+
+
+        /* =====================================================
+           BOTÃO MOSTRAR SENHA
+        ===================================================== */
+
+        .toggle-password {
+
+            position: absolute;
+
+            right: 15px;
+
+            z-index: 6;
+
+            cursor: pointer;
+
+            color: var(--text-gray);
+
+            font-size: 0.95rem;
+
+            transition: color 0.2s ease;
+        }
+
+
+        .toggle-password:hover {
+
+            color: var(--primary);
+        }
+
+
+        /* =====================================================
+           BOTÃO ENTRAR
+        ===================================================== */
+
+        .submit-button {
+
+            width: 100%;
+
+            padding: 14px;
+
+            margin-top: 8px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #00c8ff 0%,
+                    #008cff 55%,
+                    #006be6 100%
+                );
+
+            color: #ffffff;
+
+            font-family: 'Poppins', sans-serif;
+
+            font-size: 0.94rem;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+            box-shadow:
+                0 7px 25px rgba(0, 140, 255, 0.24),
+                0 0 15px rgba(0, 200, 255, 0.08);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                filter 0.2s ease;
+        }
+
+
+        .submit-button:hover {
+
+            filter: brightness(1.08);
+
+            box-shadow:
+                0 9px 30px rgba(0, 150, 255, 0.32),
+                0 0 20px rgba(0, 200, 255, 0.12);
+        }
+
+
+        .submit-button:active {
+
+            transform: scale(0.98);
+        }
+
+
+        /* =====================================================
+           ERROS DJANGO
+        ===================================================== */
+
+        .errorlist {
+
+            list-style: none;
+
+            padding: 0;
+
+            margin: 9px 0 0;
+
+            color: var(--error);
+
+            font-size: 0.78rem;
+
+            line-height: 1.45;
+
+            text-align: left;
+        }
+
+
+        .errorlist li {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 6px;
+        }
+
+
+        .errorlist i {
+
+            margin-top: 3px;
+
+            flex-shrink: 0;
+        }
+
+
+        /* =====================================================
+           RESPONSIVO
+        ===================================================== */
+
+        @media (max-width: 380px) {
+
+            .top-nav {
+
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+
+            .logo-img {
+
+                font-size: 22px;
+            }
+
+
+            .nav-link-register {
+
+                font-size: 0.74rem;
+
+                padding: 6px 13px;
+            }
+
+
+            .login-container {
+
+                width: 92%;
+
+                padding:
+                    25px 16px 23px;
+
+                margin-top: 28px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         CABEÇALHO
+    ====================================================== -->
+
+    <nav class="top-nav">
+
+        <div class="logo-img">
+            copy_ia
+        </div>
+
+        <a
+            href="{% url 'cadastro' %}"
+            class="nav-link-register"
+        >
+            Criar Conta
+        </a>
+
+    </nav>
+
+
+    <!-- =====================================================
+         CONTAINER DE LOGIN
+    ====================================================== -->
+
+    <div class="login-container">
+
+        <form
+            method="post"
+            class="auth-form"
+        >
+
+            {% csrf_token %}
+
+
+            <!-- =============================================
+                 ERROS GERAIS DO DJANGO
+            ============================================== -->
+
+            {% if form.non_field_errors %}
+
+                <ul class="errorlist">
+
+                    {% for error in form.non_field_errors %}
+
+                        <li>
+                            <i class="fas fa-circle-exclamation"></i>
+                            {{ error }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% endif %}
+
+
+            <!-- =============================================
+                 TELEFONE
+            ============================================== -->
+
+            <div class="form-group">
+
+                <label>
+                    Telefone
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="fa-solid fa-phone-flip main-icon"></i>
+
+                    {{ form.username }}
+
+                </div>
+
+
+                {% if form.username.errors %}
+
+                    <ul class="errorlist">
+
+                        {% for error in form.username.errors %}
+
+                            <li>
+                                {{ error }}
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =============================================
+                 SENHA
+            ============================================== -->
+
+            <div class="form-group">
+
+                <label>
+                    Senha
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="fa-solid fa-shield-halved main-icon"></i>
+
+                    {{ form.password }}
+
+
+                    <i
+                        class="fa-regular fa-eye toggle-password"
+                        id="togglePassword"
+                        title="Mostrar senha"
+                    ></i>
+
+                </div>
+
+
+                {% if form.password.errors %}
+
+                    <ul class="errorlist">
+
+                        {% for error in form.password.errors %}
+
+                            <li>
+                                {{ error }}
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =============================================
+                 BOTÃO ENTRAR
+            ============================================== -->
+
+            <button
+                type="submit"
+                class="submit-button"
+            >
+
+                <span>
+                    Entrar
+                </span>
+
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+        document.addEventListener(
+            'DOMContentLoaded',
+            function() {
+
+
+                /* =========================================
+                   MOSTRAR / OCULTAR SENHA
+                ========================================= */
+
+                const togglePassword =
+                    document.querySelector('#togglePassword');
+
+                const passwordInput =
+                    document.querySelector(
+                        'input[name="password"]'
+                    );
+
+
+                if (
+                    togglePassword &&
+                    passwordInput
+                ) {
+
+                    togglePassword.addEventListener(
+                        'click',
+                        function() {
+
+                            const isPassword =
+                                passwordInput.getAttribute(
+                                    'type'
+                                ) === 'password';
+
+
+                            passwordInput.setAttribute(
+                                'type',
+                                isPassword
+                                    ? 'text'
+                                    : 'password'
+                            );
+
+
+                            this.classList.toggle(
+                                'fa-eye',
+                                !isPassword
+                            );
+
+
+                            this.classList.toggle(
+                                'fa-eye-slash',
+                                isPassword
+                            );
+
+                        }
+                    );
+
+                }
+
+
+                /* =========================================
+                   CAMPO DE NÚMERO
+                   
+                   SEM EXEMPLO.
+                   APENAS "Digite número".
+                ========================================= */
+
+                const phoneInput =
+                    document.querySelector(
+                        'input[name="username"]'
+                    );
+
+
+                if (phoneInput) {
+
+                    phoneInput.setAttribute(
+                        'placeholder',
+                        'Digite número'
+                    );
+
+                    phoneInput.setAttribute(
+                        'inputmode',
+                        'numeric'
+                    );
+
+                }
+
+
+                /* =========================================
+                   CAMPO DE SENHA
+                ========================================= */
+
+                const passInput =
+                    document.querySelector(
+                        'input[name="password"]'
+                    );
+
+
+                if (passInput) {
+
+                    passInput.setAttribute(
+                        'placeholder',
+                        'Digite sua senha'
+                    );
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>

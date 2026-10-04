@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Minha Equipa | Sistema de Afiliados{% endblock %}
+
+{% block content %}
+<div class="team-page-body">
+    <div class="team-container-wrapper">
+        
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <a href="{% url 'menu' %}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header-custom">
+            <h1>Minha Equipa <i class="fas fa-network-wired"></i></h1>
+        </div>
+
+        <!-- Invite Section -->
+        <div class="invite-link-section">
+            <div class="invite-box">
+                <span id="invite-link">{{ invite_link }}</span>
+                <button type="button" class="copy-button" id="copyBtn" title="Copiar Link">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            <p class="invite-code-text">
+                Meu Código: <span>{{ user.invite_code }}</span>
+            </p>
+        </div>
+
+        <!-- Lista de Cards da Equipa (Organizados, Elegantes e Compactos) -->
+        <div class="summary-area-list">
+            
+            <!-- NÍVEL A -->
+            <div class="stat-card glow-blue">
+                <div class="card-header-row">
+                    <div class="card-left-group">
+                        <div class="icon-box"><i class="fas fa-user-shield"></i></div>
+                        <div>
+                            <span class="level-tag tag-blue">Nível A</span>
+                            <h4 class="card-main-title">Membros Diretos</h4>
+                        </div>
+                    </div>
+                    <span class="rule-pill">15% Invest.</span>
+                </div>
+                <div class="card-metrics-grid">
+                    <div class="metric-box">
+                        <span class="m-lbl">Membros</span>
+                        <span class="m-val">{{ level_a_count }}</span>
+                    </div>
+                    <div class="metric-box">
+                        <span class="m-lbl">Investidores</span>
+                        <span class="m-val text-green">{{ level_a_investors }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NÍVEL B -->
+            <div class="stat-card glow-purple">
+                <div class="card-header-row">
+                    <div class="card-left-group">
+                        <div class="icon-box"><i class="fas fa-users-crown"></i></div>
+                        <div>
+                            <span class="level-tag tag-purple">Nível B</span>
+                            <h4 class="card-main-title">Nível 2 da Rede</h4>
+                        </div>
+                    </div>
+                    <span class="rule-pill">3% Invest.</span>
+                </div>
+                <div class="card-metrics-grid">
+                    <div class="metric-box">
+                        <span class="m-lbl">Membros</span>
+                        <span class="m-val">{{ level_b_count }}</span>
+                    </div>
+                    <div class="metric-box">
+                        <span class="m-lbl">Investidores</span>
+                        <span class="m-val text-purple">{{ level_b_investors }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NÍVEL C -->
+            <div class="stat-card glow-emerald">
+                <div class="card-header-row">
+                    <div class="card-left-group">
+                        <div class="icon-box"><i class="fas fa-project-diagram"></i></div>
+                        <div>
+                            <span class="level-tag tag-emerald">Nível C</span>
+                            <h4 class="card-main-title">Nível 3 da Rede</h4>
+                        </div>
+                    </div>
+                    <span class="rule-pill">1% Invest.</span>
+                </div>
+                <div class="card-metrics-grid">
+                    <div class="metric-box">
+                        <span class="m-lbl">Membros</span>
+                        <span class="m-val">{{ level_c_count }}</span>
+                    </div>
+                    <div class="metric-box">
+                        <span class="m-lbl">Investidores</span>
+                        <span class="m-val text-emerald">{{ level_c_investors }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOTAL / BÓNUS -->
+            <div class="stat-card glow-gold">
+                <div class="card-header-row">
+                    <div class="card-left-group">
+                        <div class="icon-box icon-gold"><i class="fas fa-vault"></i></div>
+                        <div>
+                            <span class="level-tag tag-gold">Resumo Geral</span>
+                            <h4 class="card-main-title">Bónus da Rede</h4>
+                        </div>
+                    </div>
+                    <span class="rule-pill rule-gold-pill">Total Acumulado</span>
+                </div>
+                <div class="card-metrics-grid">
+                    <div class="metric-box">
+                        <span class="m-lbl">Total Equipa</span>
+                        <span class="m-val">{{ team_count }}</span>
+                    </div>
+                    <div class="metric-box metric-wide">
+                        <span class="m-lbl">Subsídio Acumulado</span>
+                        <span class="m-val currency-display" data-raw="{{ subsidy_balance|default:'0' }}">KZ {{ subsidy_balance|default:"0" }}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Seção de Regras e Orientações -->
+        <div class="info-section">
+            <h3 class="info-title"><i class="fas fa-shield-halved"></i> Regras de Comissionamento</h3>
+            <p class="info-text"><strong>Nível A (Diretos):</strong> Seus convidados diretos. Receba 15% de comissão sobre o valor dos investimentos realizados por eles.</p>
+            <p class="info-text"><strong>Nível B (Subordinados):</strong> Convidados do seu Nível A. Receba 3% de comissão sobre os investimentos efetuados.</p>
+            <p class="info-text"><strong>Nível C (Rede):</strong> Convidados do seu Nível B. Receba 1% de comissão sobre o volume investido.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --bg-main: #060d1a;
+        --card-bg: linear-gradient(145deg, #0d1625 0%, #070c14 100%);
+        --border-light: rgba(255, 255, 255, 0.07);
+        --text-white: #f1f5f9;
+        --text-muted: #94a3b8;
+        
+        --color-blue: #00f2fe;
+        --color-purple: #b53cff;
+        --color-emerald: #00f5a0;
+        --color-gold: #fbbf24;
+    }
+
+    .team-page-body {
+        background: radial-gradient(circle at 50% 0%, rgba(0, 245, 160, 0.08) 0%, transparent 60%), var(--bg-main);
+        min-height: 100vh;
+        color: var(--text-white);
+        font-family: 'Inter', sans-serif;
+        padding-bottom: 50px;
+    }
+
+    .team-container-wrapper {
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 14px;
+        box-sizing: border-box;
+    }
+
+    .top-nav { margin-bottom: 12px; }
+    .back-btn {
+        color: var(--text-white);
+        text-decoration: none;
+        font-size: 0.78rem;
+        background: rgba(255,255,255,0.04);
+        padding: 6px 14px;
+        border-radius: 50px;
+        transition: 0.3s;
+        border: 1px solid var(--border-light);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+    }
+    .back-btn:hover { background: rgba(0, 245, 160, 0.15); border-color: var(--color-emerald); color: var(--color-emerald); }
+
+    .page-header-custom h1 {
+        font-size: 1.15rem;
+        text-align: center;
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #fff;
+        font-weight: 800;
+        text-shadow: 0 0 12px rgba(0,245,160,0.25);
+    }
+
+    .invite-box {
+        background: var(--card-bg);
+        border: 1px solid rgba(0, 245, 160, 0.25);
+        padding: 10px 14px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    #invite-link { 
+        font-size: 0.75rem; 
+        color: var(--color-emerald); 
+        white-space: nowrap; 
+        overflow: hidden; 
+        text-overflow: ellipsis;
+        font-family: 'JetBrains Mono', monospace;
+        margin-right: 10px;
+    }
+
+    .copy-button { 
+        background: var(--color-emerald); 
+        border: none; 
+        color: #050b14; 
+        width: 32px;
+        height: 32px;
+        border-radius: 8px; 
+        cursor: pointer; 
+        transition: 0.2s;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .copy-button:hover { filter: brightness(1.1); transform: scale(1.05); }
+
+    .invite-code-text {
+        color: var(--text-muted); 
+        font-size: 0.75rem; 
+        text-align: center; 
+        margin-bottom: 20px; 
+        font-weight: 500;
+    }
+    .invite-code-text span {
+        color: var(--color-emerald);
+        font-weight: 700;
+        letter-spacing: 0.8px;
+    }
+
+    /* GRID DE CARDS ESTILIZADOS */
+    .summary-area-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .stat-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 14px;
+        border: 1px solid var(--border-light);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* BORDAS E GLOW LATERAL */
+    .glow-blue { border-left: 4px solid var(--color-blue); }
+    .glow-purple { border-left: 4px solid var(--color-purple); }
+    .glow-emerald { border-left: 4px solid var(--color-emerald); }
+    .glow-gold { border-left: 4px solid var(--color-gold); }
+
+    .card-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .card-left-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .icon-box {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .glow-blue .icon-box { color: var(--color-blue); background: rgba(0, 242, 254, 0.12); }
+    .glow-purple .icon-box { color: var(--color-purple); background: rgba(181, 60, 255, 0.12); }
+    .glow-emerald .icon-box { color: var(--color-emerald); background: rgba(0, 245, 160, 0.12); }
+    .glow-gold .icon-box { color: var(--color-gold); background: rgba(251, 191, 36, 0.12); }
+
+    .card-main-title {
+        font-size: 0.82rem;
+        margin: 0;
+        font-weight: 700;
+        color: var(--text-white);
+    }
+
+    .level-tag {
+        font-size: 0.6rem;
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-weight: 800;
+        text-transform: uppercase;
+        display: inline-block;
+        margin-bottom: 1px;
+    }
+
+    .tag-blue { background: rgba(0, 242, 254, 0.15); color: var(--color-blue); }
+    .tag-purple { background: rgba(181, 60, 255, 0.15); color: var(--color-purple); }
+    .tag-emerald { background: rgba(0, 245, 160, 0.15); color: var(--color-emerald); }
+    .tag-gold { background: rgba(251, 191, 36, 0.15); color: var(--color-gold); }
+
+    .rule-pill {
+        font-size: 0.65rem;
+        padding: 3px 8px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text-muted);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        font-weight: 600;
+    }
+
+    .rule-gold-pill {
+        background: rgba(251, 191, 36, 0.08);
+        color: var(--color-gold);
+        border-color: rgba(251, 191, 36, 0.2);
+    }
+
+    .card-metrics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 8px;
+    }
+
+    .metric-box {
+        background: rgba(0, 0, 0, 0.22);
+        padding: 8px 10px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .metric-wide {
+        grid-column: span 1;
+    }
+
+    .m-lbl {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .m-val {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--text-white);
+    }
+
+    .currency-brl-sub {
+        font-size: 0.65rem;
+        color: var(--color-gold);
+        font-weight: 600;
+        display: block;
+        margin-top: 1px;
+    }
+
+    .text-green { color: var(--color-emerald); }
+    .text-purple { color: var(--color-purple); }
+    .text-emerald { color: var(--color-emerald); }
+
+    /* SEÇÃO DE INFORMAÇÕES */
+    .info-section {
+        background: var(--card-bg);
+        padding: 14px;
+        border-radius: 12px;
+        border: 1px solid var(--border-light);
+        border-left: 4px solid var(--color-emerald);
+    }
+
+    .info-title { 
+        font-size: 0.82rem; 
+        margin: 0 0 8px 0; 
+        color: var(--color-emerald); 
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 700;
+    }
+
+    .info-text { 
+        font-size: 0.73rem; 
+        color: var(--text-muted); 
+        margin-bottom: 6px; 
+        line-height: 1.4; 
+    }
+    .info-text:last-child { margin-bottom: 0; }
+    .info-text strong { color: var(--text-white); }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Taxa de câmbio: R$ 1,00 = 200 KZ (5 Reais = 1000 KZ)
+        const TAXA_CONVERSAO = 200;
+
+        document.querySelectorAll('.currency-display').forEach(el => {
+            let rawVal = parseFloat(el.getAttribute('data-raw')) || 0;
+            let valBrl = rawVal / TAXA_CONVERSAO;
+
+            let fmtKz = rawVal.toLocaleString('pt-AO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+            let fmtBrl = valBrl.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            el.innerHTML = `${fmtKz} KZ <span class="currency-brl-sub">(R$ ${fmtBrl})</span>`;
+        });
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', function() {
+        const textToCopy = document.getElementById('invite-link').innerText;
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showSuccess(this);
+            });
+        } else {
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showSuccess(this);
+        }
+    });
+
+    function showSuccess(btn) {
+        const originalContent = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        btn.style.backgroundColor = '#00f5a0';
+        btn.style.color = '#060d1a';
+        setTimeout(() => {
+            btn.innerHTML = originalContent;
+            btn.style.backgroundColor = '';
+            btn.style.color = '';
+        }, 2000);
+    }
+</script>
+{% endblock %}

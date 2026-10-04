@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}copy_ia{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+    {# Link do Font Awesome Atualizado para a versão 6.5.2 (última estável) #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <div class="menu-container">
+        {% block content %}
+        {% endblock %}
+
+    </div>
+</body>
+</html>

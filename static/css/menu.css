@@ -1,0 +1,176 @@
+/* Estilos Gerais */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #0d1a2f; /* Azul escuro mais suave */
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding-bottom: 70px; /* Espaço para o menu inferior */
+}
+
+/* Estilos do Cabeçalho e Botão de Apoio */
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #122137; /* Cor de fundo do cabeçalho */
+    color: #fff;
+    border-bottom: 2px solid #4CAF50;
+}
+
+.platform-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4CAF50;
+    text-shadow: 1px 1px 2px #000;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.support-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+    font-size: 0.7rem;
+    transition: color 0.3s;
+}
+
+.support-button i {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+.support-button:hover {
+    color: #4CAF50;
+}
+
+/* Carrossel de Imagens */
+.image-gallery {
+    text-align: center;
+    padding: 0;
+    background-color: #122137;
+    border-bottom: 2px solid #4CAF50;
+}
+
+.image-slider {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    height: 180px; /* Aumenta a altura para as imagens ficarem maiores */
+    position: relative;
+}
+
+.image-slider img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.image-slider img.active {
+    opacity: 1;
+}
+
+/* Grade de Botões (ajustada) */
+.buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 colunas */
+    gap: 10px; /* Espaço menor entre os botões */
+    padding: 20px;
+}
+
+.menu-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px; /* Reduz o padding para o botão ficar menor */
+    height: 60px; /* Altura fixa menor */
+    width: 100%;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    background: none; /* Remove o gradiente */
+    border: 2px solid transparent;
+}
+
+.menu-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+}
+
+.menu-button img {
+    width: 35px; /* Tamanho do ícone */
+    height: 35px;
+    margin-bottom: 5px;
+}
+
+.menu-button span {
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.menu-button.blue { border-color: #007bff; }
+.menu-button.green { border-color: #28a745; }
+.menu-button.red { border-color: #dc3545; }
+.menu-button.yellow { border-color: #ffc107; }
+.menu-button.orange { border-color: #fd7e14; }
+.menu-button.purple { border-color: #6f42c1; }
+.menu-button.cyan { border-color: #17a2b8; }
+.menu-button.lime { border-color: #7FFF00; }
+
+
+/* Menu Inferior */
+.bottom-menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #122137;
+    padding: 10px 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+}
+
+.bottom-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #aaa;
+    font-size: 0.7rem;
+    transition: color 0.3s;
+}
+
+.bottom-button:hover, .bottom-button.active {
+    color: #4CAF50;
+}
+
+.bottom-button i {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}

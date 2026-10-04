@@ -1,0 +1,2429 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Grupo da Comunidade{% endblock %}
+
+{% block content %}
+
+<div class="telegram-page">
+
+    <!-- =========================================================
+         HEADER
+    ========================================================== -->
+    <header class="tg-header">
+
+        <div class="tg-header-left">
+
+            <!-- VOLTAR -->
+            <a href="{% url 'home' %}" class="tg-icon-btn" title="Voltar">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15.5 5L8.5 12L15.5 19"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+            </a>
+
+            <!-- AVATAR DO GRUPO / USUÁRIO -->
+            <div class="tg-header-avatar">
+
+                {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="Perfil">
+                {% else %}
+                    <div class="tg-avatar-placeholder">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"/>
+                        </svg>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <div class="tg-header-info">
+                <div class="tg-title">
+                    Grupo da Comunidade
+                </div>
+
+                <div class="tg-subtitle">
+                    Comunidade
+                </div>
+            </div>
+
+        </div>
+
+        <!-- AÇÕES DO HEADER -->
+        <div class="tg-header-actions">
+
+            <!-- CONFIGURAÇÕES -->
+            <button
+                type="button"
+                class="tg-icon-btn"
+                id="openSettings"
+                title="Configurações do perfil">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"/>
+
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06-1.7 1.7-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V20h-2.4v-.3a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06-1.7-1.7.06-.06A1.65 1.65 0 0 0 8.6 15a1.65 1.65 0 0 0-1.51-1H6.8v-2.4h.29a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06 1.7-1.7.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V5h2.4v.3a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06 1.7 1.7-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1h.29v2.4h-.29a1.65 1.65 0 0 0-1.51 1Z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linejoin="round"/>
+                </svg>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         ÁREA DO CHAT
+    ========================================================== -->
+    <main class="tg-chat-body" id="tgChatBody">
+
+        {% for post in posts %}
+
+            <div class="tg-message-row
+                {% if post.user == user %}
+                    outgoing
+                {% else %}
+                    incoming
+                {% endif %}
+            ">
+
+                <!-- AVATAR DA MENSAGEM -->
+                <div class="tg-message-avatar">
+
+                    {% if post.user.profile_picture %}
+
+                        <img
+                            src="{{ post.user.profile_picture.url }}"
+                            alt="Perfil">
+
+                    {% else %}
+
+                        <div class="tg-avatar-placeholder small">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"/>
+                            </svg>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- BALÃO -->
+                <div class="tg-message-bubble">
+
+                    <!-- NOME -->
+                    <div class="tg-message-author">
+
+                        {% if post.user == user %}
+
+                            {% if post.user.first_name %}
+                                {{ post.user.first_name }}
+                            {% elif post.user.get_full_name %}
+                                {{ post.user.get_full_name }}
+                            {% else %}
+                                {{ post.user.phone_number }}
+                            {% endif %}
+
+                        {% else %}
+
+                            {% if post.user.first_name %}
+                                {{ post.user.first_name }}
+                            {% elif post.user.get_full_name %}
+                                {{ post.user.get_full_name }}
+                            {% else %}
+                                +{{ post.user.phone_number }}
+                            {% endif %}
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- TEXTO -->
+                    {% if post.content %}
+
+                        <div class="tg-message-text">
+                            {{ post.content|linebreaksbr }}
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- IMAGEM -->
+                    {% if post.image %}
+
+                        <div class="tg-image-container">
+
+                            <img
+                                src="{{ post.image.url }}"
+                                alt="Imagem enviada"
+                                class="tg-message-image">
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- HORA -->
+                    <div class="tg-message-meta">
+
+                        <span>
+                            {{ post.created_at|date:"H:i" }}
+                        </span>
+
+                        {% if post.user == user %}
+
+                            <svg viewBox="0 0 24 24" class="tg-check">
+                                <path
+                                    d="M4 12.5l4.5 4.5L20 5.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"/>
+                            </svg>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="tg-empty">
+
+                <div class="tg-empty-icon">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-9 8.3 9.4 9.4 0 0 1-4-.9L3 20l1.3-4.5A8.4 8.4 0 1 1 21 11.5Z"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.7"
+                              stroke-linejoin="round"/>
+                    </svg>
+
+                </div>
+
+                <strong>Nenhuma mensagem ainda</strong>
+
+                <span>
+                    Seja o primeiro a enviar uma mensagem para a comunidade.
+                </span>
+
+            </div>
+
+        {% endfor %}
+
+    </main>
+
+
+    <!-- =========================================================
+         PREVIEW DE ARQUIVO
+    ========================================================== -->
+    <div
+        id="file-preview-bar"
+        class="tg-file-preview"
+        style="display:none;">
+
+        <div class="tg-file-preview-left">
+
+            <div class="tg-file-icon">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linejoin="round"/>
+
+                    <path d="M13 3v6h6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"/>
+                </svg>
+
+            </div>
+
+            <span id="file-chosen-name">
+                Imagem selecionada
+            </span>
+
+        </div>
+
+        <button
+            type="button"
+            onclick="clearFileSelection()"
+            class="tg-remove-file">
+
+            <svg viewBox="0 0 24 24">
+                <path d="M6 6l12 12M18 6L6 18"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"/>
+            </svg>
+
+        </button>
+
+    </div>
+
+
+    <!-- =========================================================
+         COMPOSER
+    ========================================================== -->
+    <footer class="tg-footer">
+
+        <form
+            method="POST"
+            action=""
+            enctype="multipart/form-data"
+            class="tg-input-form">
+
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="action"
+                value="create_post">
+
+
+            <!-- ANEXAR FOTO -->
+            <label
+                for="post_image_input"
+                class="tg-attach-button"
+                title="Enviar imagem">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2Z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"/>
+
+                    <circle cx="8.5" cy="8.5" r="1.5"
+                            fill="currentColor"/>
+
+                    <path d="m21 15-4.5-4.5L7 20"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+
+            </label>
+
+            <input
+                type="file"
+                id="post_image_input"
+                name="image"
+                accept="image/*"
+                style="display:none;"
+                onchange="updateFileName(this)">
+
+
+            <!-- CAMPO DE TEXTO -->
+            <input
+                type="text"
+                name="content"
+                id="tg-text-input"
+                placeholder="Escreva uma mensagem..."
+                autocomplete="off">
+
+
+            <!-- ENVIAR -->
+            <button
+                type="submit"
+                class="tg-send-button"
+                title="Enviar">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M21 3 10 14"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+
+                    <path d="m21 3-7 18-4-7-7-4 18-7Z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linejoin="round"/>
+                </svg>
+
+            </button>
+
+        </form>
+
+    </footer>
+
+
+    <!-- =========================================================
+         MODAL DE CONFIGURAÇÕES
+    ========================================================== -->
+    <div
+        id="settingsModal"
+        class="tg-modal-overlay">
+
+        <div class="tg-settings-panel">
+
+            <!-- CABEÇALHO -->
+            <div class="tg-settings-header">
+
+                <button
+                    type="button"
+                    id="closeSettings"
+                    class="tg-modal-back">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M15 6l-6 6 6 6"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                    </svg>
+
+                </button>
+
+                <div>
+                    <strong>Editar perfil</strong>
+                    <span>Suas informações na comunidade</span>
+                </div>
+
+            </div>
+
+
+            <!-- FORMULÁRIO DO PERFIL -->
+            <form
+                method="POST"
+                action=""
+                enctype="multipart/form-data"
+                id="profile-settings-form">
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="update_profile">
+
+
+                <!-- FOTO -->
+                <div class="tg-profile-photo-section">
+
+                    <label
+                        for="profile_picture_settings"
+                        class="tg-large-profile">
+
+                        {% if user.profile_picture %}
+
+                            <img
+                                src="{{ user.profile_picture.url }}"
+                                alt="Foto de perfil"
+                                id="settingsAvatarPreview">
+
+                        {% else %}
+
+                            <div
+                                class="tg-large-placeholder"
+                                id="settingsAvatarPlaceholder">
+
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"/>
+                                </svg>
+
+                            </div>
+
+                        {% endif %}
+
+                        <div class="tg-camera-overlay">
+
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4 7h3l1.5-2h7L17 7h3v12H4V7Z"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-width="1.7"
+                                      stroke-linejoin="round"/>
+
+                                <circle cx="12" cy="13" r="3.2"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"/>
+                            </svg>
+
+                        </div>
+
+                    </label>
+
+                    <input
+                        type="file"
+                        id="profile_picture_settings"
+                        name="profile_picture"
+                        accept="image/*"
+                        style="display:none;"
+                        onchange="previewProfileImage(this)">
+
+                    <div class="tg-photo-text">
+                        <strong>Foto de perfil</strong>
+                        <span>Clique na foto para alterar</span>
+                    </div>
+
+                </div>
+
+
+                <!-- NOME -->
+                <div class="tg-form-group">
+
+                    <label for="display_name">
+                        Nome
+                    </label>
+
+                    <div class="tg-input-wrapper">
+
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="1.7"/>
+                        </svg>
+
+                        <input
+                            type="text"
+                            id="display_name"
+                            name="display_name"
+                            maxlength="100"
+                            value="{% if user.first_name %}{{ user.first_name }}{% elif user.get_full_name %}{{ user.get_full_name }}{% endif %}"
+                            placeholder="Digite seu nome">
+
+                    </div>
+
+                    <small>
+                        Se deixar vazio, seu número será mostrado nas publicações.
+                    </small>
+
+                </div>
+
+
+                <!-- NÚMERO -->
+                <div class="tg-form-group">
+
+                    <label>
+                        Número da conta
+                    </label>
+
+                    <div class="tg-input-wrapper disabled">
+
+                        <svg viewBox="0 0 24 24">
+                            <path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="1.7"/>
+
+                            <path d="M8 7h8M8 11h8M9 17h6"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="1.7"
+                                  stroke-linecap="round"/>
+                        </svg>
+
+                        <input
+                            type="text"
+                            value="{{ user.phone_number }}"
+                            disabled>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BOTÃO SALVAR -->
+                <button
+                    type="submit"
+                    class="tg-save-profile">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 12.5 9.5 17 19 7.5"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                    </svg>
+
+                    Salvar alterações
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =========================================================
+       ARQUIVO DA PUBLICAÇÃO
+    ========================================================== */
+
+    function updateFileName(input) {
+
+        const previewBar =
+            document.getElementById("file-preview-bar");
+
+        const indicator =
+            document.getElementById("file-chosen-name");
+
+        if (input.files && input.files[0]) {
+
+            indicator.textContent =
+                input.files[0].name;
+
+            previewBar.style.display = "flex";
+
+        } else {
+
+            clearFileSelection();
+
+        }
+
+    }
+
+
+    function clearFileSelection() {
+
+        const input =
+            document.getElementById("post_image_input");
+
+        const previewBar =
+            document.getElementById("file-preview-bar");
+
+        if (input) {
+            input.value = "";
+        }
+
+        if (previewBar) {
+            previewBar.style.display = "none";
+        }
+
+    }
+
+
+    /* =========================================================
+       CONFIGURAÇÕES
+    ========================================================== */
+
+    const settingsModal =
+        document.getElementById("settingsModal");
+
+    const openSettings =
+        document.getElementById("openSettings");
+
+    const closeSettings =
+        document.getElementById("closeSettings");
+
+
+    openSettings.addEventListener("click", function() {
+
+        settingsModal.classList.add("active");
+
+        document.body.classList.add("modal-open");
+
+    });
+
+
+    closeSettings.addEventListener("click", function() {
+
+        settingsModal.classList.remove("active");
+
+        document.body.classList.remove("modal-open");
+
+    });
+
+
+    settingsModal.addEventListener("click", function(event) {
+
+        if (event.target === settingsModal) {
+
+            settingsModal.classList.remove("active");
+
+            document.body.classList.remove("modal-open");
+
+        }
+
+    });
+
+
+    /* ESC FECHA CONFIGURAÇÕES */
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+
+            settingsModal.classList.remove("active");
+
+            document.body.classList.remove("modal-open");
+
+        }
+
+    });
+
+
+    /* =========================================================
+       PREVIEW DA FOTO DE PERFIL
+    ========================================================== */
+
+    function previewProfileImage(input) {
+
+        if (!input.files || !input.files[0]) {
+            return;
+        }
+
+        const file = input.files[0];
+
+        if (!file.type.startsWith("image/")) {
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+
+            let avatar =
+                document.getElementById("settingsAvatarPreview");
+
+            const placeholder =
+                document.getElementById("settingsAvatarPlaceholder");
+
+            if (avatar) {
+
+                avatar.src =
+                    event.target.result;
+
+            } else if (placeholder) {
+
+                const img =
+                    document.createElement("img");
+
+                img.id =
+                    "settingsAvatarPreview";
+
+                img.src =
+                    event.target.result;
+
+                img.alt =
+                    "Foto de perfil";
+
+                placeholder.replaceWith(img);
+
+            }
+
+        };
+
+        reader.readAsDataURL(file);
+
+    }
+
+
+    /* =========================================================
+       ROLAR PARA A ÚLTIMA MENSAGEM
+    ========================================================== */
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const chat =
+            document.getElementById("tgChatBody");
+
+        if (chat) {
+
+            requestAnimationFrame(function() {
+
+                chat.scrollTop =
+                    chat.scrollHeight;
+
+            });
+
+        }
+
+    });
+
+
+    /* =========================================================
+       ENTER PARA ENVIAR
+    ========================================================== */
+
+    const messageInput =
+        document.getElementById("tg-text-input");
+
+    if (messageInput) {
+
+        messageInput.addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter" && !event.shiftKey) {
+
+                event.preventDefault();
+
+                const form =
+                    messageInput.closest("form");
+
+                if (form) {
+                    form.submit();
+                }
+
+            }
+
+        });
+
+    }
+
+</script>
+
+
+<style>
+
+    /* =========================================================
+       RESET
+    ========================================================== */
+
+    html,
+    body {
+
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+
+        overflow: hidden !important;
+
+        font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            Helvetica,
+            Arial,
+            sans-serif;
+
+        background: #17212b;
+
+    }
+
+
+    *,
+    *::before,
+    *::after {
+
+        box-sizing: border-box;
+
+    }
+
+
+    button,
+    input {
+
+        font-family: inherit;
+
+    }
+
+
+    /* =========================================================
+       PÁGINA
+    ========================================================== */
+
+    .telegram-page {
+
+        position: fixed;
+
+        inset: 0;
+
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+
+        display: flex;
+
+        flex-direction: column;
+
+        overflow: hidden;
+
+        background: #0e1621;
+
+    }
+
+
+    /* =========================================================
+       HEADER TELEGRAM
+    ========================================================== */
+
+    .tg-header {
+
+        height: 64px;
+
+        min-height: 64px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        padding: 7px 12px;
+
+        background: #17212b;
+
+        color: #fff;
+
+        border-bottom: 1px solid rgba(255,255,255,.04);
+
+        z-index: 20;
+
+    }
+
+
+    .tg-header-left {
+
+        display: flex;
+
+        align-items: center;
+
+        min-width: 0;
+
+        gap: 8px;
+
+    }
+
+
+    .tg-header-actions {
+
+        display: flex;
+
+        align-items: center;
+
+    }
+
+
+    /* =========================================================
+       BOTÕES
+    ========================================================== */
+
+    .tg-icon-btn {
+
+        width: 42px;
+        height: 42px;
+
+        border: 0;
+
+        background: transparent;
+
+        color: #aeb9c4;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        cursor: pointer;
+
+        text-decoration: none;
+
+        transition:
+            background .2s ease,
+            color .2s ease,
+            transform .15s ease;
+
+    }
+
+
+    .tg-icon-btn:hover {
+
+        background: rgba(255,255,255,.08);
+
+        color: #fff;
+
+    }
+
+
+    .tg-icon-btn:active {
+
+        transform: scale(.94);
+
+    }
+
+
+    .tg-icon-btn svg {
+
+        width: 23px;
+        height: 23px;
+
+    }
+
+
+    /* =========================================================
+       AVATAR HEADER
+    ========================================================== */
+
+    .tg-header-avatar {
+
+        width: 44px;
+        height: 44px;
+
+        flex: 0 0 44px;
+
+        border-radius: 50%;
+
+        overflow: hidden;
+
+        background: #5288c1;
+
+    }
+
+
+    .tg-header-avatar img {
+
+        width: 100%;
+        height: 100%;
+
+        display: block;
+
+        object-fit: cover;
+
+    }
+
+
+    .tg-avatar-placeholder {
+
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        background: #5288c1;
+
+        color: #fff;
+
+    }
+
+
+    .tg-avatar-placeholder svg {
+
+        width: 25px;
+        height: 25px;
+
+        fill: currentColor;
+
+    }
+
+
+    .tg-avatar-placeholder.small {
+
+        background: #5288c1;
+
+    }
+
+
+    .tg-avatar-placeholder.small svg {
+
+        width: 17px;
+        height: 17px;
+
+    }
+
+
+    .tg-header-info {
+
+        display: flex;
+
+        flex-direction: column;
+
+        min-width: 0;
+
+        margin-left: 2px;
+
+    }
+
+
+    .tg-title {
+
+        color: #fff;
+
+        font-size: 15px;
+
+        line-height: 20px;
+
+        font-weight: 600;
+
+        white-space: nowrap;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+    }
+
+
+    .tg-subtitle {
+
+        color: #8c9aa7;
+
+        font-size: 12px;
+
+        line-height: 17px;
+
+    }
+
+
+    /* =========================================================
+       CHAT
+    ========================================================== */
+
+    .tg-chat-body {
+
+        flex: 1;
+
+        min-height: 0;
+
+        overflow-y: auto;
+
+        overflow-x: hidden;
+
+        padding: 15px 12px 18px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 8px;
+
+        background-color: #0e1621;
+
+        background-image:
+
+            radial-gradient(
+                circle at 15px 15px,
+                rgba(255,255,255,.025) 1px,
+                transparent 1.5px
+            );
+
+        background-size: 30px 30px;
+
+        scrollbar-width: thin;
+
+        scrollbar-color:
+            #405261
+            transparent;
+
+    }
+
+
+    .tg-chat-body::-webkit-scrollbar {
+
+        width: 7px;
+
+    }
+
+
+    .tg-chat-body::-webkit-scrollbar-track {
+
+        background: transparent;
+
+    }
+
+
+    .tg-chat-body::-webkit-scrollbar-thumb {
+
+        background: #405261;
+
+        border-radius: 20px;
+
+    }
+
+
+    /* =========================================================
+       MENSAGEM
+    ========================================================== */
+
+    .tg-message-row {
+
+        display: flex;
+
+        align-items: flex-end;
+
+        gap: 7px;
+
+        width: 100%;
+
+        max-width: 800px;
+
+    }
+
+
+    .tg-message-row.incoming {
+
+        align-self: flex-start;
+
+    }
+
+
+    .tg-message-row.outgoing {
+
+        align-self: flex-end;
+
+        flex-direction: row-reverse;
+
+    }
+
+
+    .tg-message-avatar {
+
+        width: 34px;
+        height: 34px;
+
+        flex: 0 0 34px;
+
+        border-radius: 50%;
+
+        overflow: hidden;
+
+        margin-bottom: 2px;
+
+    }
+
+
+    .tg-message-avatar img {
+
+        width: 100%;
+        height: 100%;
+
+        display: block;
+
+        object-fit: cover;
+
+    }
+
+
+    /* =========================================================
+       BALÃO
+    ========================================================== */
+
+    .tg-message-bubble {
+
+        position: relative;
+
+        min-width: 70px;
+
+        max-width: min(620px, 82%);
+
+        padding: 7px 10px 18px;
+
+        border-radius: 13px;
+
+        background: #182533;
+
+        color: #e8edf2;
+
+        box-shadow:
+            0 1px 2px rgba(0,0,0,.25);
+
+        word-wrap: break-word;
+
+        overflow: hidden;
+
+    }
+
+
+    .tg-message-row.incoming
+    .tg-message-bubble {
+
+        border-bottom-left-radius: 4px;
+
+    }
+
+
+    .tg-message-row.outgoing
+    .tg-message-bubble {
+
+        background: #2b5278;
+
+        border-bottom-right-radius: 4px;
+
+    }
+
+
+    .tg-message-author {
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        color: #62a9e8;
+
+        margin-bottom: 2px;
+
+        line-height: 18px;
+
+    }
+
+
+    .tg-message-row.outgoing
+    .tg-message-author {
+
+        color: #75bdf2;
+
+    }
+
+
+    .tg-message-text {
+
+        font-size: 14px;
+
+        line-height: 20px;
+
+        white-space: normal;
+
+    }
+
+
+    .tg-message-meta {
+
+        position: absolute;
+
+        right: 7px;
+
+        bottom: 3px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 2px;
+
+        color: #8192a1;
+
+        font-size: 10px;
+
+        line-height: 13px;
+
+    }
+
+
+    .tg-message-row.outgoing
+    .tg-message-meta {
+
+        color: #a6c1d8;
+
+    }
+
+
+    .tg-check {
+
+        width: 14px;
+        height: 14px;
+
+    }
+
+
+    /* =========================================================
+       IMAGENS
+    ========================================================== */
+
+    .tg-image-container {
+
+        margin-top: 6px;
+
+        border-radius: 9px;
+
+        overflow: hidden;
+
+        max-width: 100%;
+
+        background: #111b25;
+
+    }
+
+
+    .tg-message-image {
+
+        display: block;
+
+        width: 100%;
+
+        max-width: 520px;
+
+        max-height: 430px;
+
+        object-fit: cover;
+
+    }
+
+
+    /* =========================================================
+       CHAT VAZIO
+    ========================================================== */
+
+    .tg-empty {
+
+        margin: auto;
+
+        max-width: 350px;
+
+        padding: 25px;
+
+        border-radius: 16px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+
+        text-align: center;
+
+        gap: 6px;
+
+        background: rgba(24,37,51,.92);
+
+        color: #93a4b3;
+
+        box-shadow: 0 8px 30px rgba(0,0,0,.15);
+
+    }
+
+
+    .tg-empty strong {
+
+        color: #e8edf2;
+
+        font-size: 15px;
+
+    }
+
+
+    .tg-empty span {
+
+        font-size: 13px;
+
+        line-height: 19px;
+
+    }
+
+
+    .tg-empty-icon {
+
+        width: 52px;
+        height: 52px;
+
+        margin-bottom: 5px;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        background: #2b5278;
+
+        color: #fff;
+
+    }
+
+
+    .tg-empty-icon svg {
+
+        width: 27px;
+        height: 27px;
+
+    }
+
+
+    /* =========================================================
+       FOOTER
+    ========================================================== */
+
+    .tg-footer {
+
+        flex-shrink: 0;
+
+        padding: 8px 10px;
+
+        background: #17212b;
+
+        border-top: 1px solid rgba(255,255,255,.035);
+
+        z-index: 20;
+
+    }
+
+
+    .tg-input-form {
+
+        width: 100%;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 7px;
+
+    }
+
+
+    .tg-attach-button {
+
+        width: 42px;
+        height: 42px;
+
+        flex: 0 0 42px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        cursor: pointer;
+
+        color: #8f9eab;
+
+        transition:
+            background .2s ease,
+            color .2s ease;
+
+    }
+
+
+    .tg-attach-button:hover {
+
+        background: rgba(255,255,255,.07);
+
+        color: #fff;
+
+    }
+
+
+    .tg-attach-button svg {
+
+        width: 23px;
+        height: 23px;
+
+    }
+
+
+    #tg-text-input {
+
+        flex: 1;
+
+        min-width: 0;
+
+        height: 42px;
+
+        border: 0;
+
+        outline: none;
+
+        border-radius: 22px;
+
+        padding: 0 17px;
+
+        background: #242f3d;
+
+        color: #e8edf2;
+
+        font-size: 14px;
+
+        box-shadow:
+            inset 0 0 0 1px rgba(255,255,255,.025);
+
+    }
+
+
+    #tg-text-input::placeholder {
+
+        color: #748392;
+
+    }
+
+
+    #tg-text-input:focus {
+
+        box-shadow:
+            inset 0 0 0 1px rgba(82,136,193,.45);
+
+    }
+
+
+    .tg-send-button {
+
+        width: 42px;
+        height: 42px;
+
+        flex: 0 0 42px;
+
+        border: 0;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        color: #fff;
+
+        background: #5288c1;
+
+        transition:
+            transform .15s ease,
+            background .2s ease;
+
+    }
+
+
+    .tg-send-button:hover {
+
+        background: #609bd7;
+
+    }
+
+
+    .tg-send-button:active {
+
+        transform: scale(.93);
+
+    }
+
+
+    .tg-send-button svg {
+
+        width: 21px;
+        height: 21px;
+
+        transform: translate(-1px, 1px);
+
+    }
+
+
+    /* =========================================================
+       PREVIEW
+    ========================================================== */
+
+    .tg-file-preview {
+
+        padding: 7px 12px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 10px;
+
+        background: #17212b;
+
+        color: #a8b7c4;
+
+        border-top: 1px solid rgba(255,255,255,.035);
+
+    }
+
+
+    .tg-file-preview-left {
+
+        min-width: 0;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+    }
+
+
+    .tg-file-preview-left span {
+
+        font-size: 12px;
+
+        overflow: hidden;
+
+        white-space: nowrap;
+
+        text-overflow: ellipsis;
+
+    }
+
+
+    .tg-file-icon {
+
+        width: 30px;
+        height: 30px;
+
+        flex: 0 0 30px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 8px;
+
+        background: #2b5278;
+
+        color: #fff;
+
+    }
+
+
+    .tg-file-icon svg {
+
+        width: 17px;
+        height: 17px;
+
+    }
+
+
+    .tg-remove-file {
+
+        width: 32px;
+        height: 32px;
+
+        border: 0;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        background: transparent;
+
+        color: #82919e;
+
+        cursor: pointer;
+
+    }
+
+
+    .tg-remove-file:hover {
+
+        background: rgba(255,255,255,.07);
+
+        color: #fff;
+
+    }
+
+
+    .tg-remove-file svg {
+
+        width: 17px;
+        height: 17px;
+
+    }
+
+
+    /* =========================================================
+       MODAL
+    ========================================================== */
+
+    .tg-modal-overlay {
+
+        position: fixed;
+
+        inset: 0;
+
+        z-index: 100;
+
+        display: flex;
+
+        justify-content: flex-end;
+
+        background: rgba(0,0,0,.62);
+
+        opacity: 0;
+
+        visibility: hidden;
+
+        pointer-events: none;
+
+        transition:
+            opacity .25s ease,
+            visibility .25s ease;
+
+    }
+
+
+    .tg-modal-overlay.active {
+
+        opacity: 1;
+
+        visibility: visible;
+
+        pointer-events: auto;
+
+    }
+
+
+    .tg-settings-panel {
+
+        width: min(420px, 100%);
+
+        height: 100%;
+
+        background: #17212b;
+
+        color: #e8edf2;
+
+        transform: translateX(100%);
+
+        transition: transform .28s cubic-bezier(.4,0,.2,1);
+
+        overflow-y: auto;
+
+        box-shadow:
+            -10px 0 40px rgba(0,0,0,.3);
+
+    }
+
+
+    .tg-modal-overlay.active
+    .tg-settings-panel {
+
+        transform: translateX(0);
+
+    }
+
+
+    body.modal-open {
+
+        overflow: hidden !important;
+
+    }
+
+
+    /* =========================================================
+       MODAL HEADER
+    ========================================================== */
+
+    .tg-settings-header {
+
+        min-height: 68px;
+
+        padding: 10px 12px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        background: #17212b;
+
+        border-bottom: 1px solid rgba(255,255,255,.06);
+
+        position: sticky;
+
+        top: 0;
+
+        z-index: 5;
+
+    }
+
+
+    .tg-modal-back {
+
+        width: 42px;
+        height: 42px;
+
+        border: 0;
+
+        border-radius: 50%;
+
+        background: transparent;
+
+        color: #aeb9c4;
+
+        cursor: pointer;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+    }
+
+
+    .tg-modal-back:hover {
+
+        background: rgba(255,255,255,.07);
+
+        color: #fff;
+
+    }
+
+
+    .tg-modal-back svg {
+
+        width: 23px;
+        height: 23px;
+
+    }
+
+
+    .tg-settings-header div {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 2px;
+
+    }
+
+
+    .tg-settings-header strong {
+
+        font-size: 17px;
+
+    }
+
+
+    .tg-settings-header span {
+
+        color: #82919e;
+
+        font-size: 12px;
+
+    }
+
+
+    /* =========================================================
+       FOTO DO PERFIL
+    ========================================================== */
+
+    .tg-profile-photo-section {
+
+        padding: 28px 20px 25px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+
+        gap: 13px;
+
+        background: #111b25;
+
+    }
+
+
+    .tg-large-profile {
+
+        position: relative;
+
+        width: 116px;
+        height: 116px;
+
+        border-radius: 50%;
+
+        overflow: hidden;
+
+        cursor: pointer;
+
+        background: #5288c1;
+
+        box-shadow:
+            0 6px 20px rgba(0,0,0,.3);
+
+    }
+
+
+    .tg-large-profile img {
+
+        width: 100%;
+        height: 100%;
+
+        display: block;
+
+        object-fit: cover;
+
+    }
+
+
+    .tg-large-placeholder {
+
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        color: #fff;
+
+    }
+
+
+    .tg-large-placeholder svg {
+
+        width: 55px;
+        height: 55px;
+
+        fill: currentColor;
+
+    }
+
+
+    .tg-camera-overlay {
+
+        position: absolute;
+
+        inset: 0;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(0,0,0,.42);
+
+        opacity: 0;
+
+        transition: opacity .2s ease;
+
+    }
+
+
+    .tg-large-profile:hover
+    .tg-camera-overlay {
+
+        opacity: 1;
+
+    }
+
+
+    .tg-camera-overlay svg {
+
+        width: 30px;
+        height: 30px;
+
+        color: #fff;
+
+    }
+
+
+    .tg-photo-text {
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+
+        gap: 3px;
+
+    }
+
+
+    .tg-photo-text strong {
+
+        font-size: 14px;
+
+    }
+
+
+    .tg-photo-text span {
+
+        color: #7f909e;
+
+        font-size: 12px;
+
+    }
+
+
+    /* =========================================================
+       FORM
+    ========================================================== */
+
+    #profile-settings-form {
+
+        padding-bottom: 30px;
+
+    }
+
+
+    .tg-form-group {
+
+        padding: 18px 20px 0;
+
+    }
+
+
+    .tg-form-group label {
+
+        display: block;
+
+        margin-bottom: 8px;
+
+        color: #9aa9b6;
+
+        font-size: 12px;
+
+        font-weight: 600;
+
+    }
+
+
+    .tg-input-wrapper {
+
+        height: 48px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        padding: 0 13px;
+
+        background: #242f3d;
+
+        border-radius: 10px;
+
+        border: 1px solid transparent;
+
+        transition:
+            border-color .2s ease,
+            background .2s ease;
+
+    }
+
+
+    .tg-input-wrapper:focus-within {
+
+        border-color: #5288c1;
+
+        background: #263342;
+
+    }
+
+
+    .tg-input-wrapper svg {
+
+        width: 20px;
+        height: 20px;
+
+        flex: 0 0 20px;
+
+        color: #7f909e;
+
+    }
+
+
+    .tg-input-wrapper input {
+
+        width: 100%;
+
+        height: 100%;
+
+        border: 0;
+
+        outline: 0;
+
+        background: transparent;
+
+        color: #edf2f5;
+
+        font-size: 14px;
+
+    }
+
+
+    .tg-input-wrapper input::placeholder {
+
+        color: #71808d;
+
+    }
+
+
+    .tg-input-wrapper.disabled {
+
+        opacity: .62;
+
+    }
+
+
+    .tg-form-group small {
+
+        display: block;
+
+        margin-top: 7px;
+
+        color: #70808e;
+
+        font-size: 11px;
+
+        line-height: 16px;
+
+    }
+
+
+    /* =========================================================
+       SALVAR
+    ========================================================== */
+
+    .tg-save-profile {
+
+        width: calc(100% - 40px);
+
+        height: 48px;
+
+        margin: 25px 20px 0;
+
+        border: 0;
+
+        border-radius: 10px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        background: #5288c1;
+
+        color: #fff;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        cursor: pointer;
+
+        transition:
+            background .2s ease,
+            transform .15s ease;
+
+    }
+
+
+    .tg-save-profile:hover {
+
+        background: #609bd7;
+
+    }
+
+
+    .tg-save-profile:active {
+
+        transform: scale(.98);
+
+    }
+
+
+    .tg-save-profile svg {
+
+        width: 19px;
+        height: 19px;
+
+    }
+
+
+    /* =========================================================
+       DESKTOP
+    ========================================================== */
+
+    @media (min-width: 768px) {
+
+        .telegram-page {
+
+            width: min(100%, 1100px);
+
+            left: 50%;
+
+            right: auto;
+
+            transform: translateX(-50%);
+
+            box-shadow:
+                0 0 45px rgba(0,0,0,.25);
+
+            border-left: 1px solid rgba(255,255,255,.035);
+
+            border-right: 1px solid rgba(255,255,255,.035);
+
+        }
+
+
+        .tg-chat-body {
+
+            padding-left: 30px;
+
+            padding-right: 30px;
+
+        }
+
+
+        .tg-footer {
+
+            padding-left: 25px;
+
+            padding-right: 25px;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       MOBILE
+    ========================================================== */
+
+    @media (max-width: 480px) {
+
+        .tg-header {
+
+            height: 60px;
+
+            min-height: 60px;
+
+            padding: 6px 7px;
+
+        }
+
+
+        .tg-header-avatar {
+
+            width: 40px;
+            height: 40px;
+
+            flex-basis: 40px;
+
+        }
+
+
+        .tg-title {
+
+            font-size: 14px;
+
+        }
+
+
+        .tg-subtitle {
+
+            font-size: 11px;
+
+        }
+
+
+        .tg-chat-body {
+
+            padding: 10px 7px 14px;
+
+            gap: 6px;
+
+        }
+
+
+        .tg-message-avatar {
+
+            width: 30px;
+            height: 30px;
+
+            flex-basis: 30px;
+
+        }
+
+
+        .tg-message-bubble {
+
+            max-width: 86%;
+
+            padding: 6px 9px 17px;
+
+            border-radius: 11px;
+
+        }
+
+
+        .tg-message-text {
+
+            font-size: 14px;
+
+            line-height: 19px;
+
+        }
+
+
+        .tg-message-author {
+
+            font-size: 12px;
+
+        }
+
+
+        .tg-footer {
+
+            padding: 6px;
+
+        }
+
+
+        .tg-attach-button,
+        .tg-send-button {
+
+            width: 40px;
+            height: 40px;
+
+            flex-basis: 40px;
+
+        }
+
+
+        #tg-text-input {
+
+            height: 40px;
+
+            padding: 0 14px;
+
+            font-size: 14px;
+
+        }
+
+    }
+
+</style>
+
+{% endblock %}

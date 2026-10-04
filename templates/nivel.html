@@ -1,0 +1,1650 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Central de Mineração IA - Planos{% endblock %}
+
+{% block content %}
+
+<div class="level-container">
+
+    <!-- =========================================================
+         TOPO
+    ========================================================== -->
+    <div class="top-navigation">
+
+        <a href="{% url 'home' %}" class="back-link">
+            <i class="fas fa-chevron-left"></i>
+            VOLTAR
+        </a>
+
+        <h1 class="main-title">
+            <i class="fas fa-brain"></i>
+            CENTRAL DE MINERAÇÃO IA
+        </h1>
+
+    </div>
+
+
+    <!-- =========================================================
+         ABAS
+    ========================================================== -->
+    <div class="plan-tabs">
+
+        <button
+            type="button"
+            class="tab-btn active"
+            onclick="switchTab('daily-term')"
+        >
+            <i class="fas fa-robot"></i>
+            Diário
+        </button>
+
+        <button
+            type="button"
+            class="tab-btn"
+            onclick="switchTab('activities')"
+        >
+            <i class="fas fa-network-wired"></i>
+            Actividades
+        </button>
+
+    </div>
+
+
+    <!-- =========================================================
+         DIÁRIO
+    ========================================================== -->
+    <div id="daily-term" class="tab-content active-content">
+
+        <div class="level-stack">
+
+            {% for level in long_term_levels %}
+
+            <div class="level-card {% if level.is_active %}active-glow{% endif %}">
+
+                <div class="card-header">
+
+                    <div class="level-badge text-diario">
+                        <i class="fas fa-microchip"></i>
+
+                        <span>
+                            IA CORE: NÍVEL {{ level.name }}
+                        </span>
+                    </div>
+
+                    {% if level.is_active %}
+
+                    <div class="status-tag active">
+                        ACTIVO ({{ level.active_count }}x)
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <div class="crypto-limit-info">
+
+                        <i class="fas fa-info-circle"></i>
+
+                        Ciclo: {{ level.cycle_days }} Dias |
+                        Rendimento a cada 24h
+
+                    </div>
+
+
+                    <!-- DADOS DO PLANO -->
+                    <div class="data-grid">
+
+                        <!-- DEPÓSITO -->
+                        <div class="data-box">
+
+                            <span class="data-label">
+                                <i class="fas fa-wallet"></i>
+                                Depósito
+                            </span>
+
+                            <span class="currency-pair highlight-gold">
+
+                                <span>
+                                    KZ {{ level.deposit_value|floatformat:2 }}
+                                </span>
+
+                                <span
+                                    class="brl-value"
+                                    data-kz="{{ level.deposit_value }}"
+                                >
+                                    R$ 0,00
+                                </span>
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- GANHO DIÁRIO -->
+                        <div class="data-box">
+
+                            <span class="data-label">
+                                <i class="fas fa-chart-line"></i>
+                                Ganho Diário
+                            </span>
+
+                            <span class="currency-pair highlight-green">
+
+                                <span>
+                                    KZ {{ level.daily_gain|floatformat:2 }}
+                                </span>
+
+                                <span
+                                    class="brl-value"
+                                    data-kz="{{ level.daily_gain }}"
+                                >
+                                    R$ 0,00
+                                </span>
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- CICLO -->
+                        <div class="data-box grid-col-span-2">
+
+                            <span class="data-label">
+                                <i class="fas fa-history"></i>
+                                Ciclo de Operação
+                            </span>
+
+                            <span class="data-value">
+
+                                {{ level.cycle_days }} Dias
+
+                                <small class="text-alert">
+                                    (Gera em 24h p/ saque)
+                                </small>
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INVESTIMENTOS DIÁRIOS ACTIVOS -->
+                    {% if level.active_investments %}
+
+                    <div class="investment-monitor">
+
+                        <p class="monitor-title">
+
+                            <i class="fas fa-microchip"></i>
+
+                            Modelos IA em Execução:
+
+                        </p>
+
+
+                        {% for inv in level.active_investments %}
+
+                        <div
+                            class="monitor-row daily-monitor"
+                            data-seconds="{{ inv.remaining_seconds|default:0 }}"
+                        >
+
+                            <div class="monitor-info-block">
+
+                                <span class="day-indicator">
+
+                                    Dia
+                                    {{ inv.days_passed }}
+                                    /
+                                    {{ level.cycle_days }}
+
+                                </span>
+
+
+                                <span class="accumulated text-realtime">
+
+                                    Disponível:
+
+                                    <span
+                                        class="ticker-value currency-pair"
+                                    >
+
+                                        <span>
+                                            KZ {{ inv.accumulated_profit|floatformat:2 }}
+                                        </span>
+
+                                        <span
+                                            class="brl-value"
+                                            data-kz="{{ inv.accumulated_profit }}"
+                                        >
+                                            R$ 0,00
+                                        </span>
+
+                                    </span>
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="crypto-timer">
+
+                                <i class="fas fa-clock"></i>
+
+                                <span
+                                    class="countdown-timer"
+                                    data-seconds="{{ inv.remaining_seconds|default:0 }}"
+                                >
+                                    00:00:00
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="card-footer">
+
+                    <form
+                        method="post"
+                        action="{% url 'nivel' %}"
+                    >
+
+                        {% csrf_token %}
+
+                        <input
+                            type="hidden"
+                            name="level_id"
+                            value="{{ level.id }}"
+                        >
+
+                        <button
+                            type="submit"
+                            class="invest-button bg-diario"
+                        >
+
+                            INICIAR IA DIÁRIA
+
+                            <i class="fas fa-bolt"></i>
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            {% empty %}
+
+            <p class="empty-msg">
+                Nenhum nível diário configurado.
+            </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         ACTIVIDADES
+    ========================================================== -->
+    <div id="activities" class="tab-content">
+
+        <div class="level-stack">
+
+            {% for level in activity_levels %}
+
+            <div
+                class="level-card
+                {% if level.is_active %}active-glow{% endif %}
+                {% if level.is_locked %}card-disabled{% endif %}"
+            >
+
+                <div class="card-header">
+
+                    <div class="level-badge text-actividade">
+
+                        <i class="fas fa-atom"></i>
+
+                        <span>
+                            ACTIVIDADE: NÍVEL {{ level.name }}
+                        </span>
+
+                    </div>
+
+
+                    {% if level.is_locked %}
+
+                    <div class="status-tag locked">
+
+                        <i class="fas fa-lock"></i>
+
+                        BLOQUEADO
+
+                    </div>
+
+                    {% elif level.is_active %}
+
+                    <div class="status-tag active">
+
+                        ACTIVO ({{ level.active_count }}x)
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="card-body">
+
+
+                    {% if level.is_locked %}
+
+                    <div class="lock-overlay-msg">
+
+                        <i class="fas fa-shield-alt"></i>
+
+                        Requer plano Diário Nível
+                        {{ level.name }}
+                        activo para desbloquear.
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <div class="crypto-limit-info">
+
+                        <i class="fas fa-info-circle"></i>
+
+                        Pool Especial de Processamento IA
+
+                    </div>
+
+
+                    <!-- DADOS -->
+                    <div class="data-grid">
+
+
+                        <!-- DEPÓSITO -->
+                        <div class="data-box">
+
+                            <span class="data-label">
+
+                                <i class="fas fa-wallet"></i>
+
+                                Depósito
+
+                            </span>
+
+
+                            <span class="currency-pair highlight-gold">
+
+                                <span>
+                                    KZ {{ level.deposit_value|floatformat:2 }}
+                                </span>
+
+                                <span
+                                    class="brl-value"
+                                    data-kz="{{ level.deposit_value }}"
+                                >
+                                    R$ 0,00
+                                </span>
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- GANHO TOTAL -->
+                        <div class="data-box">
+
+                            <span class="data-label">
+
+                                <i class="fas fa-chart-line"></i>
+
+                                Total do Ciclo
+
+                            </span>
+
+
+                            <span class="currency-pair highlight-blue">
+
+                                <span>
+                                    KZ {{ level.total_gain|floatformat:2 }}
+                                </span>
+
+                                <span
+                                    class="brl-value"
+                                    data-kz="{{ level.total_gain }}"
+                                >
+                                    R$ 0,00
+                                </span>
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- CICLO -->
+                        <div class="data-box grid-col-span-2">
+
+                            <span class="data-label">
+
+                                <i class="fas fa-hourglass-half"></i>
+
+                                Ciclo
+
+                            </span>
+
+
+                            <span class="data-value">
+
+                                {{ level.cycle_days }}
+                                Dias
+
+                                <small class="text-alert">
+                                    (Pagamento no fim do ciclo)
+                                </small>
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ACTIVIDADES ACTIVAS -->
+                    {% if level.active_investments %}
+
+                    <div class="investment-monitor">
+
+                        <p class="monitor-title">
+
+                            <i class="fas fa-network-wired"></i>
+
+                            Pools Activas:
+
+                        </p>
+
+
+                        {% for inv in level.active_investments %}
+
+                        <div
+                            class="monitor-row activity-monitor"
+                            data-seconds="{{ inv.remaining_seconds|default:0 }}"
+                        >
+
+                            <div class="monitor-info-block">
+
+                                <span class="day-indicator">
+
+                                    Dia
+                                    {{ inv.days_passed }}
+                                    /
+                                    {{ level.cycle_days }}
+
+                                </span>
+
+
+                                <span class="accumulated text-realtime">
+
+                                    Acumulado:
+
+                                    <span
+                                        class="ticker-value currency-pair"
+                                    >
+
+                                        <span>
+                                            KZ {{ inv.accumulated_profit|floatformat:2 }}
+                                        </span>
+
+                                        <span
+                                            class="brl-value"
+                                            data-kz="{{ inv.accumulated_profit }}"
+                                        >
+                                            R$ 0,00
+                                        </span>
+
+                                    </span>
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="crypto-timer">
+
+                                <i class="fas fa-clock"></i>
+
+                                <span
+                                    class="countdown-timer"
+                                    data-seconds="{{ inv.remaining_seconds|default:0 }}"
+                                >
+                                    00:00:00
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="card-footer">
+
+                    <form
+                        method="post"
+                        action="{% url 'nivel' %}"
+                    >
+
+                        {% csrf_token %}
+
+                        <input
+                            type="hidden"
+                            name="level_id"
+                            value="{{ level.id }}"
+                        >
+
+
+                        <button
+                            type="submit"
+                            class="invest-button bg-actividade"
+                            {% if level.is_locked %}disabled{% endif %}
+                        >
+
+                            {% if level.is_locked %}
+
+                                BLOQUEADO POOL
+
+                            {% else %}
+
+                                ENTRAR NA POOL IA
+
+                                <i class="fas fa-rss"></i>
+
+                            {% endif %}
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            {% empty %}
+
+            <p class="empty-msg">
+                Nenhuma pool promocional activa.
+            </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =============================================================
+     ESTILOS
+============================================================= -->
+
+<style>
+
+    html,
+    body {
+
+        max-width: 100%;
+        overflow-x: hidden;
+
+        background:
+            radial-gradient(
+                circle at top,
+                #060d1a 0%,
+                #02050a 100%
+            ) !important;
+
+        margin: 0;
+        padding: 0;
+
+        font-family: 'Inter', sans-serif;
+
+        color: #e2e8f0;
+
+    }
+
+
+    .level-container {
+
+        width: 100%;
+        max-width: 440px;
+
+        margin: 0 auto;
+
+        padding: 16px 12px 90px 12px;
+
+        box-sizing: border-box;
+
+    }
+
+
+    .top-navigation {
+
+        display: flex;
+        flex-direction: column;
+
+        gap: 4px;
+
+        margin-bottom: 16px;
+
+    }
+
+
+    .back-link {
+
+        color: #00f5d4;
+
+        text-decoration: none;
+
+        font-size: 10px;
+
+        font-weight: 800;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 4px;
+
+        letter-spacing: 0.5px;
+
+    }
+
+
+    .main-title {
+
+        font-size: 16px;
+
+        font-weight: 900;
+
+        letter-spacing: 0.5px;
+
+        color: #ffffff;
+
+        margin: 0;
+
+        text-shadow:
+            0 0 10px rgba(0, 245, 212, 0.2);
+
+    }
+
+
+    /* =========================================================
+       ABAS
+    ========================================================== */
+
+    .plan-tabs {
+
+        display: flex;
+
+        background: #09111e;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.04);
+
+        padding: 3px;
+
+        border-radius: 10px;
+
+        margin-bottom: 14px;
+
+        gap: 4px;
+
+    }
+
+
+    .tab-btn {
+
+        flex: 1;
+
+        background: transparent;
+
+        border: none;
+
+        color: #64748b;
+
+        padding: 8px 4px;
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        border-radius: 7px;
+
+        transition: all 0.2s ease;
+
+        text-align: center;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 6px;
+
+    }
+
+
+    .tab-btn.active {
+
+        background:
+            linear-gradient(
+                135deg,
+                #0077b6 0%,
+                #00b4d8 100%
+            );
+
+        color: #ffffff;
+
+        box-shadow:
+            0 0 12px
+            rgba(0, 180, 216, 0.4);
+
+    }
+
+
+    .tab-content {
+
+        display: none;
+
+    }
+
+
+    .tab-content.active-content {
+
+        display: block;
+
+    }
+
+
+    /* =========================================================
+       CARDS
+    ========================================================== */
+
+    .level-stack {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+    }
+
+
+    .level-card {
+
+        background:
+            linear-gradient(
+                180deg,
+                #0d1625 0%,
+                #070c14 100%
+            );
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.06);
+
+        border-radius: 12px;
+
+        padding: 12px;
+
+        box-sizing: border-box;
+
+        box-shadow:
+            0 4px 15px
+            rgba(0, 0, 0, 0.4);
+
+    }
+
+
+    .active-glow {
+
+        border-color:
+            #00f5d4 !important;
+
+        box-shadow:
+            0 0 12px
+            rgba(0, 245, 212, 0.15);
+
+    }
+
+
+    .card-disabled {
+
+        border-color:
+            rgba(255, 255, 255, 0.02) !important;
+
+        background:
+            #04080f !important;
+
+    }
+
+
+    .card-disabled .data-grid,
+    .card-disabled .level-badge,
+    .card-disabled .crypto-limit-info {
+
+        opacity: 0.2;
+
+        pointer-events: none;
+
+    }
+
+
+    /* =========================================================
+       CABEÇALHO
+    ========================================================== */
+
+    .card-header {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        margin-bottom: 10px;
+
+        border-bottom:
+            1px solid
+            rgba(255, 255, 255, 0.04);
+
+        padding-bottom: 6px;
+
+    }
+
+
+    .level-badge {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 6px;
+
+        font-weight: 800;
+
+        font-size: 11px;
+
+    }
+
+
+    .text-diario {
+
+        color: #00f5d4;
+
+    }
+
+
+    .text-actividade {
+
+        color: #cc5de8;
+
+    }
+
+
+    .status-tag {
+
+        font-size: 9px;
+
+        padding: 2px 6px;
+
+        border-radius: 4px;
+
+        font-weight: 800;
+
+    }
+
+
+    .status-tag.active {
+
+        background:
+            rgba(0, 245, 212, 0.15);
+
+        color: #00f5d4;
+
+        border:
+            1px solid
+            rgba(0, 245, 212, 0.3);
+
+    }
+
+
+    .status-tag.locked {
+
+        background: #1e293b;
+
+        color: #94a3b8;
+
+    }
+
+
+    /* =========================================================
+       BLOQUEIO
+    ========================================================== */
+
+    .lock-overlay-msg {
+
+        background:
+            rgba(239, 68, 68, 0.05);
+
+        border:
+            1px solid
+            rgba(239, 68, 68, 0.15);
+
+        color: #f87171;
+
+        padding: 8px;
+
+        border-radius: 6px;
+
+        font-size: 10px;
+
+        font-weight: 600;
+
+        text-align: center;
+
+        margin-bottom: 10px;
+
+    }
+
+
+    /* =========================================================
+       INFORMAÇÕES
+    ========================================================== */
+
+    .crypto-limit-info {
+
+        font-size: 10px;
+
+        color: #94a3b8;
+
+        margin-bottom: 8px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 4px;
+
+    }
+
+
+    .data-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 6px;
+
+    }
+
+
+    .grid-col-span-2 {
+
+        grid-column:
+            span 2;
+
+    }
+
+
+    .data-box {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 2px;
+
+        background:
+            rgba(255, 255, 255, 0.015);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.03);
+
+        padding: 6px;
+
+        border-radius: 6px;
+
+    }
+
+
+    .data-label {
+
+        font-size: 9px;
+
+        color: #64748b;
+
+        text-transform: uppercase;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 3px;
+
+    }
+
+
+    .data-value {
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+        color: #f1f5f9;
+
+    }
+
+
+    /* =========================================================
+       DUAS MOEDAS
+    ========================================================== */
+
+    .currency-pair {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 2px;
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+        line-height: 1.25;
+
+    }
+
+
+    .currency-pair > span:first-child {
+
+        font-weight: 800;
+
+    }
+
+
+    .brl-value {
+
+        font-size: 10px;
+
+        font-weight: 700;
+
+        opacity: 0.9;
+
+    }
+
+
+    .highlight-gold {
+
+        color: #fbbf24;
+
+    }
+
+
+    .highlight-green {
+
+        color: #4ade80;
+
+    }
+
+
+    .highlight-blue {
+
+        color: #38bdf8;
+
+    }
+
+
+    .text-alert {
+
+        color: #f97316;
+
+        font-size: 9px;
+
+        font-weight: normal;
+
+    }
+
+
+    /* =========================================================
+       MONITOR
+    ========================================================== */
+
+    .investment-monitor {
+
+        margin-top: 10px;
+
+        background: #050911;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.03);
+
+        border-radius: 6px;
+
+        padding: 6px 8px;
+
+    }
+
+
+    .monitor-title {
+
+        margin: 0 0 4px 0;
+
+        font-size: 9px;
+
+        color: #64748b;
+
+        font-weight: 700;
+
+        text-transform: uppercase;
+
+    }
+
+
+    .monitor-row {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        font-size: 10px;
+
+        padding: 4px 0;
+
+        border-bottom:
+            1px solid
+            rgba(255, 255, 255, 0.02);
+
+    }
+
+
+    .monitor-row:last-child {
+
+        border-bottom: none;
+
+    }
+
+
+    .monitor-info-block {
+
+        display: flex;
+
+        flex-direction: column;
+
+        min-width: 0;
+
+    }
+
+
+    .day-indicator {
+
+        font-size: 9px;
+
+        color: #94a3b8;
+
+    }
+
+
+    .text-realtime {
+
+        font-family: monospace;
+
+        font-weight: bold;
+
+        color: #fbbf24;
+
+    }
+
+
+    .ticker-value {
+
+        color: #fbbf24;
+
+    }
+
+
+    .crypto-timer {
+
+        background:
+            rgba(251, 191, 36, 0.05);
+
+        border:
+            1px solid
+            rgba(251, 191, 36, 0.15);
+
+        padding: 2px 5px;
+
+        border-radius: 4px;
+
+        font-family: monospace;
+
+        font-size: 9px;
+
+        color: #fbbf24;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 3px;
+
+        flex-shrink: 0;
+
+    }
+
+
+    /* =========================================================
+       BOTÕES
+    ========================================================== */
+
+    .invest-button {
+
+        width: 100%;
+
+        border: none;
+
+        padding: 10px;
+
+        border-radius: 6px;
+
+        color: white;
+
+        font-weight: 700;
+
+        font-size: 11px;
+
+        margin-top: 10px;
+
+        cursor: pointer;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        gap: 6px;
+
+        letter-spacing: 0.3px;
+
+    }
+
+
+    .bg-diario {
+
+        background:
+            linear-gradient(
+                90deg,
+                #0077b6 0%,
+                #00f5d4 100%
+            );
+
+        color: #060d1a !important;
+
+        font-weight: 900;
+
+    }
+
+
+    .bg-actividade {
+
+        background:
+            linear-gradient(
+                90deg,
+                #673ab7 0%,
+                #9c27b0 100%
+            );
+
+    }
+
+
+    .invest-button:disabled {
+
+        background:
+            #1e293b !important;
+
+        color:
+            #475569 !important;
+
+        cursor:
+            not-allowed;
+
+    }
+
+
+    /* =========================================================
+       VAZIO
+    ========================================================== */
+
+    .empty-msg {
+
+        text-align: center;
+
+        font-size: 11px;
+
+        color: #475569;
+
+        padding: 16px;
+
+    }
+
+</style>
+
+
+<!-- =============================================================
+     JAVASCRIPT
+============================================================= -->
+
+<script>
+
+    /*
+     * ============================================================
+     * CÂMBIO OFICIAL DA INTERFACE
+     *
+     * 1000 KZ = 5 R$
+     * Portanto:
+     * 1 KZ = 0.005 R$
+     * ============================================================
+     */
+
+    const KZ_PER_BRL = 200;
+
+
+    /*
+     * ============================================================
+     * CONVERSÃO KZ -> REAL
+     * ============================================================
+     */
+
+    function formatBRLFromKZ(kzValue) {
+
+        const kz = parseFloat(kzValue);
+
+        if (!Number.isFinite(kz)) {
+
+            return "R$ 0,00";
+
+        }
+
+        const brl = kz / KZ_PER_BRL;
+
+        return "R$ " + brl.toLocaleString(
+            "pt-BR",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+
+    }
+
+
+    /*
+     * ============================================================
+     * ACTUALIZA TODAS AS MOEDAS EM REAL
+     * ============================================================
+     */
+
+    function updateCurrencyValues() {
+
+        document
+            .querySelectorAll(".brl-value")
+            .forEach(function(element) {
+
+                const kzValue =
+                    element.getAttribute("data-kz");
+
+                element.textContent =
+                    formatBRLFromKZ(kzValue);
+
+            });
+
+    }
+
+
+    /*
+     * ============================================================
+     * TROCA DE ABAS
+     * ============================================================
+     */
+
+    function switchTab(tabId) {
+
+        document
+            .querySelectorAll('.tab-btn')
+            .forEach(function(button) {
+
+                button.classList.remove('active');
+
+            });
+
+
+        const activeButton =
+            Array.from(
+                document.querySelectorAll('.tab-btn')
+            ).find(function(button) {
+
+                return button
+                    .getAttribute('onclick')
+                    .includes(tabId);
+
+            });
+
+
+        if (activeButton) {
+
+            activeButton.classList.add('active');
+
+        }
+
+
+        document
+            .querySelectorAll('.tab-content')
+            .forEach(function(content) {
+
+                content.classList.remove(
+                    'active-content'
+                );
+
+            });
+
+
+        const target =
+            document.getElementById(tabId);
+
+
+        if (target) {
+
+            target.classList.add(
+                'active-content'
+            );
+
+        }
+
+    }
+
+
+    /*
+     * ============================================================
+     * CONTADORES
+     *
+     * IMPORTANTE:
+     * Este contador é somente visual.
+     *
+     * O processamento financeiro REAL continua no views.py,
+     * através de _proactively_update_user_level().
+     * ============================================================
+     */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            /*
+             * Primeiro mostra os valores em Real.
+             */
+
+            updateCurrencyValues();
+
+
+            /*
+             * Depois inicia os contadores.
+             */
+
+            const timers =
+                document.querySelectorAll(
+                    '.countdown-timer'
+                );
+
+
+            timers.forEach(function(timer) {
+
+                let totalSeconds =
+                    parseInt(
+                        timer.getAttribute(
+                            'data-seconds'
+                        ),
+                        10
+                    );
+
+
+                if (
+                    !Number.isFinite(totalSeconds) ||
+                    totalSeconds < 0
+                ) {
+
+                    totalSeconds = 0;
+
+                }
+
+
+                function renderTimer() {
+
+                    if (totalSeconds <= 0) {
+
+                        timer.textContent =
+                            "00:00:00";
+
+                        return;
+
+                    }
+
+
+                    const hours =
+                        Math.floor(
+                            totalSeconds / 3600
+                        );
+
+
+                    const minutes =
+                        Math.floor(
+                            (totalSeconds % 3600) / 60
+                        );
+
+
+                    const seconds =
+                        totalSeconds % 60;
+
+
+                    timer.textContent =
+
+                        String(hours)
+                            .padStart(2, "0")
+
+                        + ":" +
+
+                        String(minutes)
+                            .padStart(2, "0")
+
+                        + ":" +
+
+                        String(seconds)
+                            .padStart(2, "0");
+
+                }
+
+
+                renderTimer();
+
+
+                const interval =
+                    setInterval(function() {
+
+                        if (totalSeconds <= 0) {
+
+                            clearInterval(interval);
+
+                            timer.textContent =
+                                "00:00:00";
+
+                            return;
+
+                        }
+
+
+                        totalSeconds--;
+
+                        renderTimer();
+
+                    }, 1000);
+
+            });
+
+        }
+
+    );
+
+</script>
+
+{% endblock %}

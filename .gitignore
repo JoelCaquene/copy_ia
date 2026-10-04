@@ -1,0 +1,12 @@
+# Arquivos de Sistema
+.DS_Store
+.env
+
+# Banco de Dados Local
+db.sqlite3
+
+# Diretórios Gerados
+__pycache__/
+*.pyc
+staticfiles/
+media/
